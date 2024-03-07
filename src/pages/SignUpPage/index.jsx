@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userType, setUserType] = useState("customer");
@@ -11,7 +12,7 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // check if the email is valid
@@ -21,10 +22,46 @@ const SignUpPage = () => {
       return;
     }
 
+    // check if the username is not empty
+    if (username === "") {
+      setError("Please enter a username");
+      return;
+    }
+
+    // check if password is 6+ characters
+    if (password.length < 6) {
+      setError("Password must be 6+ characters");
+      return;
+    }
+
     // check if password and confirm password match
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
+    }
+
+    // Construct the user object
+    const user = {
+      email,
+      username,
+      password,
+      userType,
+    };
+
+    console.log(user);
+
+    // Perform API call to register the user
+    const response = await fetch("http://localhost:8080/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    }).then((res) => res.json());
+
+    if (response.success) {
+      alert("User registered successfully");
+      navigate("/");
+    } else {
+      setError(response.error);
     }
   };
 
@@ -41,11 +78,20 @@ const SignUpPage = () => {
           />
         </div>
         <div>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
           <label>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="6+ characters"
           />
         </div>
         <div>

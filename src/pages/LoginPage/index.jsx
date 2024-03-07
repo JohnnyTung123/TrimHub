@@ -3,7 +3,7 @@ import "./LoginPage.css";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -12,10 +12,9 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // check if the email is valid
-    let emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email");
+    // check if the username is not empty
+    if (username === "") {
+      setError("Please enter a username");
       return;
     }
 
@@ -33,9 +32,9 @@ const LoginPage = () => {
         <div>
           <label>Email</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
