@@ -31,4 +31,35 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup };
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(401).json({ error: "Wrong username" });
+    }
+    const auth = await bcrypt.compare(password, user.password);
+    if (!auth) {
+      return res.status(401).json({ error: "Wrong password" });
+    }
+
+    req.session.login = true;
+    req.session.username = user.username;
+    req.session.usertype = user.usertype;
+
+    console.log("User login successfully", req.session);
+    res.status(200).json({ user: user.username, usertype: user.usertype });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: `Server side error: ${err.message}` });
+  }
+};
+
+const logout = async (req, res) => {
+  req.session.destory();
+  console.log("User logout successfully", req.session);
+  res.status(200).json({ success: "User logout successfully" });
+};
+
+module.exports = { signup, login, logout };
