@@ -7,7 +7,7 @@ const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userType, setUserType] = useState("customer");
+  const [usertype, setUsertype] = useState("customer");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
@@ -45,13 +45,13 @@ const SignUpPage = () => {
       email,
       username,
       password,
-      userType,
+      usertype,
     };
 
     console.log(user);
 
     // Perform API call to register the user
-    const response = await fetch("http://localhost:8080/signup", {
+    const response = await fetch("http://localhost:8080/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
@@ -105,8 +105,8 @@ const SignUpPage = () => {
         <div>
           <label>User Type</label>
           <select
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
+            value={usertype}
+            onChange={(e) => setUsertype(e.target.value)}
           >
             <option value="customer">Customer</option>
             <option value="doctor">Doctor</option>
