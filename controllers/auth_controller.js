@@ -5,6 +5,7 @@ const signup = async (req, res) => {
   const { email, username, password, usertype } = req.body;
 
   try {
+    // Check if user already in use
     const duplicateEmail = await User.findOne({ email: email });
     if (duplicateEmail) {
       return res.status(409).json({ error: "Email already in use" });
@@ -14,9 +15,11 @@ const signup = async (req, res) => {
       return res.status(409).json({ error: "Username already in use" });
     }
 
+    // Salt Password
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const user = await User.create({
       email: email,
       username: username,
@@ -35,6 +38,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    // Authenticate user
     const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(401).json({ error: "Wrong username" });
@@ -44,6 +48,7 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Wrong password" });
     }
 
+    // Set session
     req.session.login = true;
     req.session.username = user.username;
     req.session.usertype = user.usertype;
