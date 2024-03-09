@@ -30,7 +30,7 @@ const LoginPage = () => {
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email</label>
+          <label>Username</label>
           <input
             type="text"
             value={username}
