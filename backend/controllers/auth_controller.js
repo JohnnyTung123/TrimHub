@@ -34,6 +34,8 @@ const otp = async (req, res) => {
     `;
     const otpEmailResponse = await sendEmail(email, title, body);
     console.log("Sent OTP:", otpEmailResponse);
+
+    res.status(200).json({ success: "OTP sent successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });
@@ -107,7 +109,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  req.session.destory();
+  req.session.destroy();
   console.log("User logout successfully", req.session);
   res.status(200).json({ success: "User logout successfully" });
 };
