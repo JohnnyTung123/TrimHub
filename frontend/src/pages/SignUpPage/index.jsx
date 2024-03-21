@@ -125,6 +125,9 @@ const SignUpPage = () => {
               </select>
             </div>
             <button type="submit">Sign Up</button>
+            <button onClick={() => navigate("/")} type="button">
+              Back
+            </button>
           </form>
         </div>
       )}

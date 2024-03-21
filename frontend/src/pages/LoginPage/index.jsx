@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./LoginPage.css";
+import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -8,6 +9,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +25,25 @@ const LoginPage = () => {
       setError("Please enter a password");
       return;
     }
+
+    // send the login request
+    fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          console.log("User login successfully", data);
+          // Store the JWT token in the browser's cookies
+          cookies.set("auth", data.accessToken, { path: "/" });
+          // redirect to the home page
+          navigate("/");
+        }
+      });
   };
 
   return (
@@ -35,6 +56,7 @@ const LoginPage = () => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autoComplete="on"
           />
         </div>
         <div>
@@ -43,6 +65,7 @@ const LoginPage = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="on"
           />
           <button onClick={() => navigate("/forgot-password")}>
             Forgot Password?
