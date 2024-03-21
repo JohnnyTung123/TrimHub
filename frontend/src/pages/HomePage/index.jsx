@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import "./Homepage.css";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const cookies = new Cookies();
+  const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
 
@@ -23,20 +23,31 @@ const HomePage = () => {
         setUser(data.user);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [cookies]);
+
+  const handleLogout = () => {
+    cookies.remove("auth");
+    setUser(null);
+  };
 
   return (
     <div>
-      <h1>Home Page</h1>
-      <button onClick={() => navigate("/signup")}>Sign Up</button>
-      <button onClick={() => navigate("/login")}>Login</button>
-      <h2>User Information</h2>
-      {user && (
-        <div>
-          <p>Username: {user.username}</p>
-          <p>Email: {user.email}</p>
-          <p>User Type: {user.usertype}</p>
-        </div>
+      <h1>Homepage</h1>
+      {user ? (
+        <>
+          <button onClick={handleLogout}>Logout</button>
+          <div>
+            <h2>User Information</h2>
+            <p>Username: {user.username}</p>
+            <p>Email: {user.email}</p>
+            <p>User Type: {user.usertype}</p>
+          </div>
+        </>
+      ) : (
+        <>
+          <button onClick={() => navigate("/signup")}>Sign Up</button>
+          <button onClick={() => navigate("/login")}>Login</button>
+        </>
       )}
     </div>
   );

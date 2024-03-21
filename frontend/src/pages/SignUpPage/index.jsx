@@ -75,6 +75,7 @@ const SignUpPage = () => {
             type="text"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
+            autoComplete="on"
           />
           <button onClick={handleSignUp}>Verify OTP</button>
         </div>
@@ -87,6 +88,7 @@ const SignUpPage = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="on"
               />
             </div>
             <div>
@@ -95,6 +97,7 @@ const SignUpPage = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                autoComplete="on"
               />
             </div>
             <div>
@@ -104,6 +107,7 @@ const SignUpPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="6+ characters"
+                autoComplete="on"
               />
             </div>
             <div>
@@ -112,6 +116,7 @@ const SignUpPage = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="on"
               />
             </div>
             <div>

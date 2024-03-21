@@ -72,6 +72,7 @@ const LoginPage = () => {
           </button>
         </div>
         <button type="submit">Login</button>
+        <button onClick={() => navigate("/")}>Back</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>

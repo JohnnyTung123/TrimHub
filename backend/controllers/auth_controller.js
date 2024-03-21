@@ -113,10 +113,4 @@ const login = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
-  req.session.destroy();
-  console.log("User logout successfully", req.session);
-  res.status(200).json({ success: "User logout successfully" });
-};
-
-module.exports = { otp, signup, login, logout };
+module.exports = { otp, signup, login };
