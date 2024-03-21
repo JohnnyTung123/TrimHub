@@ -14,7 +14,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -32,9 +32,9 @@ export default function App() {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
