@@ -3,6 +3,7 @@ const OTP = require("../models/otp");
 const sendEmail = require("../helpers/email_sender");
 const bcrypt = require("bcrypt");
 const otpGenerator = require("otp-generator");
+const jwt = require("jsonwebtoken");
 
 const otp = async (req, res) => {
   const { email, username } = req.body;
@@ -34,6 +35,8 @@ const otp = async (req, res) => {
     `;
     const otpEmailResponse = await sendEmail(email, title, body);
     console.log("Sent OTP:", otpEmailResponse);
+
+    res.status(200).json({ success: "OTP sent successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });
@@ -93,23 +96,21 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Wrong password" });
     }
 
-    // Set session
-    req.session.login = true;
-    req.session.username = user.username;
-    req.session.usertype = user.usertype;
+    // Create token
+    const accessToken = jwt.sign(
+      { user: user },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
 
-    console.log("User login successfully", req.session);
-    res.status(200).json({ user: user.username, usertype: user.usertype });
+    console.log("User login successfully");
+    res.status(200).json({
+      accessToken: accessToken,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });
   }
 };
 
-const logout = async (req, res) => {
-  req.session.destory();
-  console.log("User logout successfully", req.session);
-  res.status(200).json({ success: "User logout successfully" });
-};
-
-module.exports = { otp, signup, login, logout };
+module.exports = { otp, signup, login };
