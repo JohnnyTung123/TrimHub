@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import SalonPage from "./pages/SalonPage";
 import NoPage from "./pages/NoPage";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/salon" element={<SalonPage />} />
         {/* <Route element={<ProtectedRoutes />}>
           <Route path="patient" element={<PatientPage />} />
           <Route path="doctor" element={<DoctorPage />} />
