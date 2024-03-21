@@ -126,20 +126,18 @@ const SignUpPage = () => {
                 onChange={(e) => setUsertype(e.target.value)}
               >
                 <option value="customer">Customer</option>
-                <option value="doctor">Doctor</option>
+                <option value="salon">Salon</option>
               </select>
             </div>
             <button type="submit">Sign Up</button>
-            <button onClick={() => navigate("/")} type="button">
-              Back
-            </button>
+            <button type="button" onClick={() => navigate("/")}>Back</button>
           </form>
         </div>
       )}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
         <p>Already have an account?</p>
-        <button onClick={() => navigate("/login")}>Login</button>
+        <button type="button" onClick={() => navigate("/login")}>Login</button>
       </div>
     </div>
   );
