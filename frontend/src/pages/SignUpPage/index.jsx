@@ -9,111 +9,133 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [usertype, setUsertype] = useState("customer");
   const [error, setError] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // check if the email is valid
+    // Validate input
     let emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email");
       return;
     }
-
-    // check if the username is not empty
     if (username === "") {
       setError("Please enter a username");
       return;
     }
-
-    // check if password is 6+ characters
     if (password.length < 6) {
       setError("Password must be 6+ characters");
       return;
     }
-
-    // check if password and confirm password match
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-
-    // Construct the user object
-    const user = {
-      email,
-      username,
-      password,
-      usertype,
-    };
-
-    console.log(user);
-
-    // Perform API call to register the user
-    const response = await fetch("http://localhost:8080/auth/signup", {
+    // Send OTP
+    const otpResponse = await fetch("http://localhost:8080/auth/otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
+      body: JSON.stringify({ email, username }),
     }).then((res) => res.json());
 
-    if (response.success) {
-      alert("User registered successfully");
-      navigate("/");
+    if (!otpResponse.success) {
+      setError(otpResponse.error);
+      return;
     } else {
-      setError(response.error);
+      alert("OTP sent successfully");
     }
+    setOtpSent(true);
+  };
+
+  const handleSignUp = async () => {
+    const signupResponse = await fetch("http://localhost:8080/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, username, password, usertype, otp }),
+    }).then((res) => res.json());
+
+    if (!signupResponse.success) {
+      setError(signupResponse.error);
+      return;
+    }
+    alert("Sign up successful");
+    navigate("/login");
   };
 
   return (
     <div>
       <h1>Sign Up Page</h1>
-      <form onSubmit={handleSubmit}>
+      {otpSent ? (
         <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Username</label>
+          <p>Enter the OTP sent to your email:</p>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            autoComplete="on"
           />
+          <button onClick={handleSignUp}>Verify OTP</button>
         </div>
+      ) : (
         <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="6+ characters"
-          />
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="on"
+              />
+            </div>
+            <div>
+              <label>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="on"
+              />
+            </div>
+            <div>
+              <label>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="6+ characters"
+                autoComplete="on"
+              />
+            </div>
+            <div>
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="on"
+              />
+            </div>
+            <div>
+              <label>User Type</label>
+              <select
+                value={usertype}
+                onChange={(e) => setUsertype(e.target.value)}
+              >
+                <option value="customer">Customer</option>
+                <option value="doctor">Doctor</option>
+              </select>
+            </div>
+            <button type="submit">Sign Up</button>
+            <button onClick={() => navigate("/")} type="button">
+              Back
+            </button>
+          </form>
         </div>
-        <div>
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>User Type</label>
-          <select
-            value={usertype}
-            onChange={(e) => setUsertype(e.target.value)}
-          >
-            <option value="customer">Customer</option>
-            <option value="doctor">Doctor</option>
-          </select>
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
+      )}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
         <p>Already have an account?</p>
