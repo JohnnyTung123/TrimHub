@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import SalonPage from "./pages/SalonPage";
 import ProfilePage from "./pages/ProfilePage";
 import NoPage from "./pages/NoPage";
 import SavedSalonPage from "./pages/SavedSalonPage";
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/salon" element={<SalonPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/savedsalon" element={<SavedSalonPage />} />
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
