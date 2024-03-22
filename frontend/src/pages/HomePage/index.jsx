@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
-import "./Homepage.css";
+import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {

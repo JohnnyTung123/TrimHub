@@ -15,17 +15,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="signup" element={<SignUpPage />} />
+        <Route index element={<HomePage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/salon" element={<SalonPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/savedsalon" element={<SavedSalonPage />} />
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
-        {/* <Route element={<ProtectedRoutes />}>
-          <Route path="patient" element={<PatientPage />} />
-          <Route path="doctor" element={<DoctorPage />} />
-        </Route> */}
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
