@@ -10,17 +10,17 @@ const otp = async (req, res) => {
 
   try {
     // Check if user already in use
-    const duplicateEmail = await User.findOne({ email: email });
+    const duplicateEmail = await User.findOne({ email });
     if (duplicateEmail) {
       return res.status(409).json({ error: "Email already in use" });
     }
-    const duplicateUsername = await User.findOne({ username: username });
+    const duplicateUsername = await User.findOne({ username });
     if (duplicateUsername) {
       return res.status(409).json({ error: "Username already in use" });
     }
 
     // Generate OTP
-    await OTP.deleteOne({ email: email });
+    await OTP.deleteOne({ email });
     const otp = await OTP.create({
       email: email,
       otp: otpGenerator.generate(6, { specialChars: false }),
@@ -48,17 +48,17 @@ const signup = async (req, res) => {
 
   try {
     // Check if user already in use
-    const duplicateEmail = await User.findOne({ email: email });
+    const duplicateEmail = await User.findOne({ email });
     if (duplicateEmail) {
       return res.status(409).json({ error: "Email already in use" });
     }
-    const duplicateUsername = await User.findOne({ username: username });
+    const duplicateUsername = await User.findOne({ username });
     if (duplicateUsername) {
       return res.status(409).json({ error: "Username already in use" });
     }
 
     // Validate OTP
-    const otpSent = await OTP.findOne({ email: email });
+    const otpSent = await OTP.findOne({ email });
     if (!otpSent || otp !== otpSent.otp) {
       return res.status(400).json({ error: "Wrong OTP" });
     }
@@ -87,7 +87,7 @@ const login = async (req, res) => {
 
   try {
     // Authenticate user
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ error: "Wrong username" });
     }
@@ -100,7 +100,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { user: user },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     console.log("User login successfully");
@@ -113,4 +113,41 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { otp, signup, login };
+const forget = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check whether the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "Cannot find user" });
+    }
+
+    // Update user using random password
+    const password = Math.random().toString(36).slice(-8);
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+    const userUpdated = await User.findOneAndUpdate(
+      { email },
+      { password: hashPassword },
+      { new: true },
+    );
+    console.log("Updated user for forget route:", userUpdated);
+
+    // Sent Email to notify changes
+    const title = "Change Password";
+    const body = `
+      <h1>New Password</h1>
+      <p>Your new password is ${password}</p>
+    `;
+    const changePasswordEmailResponse = await sendEmail(email, title, body);
+    console.log("Sent change password email:", changePasswordEmailResponse);
+
+    res.status(400).json({ success: "Password reset email sent successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: `Server side error: ${err.message}` });
+  }
+};
+
+module.exports = { otp, signup, login, forget };
