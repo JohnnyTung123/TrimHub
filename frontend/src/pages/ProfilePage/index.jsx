@@ -3,10 +3,14 @@ import Cookies from "universal-cookie";
 import "./ProfilePage.css";
 import { useNavigate } from "react-router-dom";
 
+import UserProfile from "./ UserProfile.jsx";
+import SalonProfile from "./SalonProfile";
+
 const ProfilePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [userType, setUserType] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // authenticate user
@@ -22,6 +26,7 @@ const ProfilePage = () => {
       .then((data) => {
         console.log(data);
         setUser(data.user);
+        setUserType(data.user.usertype);
       })
       .catch((err) => console.error(err));
   }, [cookies]);
@@ -66,28 +71,13 @@ const ProfilePage = () => {
           </div>
         </nav>
       </header>
-      <div className="profile-content">
-        <main className="profile-main-content">
-          <div className="profile-email-section">
-            <label htmlFor="email">Email</label>
-            <input
-              id="profile-email"
-              type="email"
-              value={user.email}
-              readOnly
-            />
-            <label htmlFor="username">Username</label>
-            <input
-              id="profile-username"
-              type="text"
-              value={user.username}
-              readOnly
-            />
-          </div>
-          <button onClick={handleChangePassword}>Change Password</button>
-          <button onClick={handleLogout}>Log out</button>
-        </main>
-      </div>
+      {userType === "customer" ? (
+        <UserProfile user={user} />
+      ) : userType === "salon" ? (
+        <SalonProfile user={user} />
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 };
