@@ -13,13 +13,14 @@ app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   }),
 );
 
 // Custom routes
 app.use("/auth", require("./routes/auth_route"));
+app.use("/salon-info", require("./routes/salon_info_route"));
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_KEY);
