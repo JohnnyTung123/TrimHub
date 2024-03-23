@@ -13,11 +13,11 @@
 
 // export default SalonProfile;
 
-import React from "react";
+import * as React from "react";
 
 const SalonProfile = ({ user }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col self-center mx-auto w-[80vw]">
       <div className="flex gap-3 self-start px-5 text-3xl text-black max-md:flex-wrap">
         <div className="shrink-0 w-3.5 h-10 bg-green-700" />
         <div className="flex-auto self-start mt-3 border border-black border-solid max-md:max-w-full">
