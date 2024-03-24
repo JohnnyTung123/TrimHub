@@ -3,7 +3,7 @@ import Cookies from "universal-cookie";
 import "./ProfilePage.css";
 import { useNavigate } from "react-router-dom";
 
-import UserProfile from "./ UserProfile.jsx";
+import UserProfile from "./UserProfile";
 import SalonProfile from "./SalonProfile";
 
 const ProfilePage = () => {
