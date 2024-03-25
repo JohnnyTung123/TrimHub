@@ -2,15 +2,15 @@ const SalonInfo = require("../models/salon_info");
 const path = require("path");
 
 const createSalonInfo = async (req, res) => {
-  const { name } = req.body;
+  const { username, salonname } = req.body;
 
   try {
-    const duplicate = await SalonInfo.findOne({ name });
-    if (duplicate) {
-      return res.status(409).json({ error: "Salon name already in use" });
-    }
+    // const duplicate = await SalonInfo.findOne({ username });
+    // if (duplicate) {
+    //   return res.status(409).json({ error: "Salon name already in use" });
+    // }
 
-    const salonInfo = await SalonInfo.create({ name });
+    const salonInfo = await SalonInfo.create({ username, salonname });
     console.log("Create Salon Info:", salonInfo);
     res.status(201).json({ success: "Salon Info created successfully" });
   } catch (error) {
@@ -20,10 +20,10 @@ const createSalonInfo = async (req, res) => {
 };
 
 const getSalonInfo = async (req, res) => {
-  const { name } = req.query;
+  const { username } = req.query;
 
   try {
-    const salonInfo = await SalonInfo.findOne({ name });
+    const salonInfo = await SalonInfo.findOne({ username });
     console.log("Got Salon Info:", salonInfo);
     res.status(200).json(salonInfo);
   } catch (error) {
@@ -42,7 +42,7 @@ const updateSalonInfo = async (req, res) => {
         name,
         address,
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon info updated successfully" });
@@ -53,10 +53,10 @@ const updateSalonInfo = async (req, res) => {
 };
 
 const getSalonImage = async (req, res) => {
-  const { name } = req.query;
+  const { username } = req.query;
 
   try {
-    const salonInfo = await SalonInfo.findOne({ name });
+    const salonInfo = await SalonInfo.findOne({ username });
     console.log("Going to send Salon Image:", salonInfo.imageFilename);
     res.status(200).sendFile(salonInfo.imagePath);
   } catch (error) {
@@ -73,7 +73,7 @@ const updateSalonImage = async (req, res) => {
         imageFilename: req.file.filename,
         imagePath: path.resolve(req.file.path),
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon image updateed successfully" });

@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
 
 const SalonInfoSchema = mongoose.Schema({
-  name: {
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  salonname: {
     type: String,
     required: true,
     unique: true,

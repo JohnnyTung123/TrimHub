@@ -14,6 +14,19 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
+  const createSalonInfo = async () => {
+    const response = await fetch("http://localhost:8080/salon-info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, salonname: username }),
+    }).then((res) => res.json());
+
+    if (!response.success) {
+      setError(response.error);
+      return;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate input
@@ -60,6 +73,9 @@ const SignUpPage = () => {
     if (!signupResponse.success) {
       setError(signupResponse.error);
       return;
+    }
+    if (usertype === "salon") {
+      createSalonInfo();
     }
     alert("Sign up successful");
     navigate("/login");
@@ -130,14 +146,18 @@ const SignUpPage = () => {
               </select>
             </div>
             <button type="submit">Sign Up</button>
-            <button type="button" onClick={() => navigate("/")}>Back</button>
+            <button type="button" onClick={() => navigate("/")}>
+              Back
+            </button>
           </form>
         </div>
       )}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
         <p>Already have an account?</p>
-        <button type="button" onClick={() => navigate("/login")}>Login</button>
+        <button type="button" onClick={() => navigate("/login")}>
+          Login
+        </button>
       </div>
     </div>
   );
