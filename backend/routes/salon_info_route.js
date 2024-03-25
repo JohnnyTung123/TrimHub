@@ -11,7 +11,7 @@ router.get("/image", salonInfoController.getSalonImage);
 router.put(
   "/image/:salonId",
   upload.single("salon-image"),
-  salonInfoController.updateSalonImage,
+  salonInfoController.updateSalonImage
 );
 
 module.exports = router;
