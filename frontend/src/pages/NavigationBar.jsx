@@ -1,36 +1,75 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from "react";
+import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-//import { CurrentUserContext } from './CurrentUserContext';
+import './NavigationBar.css';
+
+const NavigationBar = ( ) => {
+  const cookies = useMemo(() => new Cookies(), []);
+  const navigate = useNavigate();
+  const [user, setUser] = useState({});
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const username = 'username';
 
 
-function NavigationBar() {
-    const navigate = useNavigate();
 
-    return (
-      <nav>
-        <ul style={{ display: 'flex', flexDirection: 'colum' }}>
+  const handleLogout = () => {
+    cookies.remove("auth");
+    setUser(null);
+  };
 
-          <li style={{ display: 'inline', marginRight: '100px' }}>
-            <Link to="/" style={{ fontSize: '40px', fontFamily: 'Arial' }}>Home</Link>
-          </li>
+  return (
+    <div>
+      {user ? (
 
-          <li style={{ display: 'inline', marginTop: '18px', marginLeft: '100px' }}>
-            <button className="" style={{ fontSize: '16px', fontFamily: 'Helvetica' }}>Men</button>
-          </li>
-          <li style={{ display: 'inline', marginTop: '18px', marginRight: '10px' }}>
-            <button className="" style={{ fontSize: '16px', fontFamily: 'Helvetica' }}>Women</button>
-          </li>
+        <header className="savedsalon-header">
+        <h1 onClick={() => navigate("/")}>Trim Hub</h1>
+        <nav className="navigation">
+          <a href="/men">Men</a>
+          <a href="/women">Woman</a>
+          <div className="dropdown">
+            <button className="dropbtn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+              <span className="username">{username}</span>
+              <span className="icons"> ▽</span>
+            </button>
+            {dropdownOpen && (
+              <div className="dropdown-content">
+                <div className="user-info">
+                  <div className="avatar">{/* User Avatar Image */}</div>
+                  <div className="username">{username}</div>
+                </div>
+                <a href="/profile">User information</a>
+                <a href="/bookings">Bookings</a>
+                <a href="/messages">Messages</a>
+                <a href="/savedsalon">Saved salons</a>
+                <a href="/savedhaircut">Saved haircut</a>
+                <a onClick={handleLogout} >Logout</a>
+              </div>
+            )}
+          </div>
+        </nav>
+      </header>
 
-          <li style={{ display: 'inline', marginTop: '18px', marginRight: '10px' }}>
-           <button className="" style={{ fontSize: '16px', fontFamily: 'Helvetica' }} onClick={() => navigate("/login")}>Login/Sign Up</button>
-          </li>
 
+      ) : (
+
+
+        <header className="savedsalon-header">
+        <h1 onClick={() => navigate("/")}>Trim Hub</h1>
+        <nav className="navigation">
+          <a href="/men">Men</a>
+          <a href="/women">Woman</a>
           
+          <button className="" onClick={() => navigate("/signup")}>Sign Up</button>
+          <button className="" onClick={() => navigate("/login")}>Login</button>
+          
+        </nav>
+      </header>
 
-        </ul>
-      </nav>
-    );
-  }
+
+      )}
+    </div>
+  );
+};
+
 
 export default NavigationBar;
