@@ -20,5 +20,6 @@ router.put(
 );
 router.get("/hairstyles", salonInfoController.getHairstyles);
 router.put("/plans/:salonId", salonInfoController.createPlan);
+router.delete("/plans/:salonId", salonInfoController.deletePlan);
 
 module.exports = router;

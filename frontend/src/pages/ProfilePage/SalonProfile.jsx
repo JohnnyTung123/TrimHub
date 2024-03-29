@@ -33,6 +33,7 @@ const SalonProfile = ({ user }) => {
       setSalonId(data._id);
       setSalonName(data.salonname);
       setAddress(data.address || "");
+      setPlans(data.plans || []);
     } catch (err) {
       console.error(err);
     }
@@ -220,6 +221,32 @@ const SalonProfile = ({ user }) => {
     }
   };
 
+  // 6. delete plan
+  const deletePlan = async (index) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/salon-info/plans/${salonId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            index,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw Error("Cannot delete plan.");
+      }
+      const newPlans = [...plans];
+      newPlans.splice(index, 1);
+      setPlans(newPlans);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="p-5 font-sans">
       <h1 className="text-3xl font-bold mb-5">Salon Profile</h1>
@@ -360,6 +387,13 @@ const SalonProfile = ({ user }) => {
               <p className="font-bold">Plan Name: {plan.name}</p>
               <p>Price: {plan.price}</p>
               <p>Description{plan.description}</p>
+              <p>index: {index}</p>
+              <button
+                onClick={() => deletePlan(index)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
+              >
+                Delete Plan
+              </button>
             </div>
           ))}
         </div>

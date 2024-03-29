@@ -156,6 +156,22 @@ const createPlan = async (req, res) => {
   }
 };
 
+const deletePlan = async (req, res) => {
+  const { salonId } = req.params;
+  const { index } = req.body;
+
+  try {
+    const salonInfo = await SalonInfo.findById(salonId);
+    salonInfo.plans.splice(index, 1);
+    await salonInfo.save();
+    console.log("Updated Salon Info:", salonInfo);
+    res.status(200).json({ success: "Plan deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
@@ -165,4 +181,5 @@ module.exports = {
   createHairstyle,
   getHairstyles,
   createPlan,
+  deletePlan,
 };
