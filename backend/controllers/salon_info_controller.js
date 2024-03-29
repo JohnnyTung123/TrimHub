@@ -130,6 +130,32 @@ const getHairstyles = async (req, res) => {
   }
 };
 
+const createPlan = async (req, res) => {
+  const { salonId } = req.params;
+  const { name, price, description } = req.body;
+
+  try {
+    const salonInfo = await SalonInfo.findByIdAndUpdate(
+      salonId,
+      {
+        $push: {
+          plans: {
+            name,
+            price,
+            description,
+          },
+        },
+      },
+      { new: true }
+    );
+    console.log("Updated Salon Info:", salonInfo);
+    res.status(200).json({ success: "Plan added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
@@ -138,4 +164,5 @@ module.exports = {
   updateSalonImage,
   createHairstyle,
   getHairstyles,
+  createPlan,
 };

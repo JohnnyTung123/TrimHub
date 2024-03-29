@@ -13,6 +13,11 @@ const SalonProfile = ({ user }) => {
   const [hairstyleImage, setHairstyleImage] = useState(null);
   const [hairstyleDescription, setHairstyleDescription] = useState("");
   const [hairstyles, setHairstyles] = useState([]);
+  const [showPlanForm, setShowPlanForm] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [planName, setPlanName] = useState("");
+  const [planPrice, setPlanPrice] = useState("");
+  const [planDescription, setPlanDescription] = useState("");
 
   // 1. Fetch salon information
   const fetchSalonInfo = async () => {
@@ -162,6 +167,59 @@ const SalonProfile = ({ user }) => {
     setHairstyleDescription("");
   };
 
+  // 5. create new plan
+  const createPlan = async (e) => {
+    e.preventDefault();
+    if (!planName) {
+      alert("Please enter a plan name.");
+      return;
+    }
+    if (!planPrice) {
+      alert("Please enter a plan price.");
+      return;
+    }
+    if (!planDescription) {
+      alert("Please enter a plan description.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/salon-info/plans/${salonId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: planName,
+            price: planPrice,
+            description: planDescription,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw Error("Cannot create plan.");
+      }
+      setShowPlanForm(false);
+
+      setPlans([
+        ...plans,
+        {
+          name: planName,
+          price: planPrice,
+          description: planDescription,
+        },
+      ]);
+
+      setPlanName("");
+      setPlanPrice("");
+      setPlanDescription("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="p-5 font-sans">
       <h1 className="text-3xl font-bold mb-5">Salon Profile</h1>
@@ -291,6 +349,69 @@ const SalonProfile = ({ user }) => {
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
         >
           Upload new hairstyle
+        </button>
+      </div>
+      {/* plans */}
+      <div className="mt-5">
+        <h2 className="text-xl font-bold mb-3">Plans</h2>
+        <div className="grid grid-cols-3 gap-4">
+          {plans.map((plan, index) => (
+            <div key={index} className="flex flex-col">
+              <p className="font-bold">Plan Name: {plan.name}</p>
+              <p>Price: {plan.price}</p>
+              <p>Description{plan.description}</p>
+            </div>
+          ))}
+        </div>
+        {showPlanForm && (
+          <form
+            onSubmit={createPlan}
+            className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+          >
+            <FontAwesomeIcon
+              icon={faTimes}
+              onClick={() => setShowPlanForm(false)}
+              className="text-2xl absolute top-3 right-3 cursor-pointer"
+            />
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Plan Name"
+                value={planName}
+                onChange={(e) => setPlanName(e.target.value)}
+                className="px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="number"
+                placeholder="Plan Price"
+                value={planPrice}
+                onChange={(e) => setPlanPrice(e.target.value)}
+                className="px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="mb-3">
+              <textarea
+                placeholder="Plan Description"
+                value={planDescription}
+                onChange={(e) => setPlanDescription(e.target.value)}
+                className="px-3 py-2 border rounded-md"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
+            >
+              confirm
+            </button>
+          </form>
+        )}
+        <button
+          onClick={() => setShowPlanForm(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
+        >
+          Create new plan
         </button>
       </div>
     </div>

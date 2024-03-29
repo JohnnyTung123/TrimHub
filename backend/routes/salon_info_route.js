@@ -19,5 +19,6 @@ router.put(
   salonInfoController.createHairstyle
 );
 router.get("/hairstyles", salonInfoController.getHairstyles);
+router.put("/plans/:salonId", salonInfoController.createPlan);
 
 module.exports = router;
