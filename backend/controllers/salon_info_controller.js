@@ -34,6 +34,7 @@ const getSalonInfo = async (req, res) => {
 
 const updateSalonInfo = async (req, res) => {
   const { name, address } = req.body;
+  console.log("Update Salon Info:", name, address);
 
   try {
     const salonInfo = await SalonInfo.findByIdAndUpdate(

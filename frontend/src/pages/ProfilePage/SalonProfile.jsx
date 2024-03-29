@@ -25,8 +25,7 @@ const SalonProfile = ({ user }) => {
       }
       const data = await response.json();
       console.log(data);
-      // setSalonId(data._id);
-      // console.log(salonId + "salonId");
+      setSalonId(data._id);
       setSalonName(data.salonname);
       setAddress(data.address || "");
     } catch (err) {
@@ -91,10 +90,10 @@ const SalonProfile = ({ user }) => {
       if (!response.ok) {
         throw Error("Cannot update data.");
       }
+      alert("Salon information updated successfully.");
     } catch (err) {
       console.error(err);
     }
-    alert("Salon information updated successfully.");
   };
 
   // 3. Upload salon image
