@@ -24,6 +24,19 @@ const SalonInfoSchema = mongoose.Schema({
   imagePath: {
     type: String,
   },
+  hairstyles: [
+    {
+      imageFilename: {
+        type: String,
+      },
+      imagePath: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("SalonInfo", SalonInfoSchema);

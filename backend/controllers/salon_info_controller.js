@@ -83,10 +83,58 @@ const updateSalonImage = async (req, res) => {
   }
 };
 
+const createHairstyle = async (req, res) => {
+  const { salonId } = req.params;
+  const { description } = req.body;
+
+  try {
+    const salonInfo = await SalonInfo.findByIdAndUpdate(
+      salonId,
+      {
+        $push: {
+          hairstyles: {
+            imageFilename: req.file.filename,
+            imagePath: path.resolve(req.file.path),
+            description,
+          },
+        },
+      },
+      { new: true }
+    );
+    console.log("Updated Salon Info:", salonInfo);
+    res.status(200).json({ success: "Hairstyle added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
+const getHairstyles = async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    const salonInfo = await SalonInfo.findOne({
+      username,
+    });
+    const hairstyles = salonInfo.hairstyles.map((style) => ({
+      imagePath: style.imagePath,
+      description: style.description,
+    }));
+
+    console.log("Got Hairstyles:", hairstyles);
+    res.status(200).json(hairstyles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
   updateSalonInfo,
   getSalonImage,
   updateSalonImage,
+  createHairstyle,
+  getHairstyles,
 };

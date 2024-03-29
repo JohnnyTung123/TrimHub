@@ -13,5 +13,11 @@ router.put(
   upload.single("salon-image"),
   salonInfoController.updateSalonImage
 );
+router.put(
+  "/hairstyles/:salonId",
+  upload.single("hairstyle-image"),
+  salonInfoController.createHairstyle
+);
+router.get("/hairstyles", salonInfoController.getHairstyles);
 
 module.exports = router;
