@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { set } from "mongoose";
+import {
+  fetchSalonInfo,
+  fetchSalonImages,
+  changeSalonInfo,
+  changeSalonImages,
+  createHairstyle,
+  createNewPlan,
+  deletePlan,
+} from "./SalonApi";
 
 const SalonProfile = ({ user }) => {
   const [salonId, setSalonId] = useState("");
@@ -19,119 +27,52 @@ const SalonProfile = ({ user }) => {
   const [planPrice, setPlanPrice] = useState("");
   const [planDescription, setPlanDescription] = useState("");
 
-  // 1. Fetch salon information
-  const fetchSalonInfo = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info?username=${user.username}`
-      );
-      if (!response.ok) {
-        throw Error("Cannot fetch data.");
-      }
-      const data = await response.json();
-      console.log(data);
-      setSalonId(data._id);
-      setSalonName(data.salonname);
-      setAddress(data.address || "");
-      setPlans(data.plans || []);
-    } catch (err) {
-      console.error(err);
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/image?username=${user.username}`
-      );
-      if (!response.ok) {
-        throw Error("Cannot fetch data.");
-      }
-      console.log(response);
-      const data = await response.blob();
-      console.log(data);
-      setSalonImage(URL.createObjectURL(data)); // Convert blob to URL
-    } catch (err) {
-      console.error(err);
-    }
-
-    // Fetch hairstyles
-    try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/hairstyles?username=${user.username}`
-      );
-      if (!response.ok) {
-        throw Error("Cannot fetch data.");
-      }
-      // Problem: how to display the image?
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    fetchSalonInfo();
-  }, []);
+    const fetchSalonData = async () => {
+      const salonInfoData = await fetchSalonInfo(user.username);
+      setSalonId(salonInfoData._id);
+      setSalonName(salonInfoData.salonname);
+      setAddress(salonInfoData.address || "");
+      setPlans(salonInfoData.plans || []);
 
-  // 2. change salon information
-  const changeSalonInfo = async (e) => {
+      const salonImageData = await fetchSalonImages(user.username);
+      setSalonImage(salonImageData);
+
+      // const hairstylesData = await fetchHairstyles(user.username);
+      // setHairstyles(hairstylesData);
+    };
+    fetchSalonData();
+  }, [user.username]);
+
+  // 1. change salon information, including salon name and address
+  const changeSalonInformation = async (e) => {
     e.preventDefault();
-    // upload salon image first if there is a new image
-    if (newSalonImage) {
-      await uploadSalonImage();
+    if (!salonName) {
+      alert("Please enter a salon name.");
+      return;
+    }
+    if (!address) {
+      alert("Please enter an address.");
+      return;
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/${salonId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            salonname: salonName,
-            address: address,
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw Error("Cannot update data.");
-      }
+      await changeSalonInfo(salonId, salonName, address, newSalonImage);
       alert("Salon information updated successfully.");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // 3. Upload salon image
-  const uploadSalonImage = async () => {
-    const formData = new FormData();
-    formData.append("salon-image", newSalonImage);
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/image/${salonId}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
-      if (!response.ok) {
-        throw Error("Cannot update data.");
-      }
     } catch (error) {
       console.error(error);
     }
   };
 
-  // 4. create new hairstyle
-  const createHairstyle = async (e) => {
+  // 3. create new haircut
+  const createHaircut = async (e) => {
     e.preventDefault();
     if (!hairstyleImage) {
-      alert("Please upload an image.");
+      alert("Please upload a hairstyle image.");
       return;
     }
     if (!hairstyleDescription) {
-      alert("Please enter a description.");
+      alert("Please enter a hairstyle description.");
       return;
     }
 
@@ -140,35 +81,23 @@ const SalonProfile = ({ user }) => {
     formData.append("description", hairstyleDescription);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/hairstyles/${salonId}`,
+      await createHairstyle(salonId, formData);
+      setHairstyles([
+        ...hairstyles,
         {
-          method: "PUT",
-          body: formData,
-        }
-      );
-      if (!response.ok) {
-        throw Error("Cannot upload hairstyle image.");
-      }
+          image: URL.createObjectURL(hairstyleImage),
+          description: hairstyleDescription,
+        },
+      ]);
+      setHairstyleImage(null);
+      setHairstyleDescription("");
+      setShowUploadForm(false);
     } catch (error) {
       console.error(error);
     }
-
-    setShowUploadForm(false);
-
-    setHairstyles([
-      ...hairstyles,
-      {
-        image: URL.createObjectURL(hairstyleImage),
-        description: hairstyleDescription,
-      },
-    ]);
-
-    setHairstyleImage(null);
-    setHairstyleDescription("");
   };
 
-  // 5. create new plan
+  // 4. create new plan
   const createPlan = async (e) => {
     e.preventDefault();
     if (!planName) {
@@ -185,25 +114,11 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/plans/${salonId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: planName,
-            price: planPrice,
-            description: planDescription,
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw Error("Cannot create plan.");
-      }
-      setShowPlanForm(false);
-
+      await createNewPlan(salonId, {
+        name: planName,
+        price: planPrice,
+        description: planDescription,
+      });
       setPlans([
         ...plans,
         {
@@ -212,36 +127,22 @@ const SalonProfile = ({ user }) => {
           description: planDescription,
         },
       ]);
-
       setPlanName("");
       setPlanPrice("");
       setPlanDescription("");
+      setShowPlanForm(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // 6. delete plan
-  const deletePlan = async (index) => {
+  // 5. delete plan
+  const removePlan = async (index) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/salon-info/plans/${salonId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            index,
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw Error("Cannot delete plan.");
-      }
-      const newPlans = [...plans];
-      newPlans.splice(index, 1);
-      setPlans(newPlans);
+      await deletePlan(salonId, index);
+      const updatedPlans = [...plans];
+      updatedPlans.splice(index, 1);
+      setPlans(updatedPlans);
     } catch (error) {
       console.error(error);
     }
@@ -249,6 +150,7 @@ const SalonProfile = ({ user }) => {
 
   return (
     <div className="p-5 font-sans">
+      {/* Salon Profile */}
       <h1 className="text-3xl font-bold mb-5">Salon Profile</h1>
       <div className="flex flex-col mb-5">
         <div className="w-48 h-48 w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
@@ -279,7 +181,7 @@ const SalonProfile = ({ user }) => {
           />
         </div>
       </div>
-      <form onSubmit={changeSalonInfo}>
+      <form onSubmit={changeSalonInformation} className="mb-5">
         <div className="mb-5">
           <label className="text-lg mr-2">Salon Name:</label>
           <input
@@ -305,10 +207,11 @@ const SalonProfile = ({ user }) => {
           Change Salon Information
         </button>
       </form>
+      {/* hairstyle */}
       {showUploadForm && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <form
-            onSubmit={createHairstyle}
+            onSubmit={createHaircut}
             className="bg-white p-10 rounded-md shadow-lg "
           >
             <FontAwesomeIcon
@@ -356,7 +259,6 @@ const SalonProfile = ({ user }) => {
           </form>
         </div>
       )}
-
       <div className="mt-5">
         <h2 className="text-xl font-bold mb-3">Hairstyles</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -378,7 +280,7 @@ const SalonProfile = ({ user }) => {
           Upload new hairstyle
         </button>
       </div>
-      {/* plans */}
+      {/* Plans */}
       <div className="mt-5">
         <h2 className="text-xl font-bold mb-3">Plans</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -389,7 +291,7 @@ const SalonProfile = ({ user }) => {
               <p>Description{plan.description}</p>
               <p>index: {index}</p>
               <button
-                onClick={() => deletePlan(index)}
+                onClick={() => removePlan(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
               >
                 Delete Plan

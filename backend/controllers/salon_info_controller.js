@@ -58,6 +58,11 @@ const getSalonImage = async (req, res) => {
 
   try {
     const salonInfo = await SalonInfo.findOne({ username });
+    // If no image found, send a message
+    if (!salonInfo.imageFilename) {
+      console.log("No salon image found");
+      return res.status(404).json({ error: "No salon image found" });
+    }
     console.log("Going to send Salon Image:", salonInfo.imageFilename);
     res.status(200).sendFile(salonInfo.imagePath);
   } catch (error) {
