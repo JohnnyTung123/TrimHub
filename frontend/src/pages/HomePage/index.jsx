@@ -2,15 +2,15 @@ import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import "./HomePage.css";
 import NavigationBar from "../NavigationBar";
-const backgroundImageUrl = './img/background.png';
 
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const [user, setUser] = useState({});
+  const backgroundImageUrl = './img/background.png';
 
   // authenticate user
   useEffect(() => {
-    console.log("useEffect triggered");
+    console.log("Authenticate user");
     fetch("http://localhost:8080/auth/endpoint", {
       method: "GET",
       headers: {
@@ -27,11 +27,6 @@ const HomePage = () => {
         setUser(null);
       });
   }, [cookies]);
-
-  const handleLogout = () => {
-    cookies.remove("auth");
-    setUser(null);
-  };
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -69,7 +64,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavigationBar user={user} />
+      <NavigationBar />
 
       <div className="container">
         <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>

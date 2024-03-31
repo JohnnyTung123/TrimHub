@@ -10,11 +10,6 @@
   background: #fff;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
 .navigation a {
   margin: 0 10px;
   color: black;
@@ -63,4 +58,21 @@
 .dropdown:hover .dropdown-content,
 .dropdown .dropdown-content {
   display: block;
+}
+
+.user-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.user-info .avatar {
+  background-color: #ddd;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 10px;
+}
+
+.user-info .username {
+  font-weight: bold;
 }
