@@ -5,10 +5,10 @@ import {
   fetchSalonInfo,
   fetchSalonImages,
   changeSalonInfo,
-  changeSalonImages,
   createHairstyle,
   createNewPlan,
   deletePlan,
+  updatePlanInfo,
 } from "./SalonApi";
 
 const SalonProfile = ({ user }) => {
@@ -143,6 +143,22 @@ const SalonProfile = ({ user }) => {
       const updatedPlans = [...plans];
       updatedPlans.splice(index, 1);
       setPlans(updatedPlans);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 6. update plan
+  const updatePlan = async (index, plan) => {
+    try {
+      console.log("Updating plan:", index, plan);
+      await updatePlanInfo(salonId, {
+        index,
+        name: plan.name,
+        price: plan.price,
+        description: plan.description,
+      });
+      alert("Plan updated successfully.");
     } catch (error) {
       console.error(error);
     }
@@ -286,10 +302,42 @@ const SalonProfile = ({ user }) => {
         <div className="grid grid-cols-3 gap-4">
           {plans.map((plan, index) => (
             <div key={index} className="flex flex-col">
-              <p className="font-bold">Plan Name: {plan.name}</p>
-              <p>Price: {plan.price}</p>
-              <p>Description{plan.description}</p>
-              <p>index: {index}</p>
+              <input
+                type="text"
+                value={plan.name}
+                className="border rounded-md"
+                onChange={(e) => {
+                  const updatedPlans = [...plans];
+                  updatedPlans[index].name = e.target.value;
+                  setPlans(updatedPlans);
+                }}
+              />
+              <input
+                type="number"
+                value={plan.price}
+                className="border rounded-md"
+                onChange={(e) => {
+                  const updatedPlans = [...plans];
+                  updatedPlans[index].price = e.target.value;
+                  setPlans(updatedPlans);
+                }}
+              />
+              <textarea
+                value={plan.description}
+                className="border rounded-md"
+                onChange={(e) => {
+                  const updatedPlans = [...plans];
+                  updatedPlans[index].description = e.target.value;
+                  setPlans(updatedPlans);
+                }}
+              />
+              <p className="mt-2">{index}</p>
+              <button
+                onClick={() => updatePlan(index, plan)}
+                className="px-3 py-1 bg-blue-500 text-white rounded-md mt-2"
+              >
+                confirm changes
+              </button>
               <button
                 onClick={() => removePlan(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"

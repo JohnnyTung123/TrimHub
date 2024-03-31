@@ -177,6 +177,35 @@ const deletePlan = async (req, res) => {
   }
 };
 
+const updatePlan = async (req, res) => {
+  const { salonId } = req.params;
+  const { index, name, price, description } = req.body;
+
+  try {
+    const updatedSalonInfo = await SalonInfo.findByIdAndUpdate(
+      salonId,
+      {
+        $set: {
+          [`plans.${index}.name`]: name,
+          [`plans.${index}.price`]: price,
+          [`plans.${index}.description`]: description,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedSalonInfo) {
+      return res.status(404).json({ error: "Salon not found" });
+    }
+
+    console.log("Updated Salon Info:", updatedSalonInfo);
+    res.status(200).json({ success: "Plan updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
@@ -187,4 +216,5 @@ module.exports = {
   getHairstyles,
   createPlan,
   deletePlan,
+  updatePlan,
 };

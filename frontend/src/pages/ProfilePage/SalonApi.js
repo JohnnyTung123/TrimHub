@@ -100,7 +100,7 @@ export const createHairstyle = async (salonId, data) => {
 
 export const createNewPlan = async (salonId, data) => {
   try {
-    const response = await fetch(`${API_URL}/salon/${salonId}/plans`, {
+    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,11 +117,29 @@ export const createNewPlan = async (salonId, data) => {
 
 export const deletePlan = async (salonId) => {
   try {
-    const response = await fetch(`${API_URL}/salon/${salonId}/plans`, {
+    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
       method: "DELETE",
     });
     if (!response.ok) {
       throw new Error("Error deleting plan");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updatePlanInfo = async (salonId, data) => {
+  console.log("Updating plan info:", data);
+  try {
+    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error("Error updating plan");
     }
   } catch (error) {
     console.error(error);
