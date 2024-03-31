@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import './SavedSalonPage.css'; // Make sure to import the CSS file you are going to create
+import NavigationBar from "../NavigationBar";
 
 const SavedSalonPage = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const username = 'username';
-
   const salons = [
     {
       name: "ABC Salons",
@@ -25,32 +22,8 @@ const SavedSalonPage = () => {
 
   return (
     <div className="savedsalon-page">
-      <header className="savedsalon-header">
-        <h1>Trim Hub</h1>
-        <nav className="navigation">
-          <a href="/men">Men</a>
-          <a href="/women">Woman</a>
-          <div className="dropdown">
-            <button className="dropbtn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <span className="username">{username}</span>
-              <span className="icons"> ▽</span>
-            </button>
-            {dropdownOpen && (
-              <div className="dropdown-content">
-                <div className="user-info">
-                  <div className="avatar">{/* User Avatar Image */}</div>
-                  <div className="username">{username}</div>
-                </div>
-                <a href="/profile">User information</a>
-                <a href="/bookings">Bookings</a>
-                <a href="/messages">Messages</a>
-                <a href="/savedsalon">Saved salons</a>
-                <a href="/savedhaircut">Saved haircut</a>
-              </div>
-            )}
-          </div>
-        </nav>
-      </header>
+      <NavigationBar />
+
       <main className="savedsalon-main">
         <div className="salon-list">
           {salons.map((salon, index) => (

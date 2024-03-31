@@ -1,16 +1,39 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import './NavigationBar.css';
 
-const NavigationBar = ({ user }) => {
+const NavigationBar = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
+  const [user, setUser] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // authenticate user
+  useEffect(() => {
+    console.log("Authenticate user");
+    fetch("http://localhost:8080/auth/endpoint", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${cookies.get("auth")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUser(data.user);
+      })
+      .catch((err) => {
+        console.error(err)
+        setUser(null);
+      });
+  }, [cookies]);
 
   const handleLogout = () => {
     cookies.remove("auth");
-    // setUser(null);
+    setUser(null);
+    navigate("/");
+    navigate(0);
   };
 
   return (
