@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import "./HomePage.css";
-import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar";
 const backgroundImageUrl = './img/background.png';
 
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
-  const navigate = useNavigate();
   const [user, setUser] = useState({});
 
   // authenticate user
@@ -24,7 +22,10 @@ const HomePage = () => {
         console.log(data);
         setUser(data.user);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err)
+        setUser(null);
+      });
   }, [cookies]);
 
   const handleLogout = () => {
@@ -68,7 +69,8 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavigationBar/>
+      <NavigationBar user={user} />
+
       <div className="container">
         <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
           <div className="content">
