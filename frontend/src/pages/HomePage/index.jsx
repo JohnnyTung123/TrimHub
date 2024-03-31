@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
-import "./Homepage.css";
+import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar";
 const backgroundImageUrl = './img/background.png';
@@ -70,49 +70,45 @@ const HomePage = () => {
     <div>
       <NavigationBar/>
       <div className="container">
-      <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
-        <div className="content">
-          <h1 className="text">Open a new character of your life </h1>
-          <div className="search-bar">
-            <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
-            <button onClick={handleSearch}>Search</button>
+        <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
+          <div className="content">
+            <h1 className="text">Open a new character of your life </h1>
+            <div className="search-bar">
+              <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
+              <button onClick={handleSearch}>Search</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div className="main-container">
-      <div className="content-container">
-        <div className="content-section">
-          <h2>Hot</h2>
-          <div className="photo-group">
-            {firstPartPhotos.map((photo) => (
-              <div key={photo.id} className="photo">
-                <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
-                <p>{photo.description}</p>
-                <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-              </div>
-            ))}
+      <div className="main-container">
+        <div className="content-container">
+          <div className="content-section">
+            <h2>Hot</h2>
+            <div className="photo-group">
+              {firstPartPhotos.map((photo) => (
+                <div key={photo.id} className="photo">
+                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                  <p>{photo.description}</p>
+                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="content-section">
-          <h2>New Arrival</h2>
-          <div className="photo-group">
-            {secondPartPhotos.map((photo) => (
-              <div key={photo.id} className="photo">
-                <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
-                <p>{photo.description}</p>
-                <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-              </div>
-            ))}
+          <div className="content-section">
+            <h2>New Arrival</h2>
+            <div className="photo-group">
+              {secondPartPhotos.map((photo) => (
+                <div key={photo.id} className="photo">
+                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                  <p>{photo.description}</p>
+                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-
-
-
     </div>
   );
 };

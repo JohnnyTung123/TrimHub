@@ -14,6 +14,19 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
+  const createSalonInfo = async () => {
+    const response = await fetch("http://localhost:8080/salon-info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, salonname: username }),
+    }).then((res) => res.json());
+
+    if (!response.success) {
+      setError(response.error);
+      return;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate input
@@ -60,6 +73,9 @@ const SignUpPage = () => {
     if (!signupResponse.success) {
       setError(signupResponse.error);
       return;
+    }
+    if (usertype === "salon") {
+      createSalonInfo();
     }
     alert("Sign up successful");
     navigate("/login");
@@ -126,11 +142,11 @@ const SignUpPage = () => {
                 onChange={(e) => setUsertype(e.target.value)}
               >
                 <option value="customer">Customer</option>
-                <option value="doctor">Doctor</option>
+                <option value="salon">Salon</option>
               </select>
             </div>
             <button type="submit">Sign Up</button>
-            <button onClick={() => navigate("/")} type="button">
+            <button type="button" onClick={() => navigate("/")}>
               Back
             </button>
           </form>
@@ -139,7 +155,9 @@ const SignUpPage = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
         <p>Already have an account?</p>
-        <button onClick={() => navigate("/login")}>Login</button>
+        <button type="button" onClick={() => navigate("/login")}>
+          Login
+        </button>
       </div>
     </div>
   );
