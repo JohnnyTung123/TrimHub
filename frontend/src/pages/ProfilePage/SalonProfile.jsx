@@ -4,8 +4,10 @@ import { faImage, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchSalonInfo,
   fetchSalonImages,
+  fetchHairstyles,
   changeSalonInfo,
   createHairstyle,
+  deleteHairstyle,
   createNewPlan,
   deletePlan,
   updatePlanInfo,
@@ -38,8 +40,9 @@ const SalonProfile = ({ user }) => {
       const salonImageData = await fetchSalonImages(user.username);
       setSalonImage(salonImageData);
 
-      // const hairstylesData = await fetchHairstyles(user.username);
-      // setHairstyles(hairstylesData);
+      const hairstylesData = await fetchHairstyles(user.username);
+      console.log("Hairstyles:", hairstylesData);
+      setHairstyles(hairstylesData);
     };
     fetchSalonData();
   }, [user.username]);
@@ -97,7 +100,19 @@ const SalonProfile = ({ user }) => {
     }
   };
 
-  // 4. create new plan
+  // 4. delete haircut
+  const removeHairstyle = async (index) => {
+    try {
+      await deleteHairstyle(salonId, index);
+      const updatedHairstyles = [...hairstyles];
+      updatedHairstyles.splice(index, 1);
+      setHairstyles(updatedHairstyles);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 5. create new plan
   const createPlan = async (e) => {
     e.preventDefault();
     if (!planName) {
@@ -136,7 +151,7 @@ const SalonProfile = ({ user }) => {
     }
   };
 
-  // 5. delete plan
+  // 6. delete plan
   const removePlan = async (index) => {
     try {
       await deletePlan(salonId, index);
@@ -148,7 +163,7 @@ const SalonProfile = ({ user }) => {
     }
   };
 
-  // 6. update plan
+  // 7. update plan
   const updatePlan = async (index, plan) => {
     try {
       console.log("Updating plan:", index, plan);
@@ -280,12 +295,20 @@ const SalonProfile = ({ user }) => {
         <div className="grid grid-cols-3 gap-4">
           {hairstyles.map((hairstyle, index) => (
             <div key={index} className="flex flex-col">
+              <p>{hairstyle.imagePath}</p>
               <img
-                src={hairstyle.image}
+                src={hairstyle.imagePath}
                 alt={`Hairstyle ${index}`}
                 className="w-full h-48 object-cover rounded-md"
               />
               <p className="mt-2">{hairstyle.description}</p>
+              {/* delete hairstyle */}
+              <button
+                onClick={() => removeHairstyle(index)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
+              >
+                Delete Hairstyle
+              </button>
             </div>
           ))}
         </div>
