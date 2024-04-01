@@ -31,4 +31,7 @@ router.post("/plans/:salonId", salonInfoController.createPlan);
 router.delete("/plans/:salonId", salonInfoController.deletePlan);
 router.put("/plans/:salonId", salonInfoController.updatePlan);
 
+// Get all salons
+router.get("/all", salonInfoController.getAllSalons);
+
 module.exports = router;

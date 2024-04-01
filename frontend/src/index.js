@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import NoPage from "./pages/NoPage";
 import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
+import SearchSalonPage from "./pages/SearchSalonPage/SearchSalonPage";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/savedsalon" element={<SavedSalonPage />} />
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
+        <Route path="/searchsalon" element={<SearchSalonPage />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

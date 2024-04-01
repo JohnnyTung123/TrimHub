@@ -222,6 +222,18 @@ const updatePlan = async (req, res) => {
   }
 };
 
+// get all salons
+const getAllSalons = async (req, res) => {
+  try {
+    const salons = await SalonInfo.find();
+    console.log("Got all salons:", salons);
+    res.status(200).json(salons);
+  } catch (error) {
+    console.error("Error getting all salons:", error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
@@ -234,4 +246,5 @@ module.exports = {
   createPlan,
   deletePlan,
   updatePlan,
+  getAllSalons,
 };
