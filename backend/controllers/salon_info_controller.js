@@ -20,15 +20,28 @@ const createSalonInfo = async (req, res) => {
 };
 
 const getSalonInfo = async (req, res) => {
-  const { username } = req.query;
+  const { username, salonId } = req.query;
 
-  try {
-    const salonInfo = await SalonInfo.findOne({ username });
-    console.log("Got Salon Info:", salonInfo);
-    res.status(200).json(salonInfo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
+  if (salonId) {
+    try {
+      const salonInfo = await SalonInfo.findById(salonId);
+      console.log("Got Salon Info:", salonInfo);
+      res.status(200).json(salonInfo);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: `Server side error: ${error.message}` });
+    }
+    return;
+  } else if (username) {
+    try {
+      const salonInfo = await SalonInfo.findOne({ username });
+      console.log("Got Salon Info:", salonInfo);
+      res.status(200).json(salonInfo);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: `Server side error: ${error.message}` });
+    }
+    return;
   }
 };
 
@@ -54,20 +67,37 @@ const updateSalonInfo = async (req, res) => {
 };
 
 const getSalonImage = async (req, res) => {
-  const { username } = req.query;
+  const { username, salonId } = req.query;
 
-  try {
-    const salonInfo = await SalonInfo.findOne({ username });
-    // If no image found, send a message
-    if (!salonInfo.imageFilename) {
-      console.log("No salon image found");
-      return res.status(404).json({ error: "No salon image found" });
+  if (salonId) {
+    try {
+      const salonInfo = await SalonInfo.findById(salonId);
+      // If no image found, send a message
+      if (!salonInfo.imageFilename) {
+        console.log("No salon image found");
+        return res.status(404).json({ error: "No salon image found" });
+      }
+      console.log("Going to send Salon Image:", salonInfo.imageFilename);
+      res.status(200).sendFile(salonInfo.imagePath);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    console.log("Going to send Salon Image:", salonInfo.imageFilename);
-    res.status(200).sendFile(salonInfo.imagePath);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
+    return;
+  } else if (username) {
+    try {
+      const salonInfo = await SalonInfo.findOne({ username });
+      // If no image found, send a message
+      if (!salonInfo.imageFilename) {
+        console.log("No salon image found");
+        return res.status(404).json({ error: "No salon image found" });
+      }
+      console.log("Going to send Salon Image:", salonInfo.imageFilename);
+      res.status(200).sendFile(salonInfo.imagePath);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: `Server side error: ${error.message}` });
+    }
   }
 };
 
