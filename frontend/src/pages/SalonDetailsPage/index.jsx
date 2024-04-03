@@ -18,6 +18,8 @@ export default function SalonDetailsPage() {
           throw new Error("Error fetching salon info");
         }
         const salon = await response.json();
+        console.log("Got Salon Info:", salon);
+        console.log("salonId", salonId);
         setSalon(salon);
       } catch (error) {
         console.error(error);
@@ -34,9 +36,9 @@ export default function SalonDetailsPage() {
   return (
     <div className="container mx-auto px-4 py-8 text-center">
       {/* if no images */}
-      {salon.images ? (
+      {salon.imagePath ? (
         <img
-          src={`${API_URL}/salon-info/image?salonId=${salonId}`}
+          src={`${API_URL}/salon-info/image?salonId=${salon._id}`}
           alt="Salon"
           className="w-1/2 h-auto mx-auto mb-4"
         />
