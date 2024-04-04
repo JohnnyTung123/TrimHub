@@ -28,8 +28,8 @@ const ProfilePage = () => {
       })
       .catch((err) => {
         console.error(err)
-        setUser(null);
-        setUsertype(null);
+        setUser("");
+        setUsertype("salon");
       });
   }, [cookies]);
 
