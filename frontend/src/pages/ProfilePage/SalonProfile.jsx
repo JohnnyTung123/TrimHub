@@ -5,30 +5,36 @@ import {
   fetchSalonInfo,
   fetchSalonImages,
   fetchHairstyles,
-  changeSalonInfo,
-  createHairstyle,
-  deleteHairstyle,
-  createNewPlan,
-  deletePlan,
-  updatePlanInfo,
+  changeSalonInfoAPI,
+  createHairstyleAPI,
+  deleteHairstyleAPI,
+  createPlanAPI,
+  deletePlanAPI,
+  updatePlanAPI,
 } from "./SalonApi";
 
 const SalonProfile = ({ user }) => {
+  // salon information
   const [salonId, setSalonId] = useState("");
   const [salonName, setSalonName] = useState("");
   const [address, setAddress] = useState("");
   const [salonImage, setSalonImage] = useState(null);
   const [newSalonImage, setNewSalonImage] = useState(null);
+
+  // hairstyle image
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [hairstyles, setHairstyles] = useState([]);
   const [hairstyleImage, setHairstyleImage] = useState(null);
   const [hairstyleDescription, setHairstyleDescription] = useState("");
-  const [hairstyles, setHairstyles] = useState([]);
+
+  // salon plan
   const [showPlanForm, setShowPlanForm] = useState(false);
   const [plans, setPlans] = useState([]);
   const [planName, setPlanName] = useState("");
   const [planPrice, setPlanPrice] = useState("");
   const [planDescription, setPlanDescription] = useState("");
 
+  // 1. fetch information from backend
   useEffect(() => {
     const fetchSalonData = async () => {
       const salonInfoData = await fetchSalonInfo(user.username);
@@ -41,14 +47,13 @@ const SalonProfile = ({ user }) => {
       setSalonImage(salonImageData);
 
       const hairstylesData = await fetchHairstyles(user.username);
-      console.log("Hairstyles:", hairstylesData);
       setHairstyles(hairstylesData);
     };
     fetchSalonData();
   }, [user.username]);
 
-  // 1. change salon information, including salon name and address
-  const changeSalonInformation = async (e) => {
+  // 2. change salon information, including salon name and address
+  const changeSalonInfo = async (e) => {
     e.preventDefault();
     if (!salonName) {
       alert("Please enter a salon name.");
@@ -60,7 +65,7 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await changeSalonInfo(salonId, salonName, address, newSalonImage);
+      await changeSalonInfoAPI(salonId, salonName, address, newSalonImage);
       alert("Salon information updated successfully.");
     } catch (error) {
       console.error(error);
@@ -68,7 +73,7 @@ const SalonProfile = ({ user }) => {
   };
 
   // 3. create new haircut
-  const createHaircut = async (e) => {
+  const createHairstyle = async (e) => {
     e.preventDefault();
     if (!hairstyleImage) {
       alert("Please upload a hairstyle image.");
@@ -84,7 +89,7 @@ const SalonProfile = ({ user }) => {
     formData.append("description", hairstyleDescription);
 
     try {
-      await createHairstyle(salonId, formData);
+      await createHairstyleAPI(salonId, formData);
       setHairstyles([
         ...hairstyles,
         {
@@ -101,9 +106,9 @@ const SalonProfile = ({ user }) => {
   };
 
   // 4. delete haircut
-  const removeHairstyle = async (index) => {
+  const deleteHairstyle = async (index) => {
     try {
-      await deleteHairstyle(salonId, index);
+      await deleteHairstyleAPI(salonId, index);
       const updatedHairstyles = [...hairstyles];
       updatedHairstyles.splice(index, 1);
       setHairstyles(updatedHairstyles);
@@ -129,7 +134,7 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await createNewPlan(salonId, {
+      await createPlanAPI(salonId, {
         name: planName,
         price: planPrice,
         description: planDescription,
@@ -152,9 +157,9 @@ const SalonProfile = ({ user }) => {
   };
 
   // 6. delete plan
-  const removePlan = async (index) => {
+  const deletePlan = async (index) => {
     try {
-      await deletePlan(salonId, index);
+      await deletePlanAPI(salonId, index);
       const updatedPlans = [...plans];
       updatedPlans.splice(index, 1);
       setPlans(updatedPlans);
@@ -167,7 +172,7 @@ const SalonProfile = ({ user }) => {
   const updatePlan = async (index, plan) => {
     try {
       console.log("Updating plan:", index, plan);
-      await updatePlanInfo(salonId, {
+      await updatePlanAPI(salonId, {
         index,
         name: plan.name,
         price: plan.price,
@@ -193,7 +198,7 @@ const SalonProfile = ({ user }) => {
             />
           ) : salonImage ? (
             <img
-              src={salonImage}
+              src={URL.createObjectURL(salonImage)}
               className="w-48 h-48 mr-5 object-cover border rounded-md"
               alt="Salon"
             />
@@ -205,14 +210,12 @@ const SalonProfile = ({ user }) => {
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              setNewSalonImage(e.target.files[0]);
-            }}
+            onChange={(e) => setNewSalonImage(e.target.files[0])}
             className="mb-3"
           />
         </div>
       </div>
-      <form onSubmit={changeSalonInformation} className="mb-5">
+      <form onSubmit={changeSalonInfo} className="mb-5">
         <div className="mb-5">
           <label className="text-lg mr-2">Salon Name:</label>
           <input
@@ -238,11 +241,12 @@ const SalonProfile = ({ user }) => {
           Change Salon Information
         </button>
       </form>
+
       {/* hairstyle */}
       {showUploadForm && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <form
-            onSubmit={createHaircut}
+            onSubmit={createHairstyle}
             className="bg-white p-10 rounded-md shadow-lg "
           >
             <FontAwesomeIcon
@@ -267,9 +271,7 @@ const SalonProfile = ({ user }) => {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                setHairstyleImage(e.target.files[0]);
-              }}
+              onChange={(e) => setHairstyleImage(e.target.files[0])}
               className="w-full"
             />
             <div className="mb-4">
@@ -304,7 +306,7 @@ const SalonProfile = ({ user }) => {
               <p className="mt-2">{hairstyle.description}</p>
               {/* delete hairstyle */}
               <button
-                onClick={() => removeHairstyle(index)}
+                onClick={() => deleteHairstyle(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
               >
                 Delete Hairstyle
@@ -319,7 +321,52 @@ const SalonProfile = ({ user }) => {
           Upload new hairstyle
         </button>
       </div>
+
       {/* Plans */}
+      {showPlanForm && (
+        <form
+          onSubmit={createPlan}
+          className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+        >
+          <FontAwesomeIcon
+            icon={faTimes}
+            onClick={() => setShowPlanForm(false)}
+            className="text-2xl absolute top-3 right-3 cursor-pointer"
+          />
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Plan Name"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="number"
+              placeholder="Plan Price"
+              value={planPrice}
+              onChange={(e) => setPlanPrice(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            />
+          </div>
+          <div className="mb-3">
+            <textarea
+              placeholder="Plan Description"
+              value={planDescription}
+              onChange={(e) => setPlanDescription(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
+          >
+            confirm
+          </button>
+        </form>
+      )}
       <div className="mt-5">
         <h2 className="text-xl font-bold mb-3">Plans</h2>
         <div className="grid grid-cols-3 gap-4">
@@ -359,10 +406,10 @@ const SalonProfile = ({ user }) => {
                 onClick={() => updatePlan(index, plan)}
                 className="px-3 py-1 bg-blue-500 text-white rounded-md mt-2"
               >
-                confirm changes
+                Confirm Changes
               </button>
               <button
-                onClick={() => removePlan(index)}
+                onClick={() => deletePlan(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
               >
                 Delete Plan
@@ -370,50 +417,6 @@ const SalonProfile = ({ user }) => {
             </div>
           ))}
         </div>
-        {showPlanForm && (
-          <form
-            onSubmit={createPlan}
-            className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-          >
-            <FontAwesomeIcon
-              icon={faTimes}
-              onClick={() => setShowPlanForm(false)}
-              className="text-2xl absolute top-3 right-3 cursor-pointer"
-            />
-            <div className="mb-3">
-              <input
-                type="text"
-                placeholder="Plan Name"
-                value={planName}
-                onChange={(e) => setPlanName(e.target.value)}
-                className="px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-3">
-              <input
-                type="number"
-                placeholder="Plan Price"
-                value={planPrice}
-                onChange={(e) => setPlanPrice(e.target.value)}
-                className="px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="mb-3">
-              <textarea
-                placeholder="Plan Description"
-                value={planDescription}
-                onChange={(e) => setPlanDescription(e.target.value)}
-                className="px-3 py-2 border rounded-md"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
-            >
-              confirm
-            </button>
-          </form>
-        )}
         <button
           onClick={() => setShowPlanForm(true)}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"

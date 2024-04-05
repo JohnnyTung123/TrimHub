@@ -14,14 +14,14 @@ router.get("/image", salonInfoController.getSalonImage);
 router.put(
   "/image/:salonId",
   upload.single("salon-image"),
-  salonInfoController.updateSalonImage
+  salonInfoController.updateSalonImage,
 );
 
 // Salon Hairstyles
-router.put(
+router.post(
   "/hairstyles/:salonId",
   upload.single("hairstyle-image"),
-  salonInfoController.createHairstyle
+  salonInfoController.createHairstyle,
 );
 router.get("/hairstyles", salonInfoController.getHairstyles);
 router.delete("/hairstyles/:salonId", salonInfoController.deleteHairstyle);

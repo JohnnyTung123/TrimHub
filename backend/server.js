@@ -15,11 +15,12 @@ app.use(
     origin: ["http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 // Custom routes
 app.use("/auth", require("./routes/auth_route"));
+app.use("/user", require("./routes/user_route"));
 app.use("/salon-info", require("./routes/salon_info_route"));
 
 // Connect to MongoDB

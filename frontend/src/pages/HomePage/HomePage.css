@@ -1,21 +1,3 @@
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.background {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .content {
   text-align: center;
   size-adjust: 0.8rem;
@@ -40,7 +22,7 @@
   padding: 0.5rem;
   font-size: 1.5rem;
 }::placeholder {
-  font-size: 0.7rem; /* Adjust the size of the placeholder text */
+  font-size: 0.9rem; /* Adjust the size of the placeholder text */
 }
 
 .search-bar button {

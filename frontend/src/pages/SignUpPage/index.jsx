@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./SignUpPage.css";
 import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
@@ -143,6 +142,7 @@ const SignUpPage = () => {
               >
                 <option value="customer">Customer</option>
                 <option value="salon">Salon</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <button type="submit">Sign Up</button>

@@ -6,7 +6,7 @@ import NavigationBar from "../NavigationBar";
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const [user, setUser] = useState({});
-  const backgroundImageUrl = './img/background.png';
+  const backgroundImage = './img/background.png';
 
   // authenticate user
   useEffect(() => {
@@ -66,14 +66,12 @@ const HomePage = () => {
     <div>
       <NavigationBar />
 
-      <div className="container">
-        <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
-          <div className="content">
-            <h1 className="text">Open a new character of your life </h1>
-            <div className="search-bar">
-              <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
-              <button onClick={handleSearch}>Search</button>
-            </div>
+      <div className="flex items-center justify-center w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div className="content">
+          <h1 className="text">Open a new character of your life</h1>
+          <div className="search-bar">
+            <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
+            <button onClick={handleSearch}>Search</button>
           </div>
         </div>
       </div>
