@@ -31,7 +31,6 @@ const getSalonInfo = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    return;
   } else if (username) {
     try {
       const salonInfo = await SalonInfo.findOne({ username });
@@ -83,7 +82,6 @@ const getSalonImage = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    return;
   } else if (username) {
     try {
       const salonInfo = await SalonInfo.findOne({ username });

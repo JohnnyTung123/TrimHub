@@ -47,7 +47,7 @@ const BookingPage = () => {
 
       <main className="bg-gray-200 p-5 min-h-screen">
         <h2 className="text-2xl font-bold mb-4 flex items-center">
-          <span className="w-2 h-6 bg-green-700 mr-2"></span>
+          <span className="w-2 h-6 bg-green-700 mr-2" />
           Bookings
         </h2>
         <div>
