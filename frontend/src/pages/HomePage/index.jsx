@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
-import "./Homepage.css";
-import { useNavigate } from "react-router-dom";
+import "./HomePage.css";
 import NavigationBar from "../NavigationBar";
-const backgroundImageUrl = './img/background.png';
 
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
-  const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const backgroundImage = './img/background.png';
 
   // authenticate user
   useEffect(() => {
-    console.log("useEffect triggered");
+    console.log("Authenticate user");
     fetch("http://localhost:8080/auth/endpoint", {
       method: "GET",
       headers: {
@@ -24,13 +22,11 @@ const HomePage = () => {
         console.log(data);
         setUser(data.user);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err)
+        setUser(null);
+      });
   }, [cookies]);
-
-  const handleLogout = () => {
-    cookies.remove("auth");
-    setUser(null);
-  };
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -68,51 +64,46 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavigationBar/>
-      <div className="container">
-      <div className="background" style={{ backgroundImage: `url(${backgroundImageUrl})` }}>
+      <NavigationBar />
+
+      <div className="flex items-center justify-center w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className="content">
-          <h1 className="text">Open a new character of your life </h1>
+          <h1 className="text">Open a new character of your life</h1>
           <div className="search-bar">
             <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
             <button onClick={handleSearch}>Search</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <div className="main-container">
-      <div className="content-container">
-        <div className="content-section">
-          <h2>Hot</h2>
-          <div className="photo-group">
-            {firstPartPhotos.map((photo) => (
-              <div key={photo.id} className="photo">
-                <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
-                <p>{photo.description}</p>
-                <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-              </div>
-            ))}
+      <div className="main-container">
+        <div className="content-container">
+          <div className="content-section">
+            <h2>Hot</h2>
+            <div className="photo-group">
+              {firstPartPhotos.map((photo) => (
+                <div key={photo.id} className="photo">
+                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                  <p>{photo.description}</p>
+                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="content-section">
-          <h2>New Arrival</h2>
-          <div className="photo-group">
-            {secondPartPhotos.map((photo) => (
-              <div key={photo.id} className="photo">
-                <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
-                <p>{photo.description}</p>
-                <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-              </div>
-            ))}
+          <div className="content-section">
+            <h2>New Arrival</h2>
+            <div className="photo-group">
+              {secondPartPhotos.map((photo) => (
+                <div key={photo.id} className="photo">
+                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                  <p>{photo.description}</p>
+                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-
-
-
     </div>
   );
 };

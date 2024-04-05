@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./LoginPage.css";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -67,17 +66,17 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="on"
           />
-          <button onClick={() => navigate("/forgot-password")}>
+          <button type="button" onClick={() => navigate("/forgot-password")}>
             Forgot Password?
           </button>
         </div>
         <button type="submit">Login</button>
-        <button onClick={() => navigate("/")}>Back</button>
+        <button type="button" onClick={() => navigate("/")}>Back</button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div>
         <p>Don't have an account?</p>
-        <button onClick={() => navigate("/signup")}>Sign Up</button>
+        <button type="button" onClick={() => navigate("/signup")}>Sign Up</button>
       </div>
     </div>
   );

@@ -7,27 +7,29 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import SalonPage from "./pages/SalonPage";
 import ProfilePage from "./pages/ProfilePage";
-import NoPage from "./pages/NoPage";
 import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
+import SearchSalonPage from "./pages/SearchSalonPage/SearchSalonPage";
+import SalonDetailsPage from "./pages/SalonDetailsPage";
 import BookingPage from "./pages/BookingPage";
+import AdminPage from "./pages/AdminPage";
+import NoPage from "./pages/NoPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="signup" element={<SignUpPage />} />
+        <Route index element={<HomePage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/salon" element={<SalonPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/savedsalon" element={<SavedSalonPage />} />
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
-        <Route path="/booking" element={<BookingPage />} />
-        {/* <Route element={<ProtectedRoutes />}>
-          <Route path="patient" element={<PatientPage />} />
-          <Route path="doctor" element={<DoctorPage />} />
-        </Route> */}
+        <Route path="/search" element={<SearchSalonPage />} />
+        <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+        <Route path="/bookings" element={<BookingPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

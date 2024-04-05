@@ -1,4 +1,8 @@
 /* global style */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "GT Walsheim";
   src: url("./assets/fonts/GT-Walsheim-Regular.ttf") format("truetype");

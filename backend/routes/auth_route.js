@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/otp", authController.otp);
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);
+router.post("/forget", authController.forget);
 router.get("/endpoint", authenticateToken, (req, res) => {
   res.json({ user: req.user });
 });
