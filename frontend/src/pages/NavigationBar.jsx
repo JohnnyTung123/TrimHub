@@ -7,6 +7,7 @@ const NavigationBar = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [usertype, setUsertype] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // authenticate user
@@ -22,10 +23,12 @@ const NavigationBar = () => {
       .then((data) => {
         console.log(data);
         setUser(data.user);
+        setUsertype(data.user.usertype);
       })
       .catch((err) => {
         console.error(err)
         setUser(null);
+        setUsertype(null);
       });
   }, [cookies]);
 
@@ -55,11 +58,20 @@ const NavigationBar = () => {
                   <div className="avatar">{/* User Avatar Image */}</div>
                   <div className="username">{user.username}</div>
                 </div>
-                <a href="/profile">User information</a>
-                <a href="/bookings">Bookings</a>
-                <a href="/messages">Messages</a>
-                <a href="/savedsalon">Saved salons</a>
-                <a href="/savedhaircut">Saved haircut</a>
+                {usertype === "admin" ? (
+                  <div>
+                    <a href="/profile">User information</a>
+                    <a href="/admin">User management</a>
+                  </div>
+                ) : (
+                  <div>
+                    <a href="/profile">User information</a>
+                    <a href="/bookings">Bookings</a>
+                    <a href="/messages">Messages</a>
+                    <a href="/savedsalon">Saved salons</a>
+                    <a href="/savedhaircut">Saved haircut</a>
+                  </div>
+                )}
                 <a onClick={handleLogout}>Logout</a>
               </div>
             )}

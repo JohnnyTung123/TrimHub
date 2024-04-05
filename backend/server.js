@@ -20,6 +20,7 @@ app.use(
 
 // Custom routes
 app.use("/auth", require("./routes/auth_route"));
+app.use("/user", require("./routes/user_route"));
 app.use("/salon-info", require("./routes/salon_info_route"));
 
 // Connect to MongoDB

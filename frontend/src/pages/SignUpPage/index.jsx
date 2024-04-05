@@ -142,6 +142,7 @@ const SignUpPage = () => {
               >
                 <option value="customer">Customer</option>
                 <option value="salon">Salon</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <button type="submit">Sign Up</button>
