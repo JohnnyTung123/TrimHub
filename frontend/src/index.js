@@ -27,7 +27,7 @@ export default function App() {
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
         <Route path="/search" element={<SearchSalonPage />} />
         <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
-        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/bookings" element={<BookingPage />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
