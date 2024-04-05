@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import NoPage from "./pages/NoPage";
 import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
+import BookingPage from "./pages/BookingPage";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/savedsalon" element={<SavedSalonPage />} />
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
+        <Route path="/booking" element={<BookingPage />} />
         {/* <Route element={<ProtectedRoutes />}>
           <Route path="patient" element={<PatientPage />} />
           <Route path="doctor" element={<DoctorPage />} />
