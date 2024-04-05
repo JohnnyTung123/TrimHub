@@ -45,9 +45,6 @@ const UserProfile = ({ user }) => {
         </div>
       </div>
       <div className="flex">
-        <button className="px-4 py-2 bg-gray-100 text-black rounded hover:opacity-80 cursor-pointer">
-          Log out
-        </button>
         <button
           className="px-4 py-2 mr-4 bg-green-700 text-white rounded hover:opacity-80 cursor-pointer"
           onClick={handleChangeInfoClick}

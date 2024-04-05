@@ -34,7 +34,7 @@ const ProfilePage = () => {
   }, [cookies]);
 
   return (
-    <div className="profile-page">
+    <div>
       <NavigationBar />
 
       {usertype === "customer" ? (
