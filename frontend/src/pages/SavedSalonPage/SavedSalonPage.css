@@ -1,4 +1,4 @@
-.savedsalon-main {
+/* .savedsalon-main {
   padding: 20px;
   height: 100vh;
   background-color: #E8E8E8;
@@ -17,10 +17,10 @@
 }
 
 .salon-image {
-  width: 100px; /* Set the image size as required */
-  height: 100px; /* Set the image size as required */
+  width: 100px;
+  height: 100px;
   margin-right: 20px;
-  object-fit: cover; /* Adjust if necessary to fit your images */
+  object-fit: cover;
 }
 
 .salon-info {
@@ -49,8 +49,8 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
+} */
 
-.book-button:hover {
+/* .book-button:hover {
   background-color: #45a049;
-}
+} */

@@ -7,11 +7,12 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import SalonPage from "./pages/SalonPage";
 import ProfilePage from "./pages/ProfilePage";
-import NoPage from "./pages/NoPage";
 import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
 import SearchSalonPage from "./pages/SearchSalonPage/SearchSalonPage";
 import SalonDetailsPage from "./pages/SalonDetailsPage";
+import BookingPage from "./pages/BookingPage";
+import NoPage from "./pages/NoPage";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
         <Route path="/search" element={<SearchSalonPage />} />
         <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+        <Route path="/booking" element={<BookingPage />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,4 +1,4 @@
-.savedhaircut-header h1 {
+/* .savedhaircut-header h1 {
   font-size: 36px;
 }
 
@@ -21,8 +21,8 @@
 }
 
 .haircut-image {
-  width: 100px;
-  height: 100px; 
+  width: 212px;
+  height: 248px; 
   margin-right: 20px;
   object-fit: cover;
 }
@@ -53,4 +53,4 @@
 
 .haircut-button:hover {
   background-color: #45a049;
-}
+} */
