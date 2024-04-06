@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { useUserData } from "../../components/utils/UserDataContext";
 
 export default function SalonDetailsPage() {
   const { salonId } = useParams();
   const API_URL = "http://localhost:8080";
   const [salon, setSalon] = useState(null);
   const [comments, setComments] = useState([]);
+  const { user } = useUserData();
 
   useEffect(() => {
     const fetchSalonInfo = async (salonId) => {
@@ -42,7 +44,8 @@ export default function SalonDetailsPage() {
     };
     fetchComments(salonId);
     fetchSalonInfo(salonId);
-  }, [salonId]);
+    console.log("user", user);
+  }, [salonId, user]);
 
   if (!salon) {
     return <h1>Loading...</h1>;
@@ -75,6 +78,7 @@ export default function SalonDetailsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 text-center">
+      <h1>Welcome {user ? user.username : "Guest"}</h1>
       {/* if no images */}
       {salon.imagePath ? (
         <img

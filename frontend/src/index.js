@@ -12,23 +12,27 @@ import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
 import SearchSalonPage from "./pages/SearchSalonPage/SearchSalonPage";
 import SalonDetailsPage from "./pages/SalonDetailsPage";
+import { UserDataProvider } from "./components/utils/UserDataContext";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/salon" element={<SalonPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/savedsalon" element={<SavedSalonPage />} />
-        <Route path="/savedhaircut" element={<SavedHaircutPage />} />
-        <Route path="/search" element={<SearchSalonPage />} />
-        <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
-        <Route path="*" element={<NoPage />} />
-      </Routes>
-    </BrowserRouter>
+    <UserDataProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* <Route index element={<HomePage />} /> */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/salon" element={<SalonPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/savedsalon" element={<SavedSalonPage />} />
+          <Route path="/savedhaircut" element={<SavedHaircutPage />} />
+          <Route path="/search" element={<SearchSalonPage />} />
+          <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+          <Route path="*" element={<NoPage />} />
+        </Routes>
+      </BrowserRouter>
+    </UserDataProvider>
   );
 }
 

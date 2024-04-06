@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 
+import { useUserData } from "../../components/utils/UserDataContext";
+
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
+  const { user, setUser } = useUserData();
 
   // authenticate user
   useEffect(() => {
@@ -23,7 +25,7 @@ const HomePage = () => {
         setUser(data.user);
       })
       .catch((err) => console.error(err));
-  }, [cookies]);
+  }, [cookies, setUser]);
 
   const handleLogout = () => {
     cookies.remove("auth");
