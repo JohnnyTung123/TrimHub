@@ -7,6 +7,7 @@ export default function SalonDetailsPage() {
   const { salonId } = useParams();
   const API_URL = "http://localhost:8080";
   const [salon, setSalon] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchSalonInfo = async (salonId) => {
@@ -26,12 +27,51 @@ export default function SalonDetailsPage() {
       }
     };
 
+    const fetchComments = async (salonId) => {
+      try {
+        const response = await fetch(`${API_URL}/comment?salonId=${salonId}`);
+        if (!response.ok) {
+          throw new Error("Error fetching comments");
+        }
+        const comments = await response.json();
+        console.log("Got Comments:", comments);
+        setComments(comments);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchComments(salonId);
     fetchSalonInfo(salonId);
   }, [salonId]);
 
   if (!salon) {
     return <h1>Loading...</h1>;
   }
+
+  const writeComment = async (e) => {
+    e.preventDefault();
+    const content = e.target[0].value;
+    const username = "user1"; // hardcoding username for now
+    const salonId = salon._id;
+
+    try {
+      const response = await fetch(`${API_URL}/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content, username, salonId }),
+      });
+      if (!response.ok) {
+        throw new Error("Error writing comment");
+      }
+      console.log("Comment written successfully");
+      e.target[0].value = "";
+      setComments([...comments, { content, username, _id: Date.now() }]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 text-center">
@@ -83,6 +123,34 @@ export default function SalonDetailsPage() {
             </div>
           ))}
         </div>
+      </div>
+      {/* Post management */}
+      <div>
+        {/* fetch the comments hostory */}
+        <h2 className="text-2xl font-bold mb-2">Comments</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {comments.length ? (
+            comments.map((comment) => (
+              <div key={comment._id} className="border p-4">
+                <h3 className="text-xl font-bold mb-2">{comment.username}</h3>
+                <p>{comment.content}</p>
+              </div>
+            ))
+          ) : (
+            <p className="col-span-3 text-center">No comments</p>
+          )}
+        </div>
+        {/* user with username can make comment of the salon*/}
+        <form onSubmit={writeComment} className="mt-4">
+          <input
+            type="text"
+            placeholder="Write a comment"
+            className="w-1/2 p-2"
+          />
+          <button className="bg-blue-500 text-white px-4 py-2 ml-2">
+            Comment
+          </button>
+        </form>
       </div>
     </div>
   );

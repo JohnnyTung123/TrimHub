@@ -21,6 +21,7 @@ app.use(
 // Custom routes
 app.use("/auth", require("./routes/auth_route"));
 app.use("/salon-info", require("./routes/salon_info_route"));
+app.use("/comment", require("./routes/comment_route"));
 
 // Connect to MongoDB
 mongoose.connect(process.env.DB_CONNECTION_KEY);
