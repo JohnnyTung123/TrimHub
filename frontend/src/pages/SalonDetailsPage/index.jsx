@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import { useUserData } from "../../components/utils/UserDataContext";
 
 export default function SalonDetailsPage() {
@@ -76,6 +77,42 @@ export default function SalonDetailsPage() {
     }
   };
 
+  const likeComment = async (commentId) => {
+    try {
+      const response = await fetch(`${API_URL}/comment/like`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ commentId }),
+      });
+      if (!response.ok) {
+        throw new Error("Error liking comment");
+      }
+      console.log("Comment liked successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const dislikeComment = async (commentId) => {
+    try {
+      const response = await fetch(`${API_URL}/comment/dislike`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ commentId }),
+      });
+      if (!response.ok) {
+        throw new Error("Error disliking comment");
+      }
+      console.log("Comment disliked successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 text-center">
       <h1>Welcome {user ? user.username : "Guest"}</h1>
@@ -138,6 +175,14 @@ export default function SalonDetailsPage() {
               <div key={comment._id} className="border p-4">
                 <h3 className="text-xl font-bold mb-2">{comment.username}</h3>
                 <p>{comment.content}</p>
+                <div className="flex justify-between mt-4">
+                  <button onClick={() => likeComment(comment._id)}>
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                  </button>
+                  <button onClick={() => dislikeComment(comment._id)}>
+                    <FontAwesomeIcon icon={faThumbsDown} />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
