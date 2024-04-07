@@ -39,7 +39,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-200 h-full">
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center">
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
