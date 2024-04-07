@@ -185,62 +185,75 @@ const SalonProfile = ({ user }) => {
   };
 
   return (
-    <div className="p-5 font-sans">
+    <div className="p-8 bg-gray-200 h-screen">
       {/* Salon Profile */}
-      <h1 className="text-3xl font-bold mb-5">Salon Profile</h1>
-      <div className="flex flex-col mb-5">
-        <div className="w-48 h-48 w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
+      <h2 className="text-2xl font-bold mb-4 flex items-center">
+        <span className="w-2 h-6 bg-green-700 mr-2"></span>
+        Salon Management
+      </h2>
+      <div className="flex items-center mb-5">
+        <div className="w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
           {newSalonImage ? (
             <img
               src={URL.createObjectURL(newSalonImage)}
-              className="w-48 h-48 mr-5 object-cover border rounded-md"
+              className="w-48 h-48 object-cover border rounded-md"
               alt="Salon"
             />
           ) : salonImage ? (
             <img
               src={URL.createObjectURL(salonImage)}
-              className="w-48 h-48 mr-5 object-cover border rounded-md"
+              className="w-48 h-48 object-cover border rounded-md"
               alt="Salon"
             />
           ) : (
             <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
           )}
         </div>
-        <div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setNewSalonImage(e.target.files[0])}
-            className="mb-3"
-          />
+        <div className="ml-5">
+          <table className="table-fixed border border-black w-full">
+            <tbody>
+              <tr>
+                <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
+                <td className="border border-black px-4 py-2">
+                  <input
+                    type="text"
+                    id="salonName"
+                    value={salonName}
+                    onChange={(e) => setSalonName(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-black w-32 px-4 py-2 font-bold">Address</td>
+                <td className="border border-black px-4 py-2">
+                  <input
+                    type="text"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <form onSubmit={changeSalonInfo} className="mb-5">
-        <div className="mb-5">
-          <label className="text-lg mr-2">Salon Name:</label>
-          <input
-            type="text"
-            value={salonName}
-            onChange={(e) => setSalonName(e.target.value)}
-            className="px-3 py-2 border rounded-md"
-          />
-        </div>
-        <div className="mb-5">
-          <label className="text-lg mr-2">Address:</label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="px-3 py-2 border rounded-md"
-          />
-        </div>
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setNewSalonImage(e.target.files[0])}
+          className="mb-3"
+        />
         <button
-          type="submit"
+          onClick={changeSalonInfo}
           className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
         >
-          Change Salon Information
+          Change salon information
         </button>
-      </form>
+      </div>
 
       {/* hairstyle */}
       {showUploadForm && (
@@ -254,7 +267,8 @@ const SalonProfile = ({ user }) => {
               onClick={() => setShowUploadForm(false)}
               className="text-2xl absolute top-3 right-3 cursor-pointer"
             />
-            <h2 className="text-2xl font-bold mb-4 text-center">
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="w-2 h-6 bg-green-700 mr-2"></span>
               Upload New Hairstyle
             </h2>
             <div className="w-48 h-48 w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
@@ -280,7 +294,7 @@ const SalonProfile = ({ user }) => {
                 placeholder="Description"
                 value={hairstyleDescription}
                 onChange={(e) => setHairstyleDescription(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md mt-3"
               />
             </div>
             <button
@@ -324,105 +338,140 @@ const SalonProfile = ({ user }) => {
 
       {/* Plans */}
       {showPlanForm && (
-        <form
-          onSubmit={createPlan}
-          className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-50"
-        >
-          <FontAwesomeIcon
-            icon={faTimes}
-            onClick={() => setShowPlanForm(false)}
-            className="text-2xl absolute top-3 right-3 cursor-pointer"
-          />
-          <div className="mb-3">
-            <input
-              type="text"
-              placeholder="Plan Name"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-            />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded shadow-lg bg-gray-200 w-1/4">
+            <form onSubmit={createPlan}>
+              <FontAwesomeIcon
+                icon={faTimes}
+                onClick={() => setShowPlanForm(false)}
+                className="text-2xl absolute top-3 right-3 cursor-pointer"
+              />
+              <h2 className="text-2xl font-bold mb-4 flex items-center">
+                <span className="w-2 h-6 bg-green-700 mr-2"></span>
+                Create Plan
+              </h2>
+              <div className="mb-4">
+                <label htmlFor="planName" className="block mb-1 font-bold">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Plan Name"
+                  value={planName}
+                  onChange={(e) => setPlanName(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="planPrice" className="block mb-1 font-bold">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  placeholder="Plan Price"
+                  value={planPrice}
+                  onChange={(e) => setPlanPrice(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="planDescription" className="block mb-1 font-bold">
+                  Description
+                </label>
+                <textarea
+                  placeholder="Plan Description"
+                  value={planDescription}
+                  onChange={(e) => setPlanDescription(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-4 py-2 mr-2 bg-gray-100 text-black rounded hover:opacity-80 cursor-pointer"
+              >
+                Confirm
+              </button>
+            </form>
           </div>
-          <div className="mb-3">
-            <input
-              type="number"
-              placeholder="Plan Price"
-              value={planPrice}
-              onChange={(e) => setPlanPrice(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-            />
-          </div>
-          <div className="mb-3">
-            <textarea
-              placeholder="Plan Description"
-              value={planDescription}
-              onChange={(e) => setPlanDescription(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
-          >
-            confirm
-          </button>
-        </form>
+        </div>
       )}
       <div className="mt-5">
-        <h2 className="text-xl font-bold mb-3">Plans</h2>
+        <div className="flex items-center">
+        <h2 className="text-xl font-bold mr-2">Plans</h2>
+        <button
+          onClick={() => setShowPlanForm(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
+        >
+          Create new plan
+        </button>
+        </div>
         <div className="grid grid-cols-3 gap-4">
           {plans.map((plan, index) => (
-            <div key={index} className="flex flex-col">
-              <input
-                type="text"
-                value={plan.name}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].name = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <input
-                type="number"
-                value={plan.price}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].price = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <textarea
-                value={plan.description}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].description = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <p className="mt-2">{index}</p>
+            
+            <div key={index} className="mb-4">
+              <table className="table-fixed border border-black w-full">
+                <tbody>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Plan Name</td>
+                    <td className="border border-black px-4 py-2">
+                      <input
+                        type="text"
+                        value={plan.name}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].name = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Price</td>
+                    <td className="border border-black px-4 py-2">
+                      <input
+                        type="number"
+                        value={plan.price}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].price = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Description</td>
+                    <td className="border border-black px-4 py-2">
+                      <textarea
+                        value={plan.description}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].description = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               <button
                 onClick={() => updatePlan(index, plan)}
-                className="px-3 py-1 bg-blue-500 text-white rounded-md mt-2"
+                className="px-3 py-1 bg-blue-500 text-white rounded-md m-2"
               >
                 Confirm Changes
               </button>
               <button
                 onClick={() => deletePlan(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
+                className="px-3 py-1 bg-red-500 text-white rounded-md m-2"
               >
                 Delete Plan
               </button>
             </div>
           ))}
         </div>
-        <button
-          onClick={() => setShowPlanForm(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
-        >
-          Create new plan
-        </button>
       </div>
     </div>
   );
