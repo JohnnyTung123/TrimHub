@@ -13,7 +13,7 @@ const UserProfile = ({ user }) => {
   };
 
   return (
-    <div className="p-8 bg-gray-200 h-screen">
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center">
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
@@ -82,7 +82,8 @@ const ChangeUserInfoModal = ({ user, onClose }) => {
       <div className="bg-white p-8 rounded shadow-lg bg-gray-200">
         <h2 className="text-2xl font-bold mb-4 flex items-center">
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
-          Change User Information</h2>
+          Change User Information
+        </h2>
         <div className="mb-4">
           <label htmlFor="newUsername" className="block mb-1 font-bold">
             New User Name
@@ -133,7 +134,7 @@ const ChangeUserInfoModal = ({ user, onClose }) => {
         </div>
         <div className="flex justify-end">
           <button
-            className="px-4 py-2 mr-2 bg-gray-100 text-black rounded hover:opacity-80 cursor-pointer"
+            className="px-4 py-2 mr-2 bg-gray-200 text-black rounded hover:opacity-80 cursor-pointer"
             onClick={handleDiscardClick}
           >
             Discard change

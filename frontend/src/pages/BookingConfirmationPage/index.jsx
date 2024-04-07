@@ -7,7 +7,6 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 import { useNavigate } from "react-router-dom";
-import NavigationBar from "../NavigationBar";
 
 export default function BookingConfirmationPage() {
   const { salonId } = useParams();
@@ -83,7 +82,6 @@ export default function BookingConfirmationPage() {
 
   return (
     <div>
-      <NavigationBar />
       <div className="p-8 bg-gray-200 h-screen">
         {/* First Row */}
         <div className="flex flex-col md:flex-row mb-8">

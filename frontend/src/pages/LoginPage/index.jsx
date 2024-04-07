@@ -46,37 +46,44 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="on"
-          />
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-8 rounded shadow-lg bg-gray-200">
+        <h2 className="text-2xl font-bold mb-4 flex items-center">
+          <span className="w-2 h-6 bg-green-700 mr-2"></span>
+          Login Page
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-2">
+            <label htmlFor="username" className="font-bold">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="on"
+              className="m-2 p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-2">
+            <label htmlFor="password" className="font-bold">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="on"
+              className="m-2 p-2 border border-gray-300 rounded"
+            />
+            <button type="button" className="bg-gray-200" onClick={() => navigate("/forgot-password")}>
+              Forgot Password?
+            </button>
+          </div>
+          <button type="submit" className="bg-green-700 text-white">Login</button>
+          <button type="button" className="bg-gray-200" onClick={() => navigate("/")}>Back</button>
+        </form>
+        {error && <span className="text-red-600">{error}</span>}
+        <div className="mt-2">
+          <span className="font-bold mr-2">Don't have an account?</span>
+          <button type="button" className="bg-gray-200" onClick={() => navigate("/signup")}>Sign Up</button>
         </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="on"
-          />
-          <button type="button" onClick={() => navigate("/forgot-password")}>
-            Forgot Password?
-          </button>
-        </div>
-        <button type="submit">Login</button>
-        <button type="button" onClick={() => navigate("/")}>Back</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div>
-        <p>Don't have an account?</p>
-        <button type="button" onClick={() => navigate("/signup")}>Sign Up</button>
       </div>
     </div>
   );

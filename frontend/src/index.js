@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
@@ -20,27 +21,28 @@ import HaircutSearchPage from "./pages/HaircutSearchPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import NoPage from "./pages/NoPage";
 
+import HomeLayout from "./layouts/HomeLayout";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/salon" element={<SalonPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/savedsalon" element={<SavedSalonPage />} />
-        <Route path="/savedhaircut" element={<SavedHaircutPage />} />
-        <Route path="/search" element={<SearchSalonPage />} />
-        <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
-        <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
-        <Route path="/bookingconfirmation" element={<BookingConfirmationPage />} />
-        <Route path="/bookings" element={<BookingPage />} />
-        <Route path="/booking" element={<Booking2Page />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/HaircutSearchPage" element={<HaircutSearchPage />} />
-        <Route path="/ChangePasswordPage" element={<ChangePasswordPage />} />
-        <Route path="*" element={<NoPage />} />
+        <Route element={<HomeLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/salon" element={<SalonPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/savedsalon" element={<SavedSalonPage />} />
+          <Route path="/savedhaircut" element={<SavedHaircutPage />} />
+          <Route path="/search" element={<SearchSalonPage />} />
+          <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+          <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
+          <Route path="/bookingconfirmation" element={<BookingConfirmationPage />} />
+          <Route path="/bookings" element={<BookingPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
