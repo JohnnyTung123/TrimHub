@@ -16,6 +16,9 @@ import HaircutDetailsPage from "./pages/HaircutDetailsPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import BookingPage from "./pages/BookingPage";
 import AdminPage from "./pages/AdminPage";
+import Booking2Page from "./pages/Booking2Page";
+import HaircutSearchPage from "./pages/HaircutSearchPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 import NoPage from "./pages/NoPage";
 
 import HomeLayout from "./layouts/HomeLayout";
