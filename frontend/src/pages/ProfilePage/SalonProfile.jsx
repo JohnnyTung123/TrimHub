@@ -185,7 +185,7 @@ const SalonProfile = ({ user }) => {
   };
 
   return (
-    <div className="p-8 bg-gray-200 h-screen">
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
       {/* Salon Profile */}
       <h2 className="text-2xl font-bold mb-4 flex items-center">
         <span className="w-2 h-6 bg-green-700 mr-2"></span>
@@ -249,7 +249,7 @@ const SalonProfile = ({ user }) => {
         />
         <button
           onClick={changeSalonInfo}
-          className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
+          className="px-4 py-2 bg-green-700 text-white rounded-md text-lg"
         >
           Change salon information
         </button>
@@ -257,10 +257,10 @@ const SalonProfile = ({ user }) => {
 
       {/* hairstyle */}
       {showUploadForm && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <form
             onSubmit={createHairstyle}
-            className="bg-white p-10 rounded-md shadow-lg "
+            className="bg-white p-10 rounded-md shadow-lg"
           >
             <FontAwesomeIcon
               icon={faTimes}
@@ -299,7 +299,7 @@ const SalonProfile = ({ user }) => {
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600 transition duration-300"
+              className="w-full px-4 py-2 bg-green-700 text-white hover:opacity-80 cursor-pointer"
             >
               Upload
             </button>
@@ -307,7 +307,15 @@ const SalonProfile = ({ user }) => {
         </div>
       )}
       <div className="mt-5">
-        <h2 className="text-xl font-bold mb-3">Hairstyles</h2>
+        <div className="flex items-center">
+          <h2 className="text-xl font-bold mr-2">Hairstyles</h2>
+          <button
+            onClick={() => setShowUploadForm(!showUploadForm)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
+          >
+            Upload new hairstyle
+          </button>
+        </div>
         <div className="grid grid-cols-3 gap-4">
           {hairstyles.map((hairstyle, index) => (
             <div key={index} className="flex flex-col">
@@ -328,86 +336,80 @@ const SalonProfile = ({ user }) => {
             </div>
           ))}
         </div>
-        <button
-          onClick={() => setShowUploadForm(!showUploadForm)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
-        >
-          Upload new hairstyle
-        </button>
       </div>
 
       {/* Plans */}
       {showPlanForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded shadow-lg bg-gray-200 w-1/4">
-            <form onSubmit={createPlan}>
-              <FontAwesomeIcon
-                icon={faTimes}
-                onClick={() => setShowPlanForm(false)}
-                className="text-2xl absolute top-3 right-3 cursor-pointer"
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <form
+            onSubmit={createPlan}
+            className="bg-white p-10 rounded-md shadow-lg w-1/4"
+          >
+            <FontAwesomeIcon
+              icon={faTimes}
+              onClick={() => setShowPlanForm(false)}
+              className="text-2xl absolute top-3 right-3 cursor-pointer"
+            />
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="w-2 h-6 bg-green-700 mr-2"></span>
+              Create Plan
+            </h2>
+            <div className="mb-4">
+              <label htmlFor="planName" className="block mb-1 font-bold">
+                Name
+              </label>
+              <input
+                type="text"
+                placeholder="Plan Name"
+                value={planName}
+                onChange={(e) => setPlanName(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
               />
-              <h2 className="text-2xl font-bold mb-4 flex items-center">
-                <span className="w-2 h-6 bg-green-700 mr-2"></span>
-                Create Plan
-              </h2>
-              <div className="mb-4">
-                <label htmlFor="planName" className="block mb-1 font-bold">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Plan Name"
-                  value={planName}
-                  onChange={(e) => setPlanName(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="planPrice" className="block mb-1 font-bold">
-                  Price
-                </label>
-                <input
-                  type="number"
-                  placeholder="Plan Price"
-                  value={planPrice}
-                  onChange={(e) => setPlanPrice(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="planDescription" className="block mb-1 font-bold">
-                  Description
-                </label>
-                <textarea
-                  placeholder="Plan Description"
-                  value={planDescription}
-                  onChange={(e) => setPlanDescription(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <button
-                type="submit"
-                className="px-4 py-2 mr-2 bg-gray-100 text-black rounded hover:opacity-80 cursor-pointer"
-              >
-                Confirm
-              </button>
-            </form>
-          </div>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="planPrice" className="block mb-1 font-bold">
+                Price
+              </label>
+              <input
+                type="number"
+                placeholder="Plan Price"
+                value={planPrice}
+                onChange={(e) => setPlanPrice(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="planDescription" className="block mb-1 font-bold">
+                Description
+              </label>
+              <textarea
+                placeholder="Plan Description"
+                value={planDescription}
+                onChange={(e) => setPlanDescription(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-green-700 text-white hover:opacity-80 cursor-pointer"
+            >
+              Confirm
+            </button>
+          </form>
         </div>
       )}
       <div className="mt-5">
         <div className="flex items-center">
-        <h2 className="text-xl font-bold mr-2">Plans</h2>
-        <button
-          onClick={() => setShowPlanForm(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
-        >
-          Create new plan
-        </button>
+          <h2 className="text-xl font-bold mr-2">Plans</h2>
+          <button
+            onClick={() => setShowPlanForm(true)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
+          >
+            Create new plan
+          </button>
         </div>
         <div className="grid grid-cols-3 gap-4">
           {plans.map((plan, index) => (
-            
             <div key={index} className="mb-4">
               <table className="table-fixed border border-black w-full">
                 <tbody>

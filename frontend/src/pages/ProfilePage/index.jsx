@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
-import "./ProfilePage.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import UserProfile from "./UserProfile";
 import SalonProfile from "./SalonProfile";
-import NavigationBar from "../NavigationBar";
 
 const ProfilePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
@@ -34,17 +34,15 @@ const ProfilePage = () => {
   }, [cookies]);
 
   return (
-    <div>
-      <NavigationBar />
-
+    <>
       {usertype === "customer" || usertype === "admin" ? (
         <UserProfile user={user} />
       ) : usertype === "salon" ? (
         <SalonProfile user={user} />
       ) : (
-        <p>Loading...</p>
+        <FontAwesomeIcon icon={faSpinner} className="w-screen fa-4x" />
       )}
-    </div>
+    </>
   );
 };
 
