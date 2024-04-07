@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import "./HomePage.css";
-import NavigationBar from "../NavigationBar";
 
 const HomePage = () => {
   const cookies = useMemo(() => new Cookies(), []);
@@ -64,8 +63,6 @@ const HomePage = () => {
 
   return (
     <div>
-      <NavigationBar />
-
       <div className="flex items-center justify-center w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className="content">
           <h1 className="text">Open a new character of your life</h1>

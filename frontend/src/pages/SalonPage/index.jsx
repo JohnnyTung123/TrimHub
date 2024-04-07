@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./SalonPage.css";
-import NavigationBar from '../NavigationBar';
 
 
 
@@ -17,8 +16,6 @@ const SalonPage = () => {
 
     return (
         <div>
-            <NavigationBar />
-
         <h1>header salon name</h1>
         <img src="image1.jpg" alt="image1" />
         <p>Description.</p>
