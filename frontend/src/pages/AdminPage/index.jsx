@@ -69,14 +69,12 @@ const AdminPage = () => {
                 className="w-full mb-1 p-2 border border-gray-300 rounded"
               />
             </div>
-            <div className="flex">
-              <button
-                className="px-4 py-2 mt-1 mb-4 bg-green-700 text-white rounded hover:opacity-80 cursor-pointer"
-                onClick={() => deleteUser(user._id)}
-              >
-                Delete User
-              </button>
-            </div>
+            <button
+              className="mt-1 mb-4 bg-green-700 text-white hover:opacity-80 cursor-pointer"
+              onClick={() => deleteUser(user._id)}
+            >
+              Delete User
+            </button>
           </div>
         ))}
       </div>

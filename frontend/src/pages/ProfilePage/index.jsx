@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import "./ProfilePage.css";
 
 import UserProfile from "./UserProfile";
 import SalonProfile from "./SalonProfile";

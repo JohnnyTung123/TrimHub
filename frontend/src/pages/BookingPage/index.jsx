@@ -76,10 +76,10 @@ const BookingPage = () => {
                   </span>
                   <span className="text-gray-700 mr-1">{booking.rating}</span>
                 </div>
-                <button className="text-white rounded mb-2">
+                <button className="bg-green-500 text-white rounded mb-2">
                   Contact
                 </button>
-                <button className="text-white rounded mb-2">
+                <button className="bg-green-700 text-white rounded mb-2">
                   Book again
                 </button>
               </div>

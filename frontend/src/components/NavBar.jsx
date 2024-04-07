@@ -48,7 +48,7 @@ const NavBar = () => {
           <a className="mx-4 hover:opacity-80" href="/men">Men</a>
           <a className="mx-4 hover:opacity-80" href="/women">Woman</a>
           <div className="inline-block">
-            <button onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <button type="button" className="bg-green-700 text-white" onClick={() => setDropdownOpen(!dropdownOpen)}>
               <span className="font-bold mr-1">{user.username}</span>
               <FontAwesomeIcon icon={faCaretDown} />
             </button>
@@ -79,8 +79,8 @@ const NavBar = () => {
         <nav>
           <a className="mx-4 hover:opacity-80" href="/men">Men</a>
           <a className="mx-4 hover:opacity-80" href="/women">Woman</a>
-          <button onClick={() => navigate("/signup")}>Sign Up</button>
-          <button onClick={() => navigate("/login")}>Login</button>
+          <button type="button" className="bg-gray-200" onClick={() => navigate("/signup")}>Sign Up</button>
+          <button type="button" className="bg-green-700 text-white" onClick={() => navigate("/login")}>Login</button>
         </nav>
       )}
     </div>

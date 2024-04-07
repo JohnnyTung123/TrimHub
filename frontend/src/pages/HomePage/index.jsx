@@ -62,46 +62,62 @@ const HomePage = () => {
   const secondPartPhotos = photos.slice(3);
 
   return (
-    <div>
-      <div className="flex items-center justify-center w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
-        <div className="content">
-          <h1 className="text">Open a new character of your life</h1>
-          <div className="search-bar">
-            <input type="text" value={searchQuery} onChange={handleChange} placeholder="What haircut or salon you want today?" />
-            <button onClick={handleSearch}>Search</button>
+    <>
+      <div className="flex items-center justify-center h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div>
+          <h1 className="text-5xl font-bold">Open a new character of your life</h1>
+          <div className="flex items-center justify-center m-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleChange}
+              placeholder="What haircut or salon you want today?"
+              className="text-xl placeholder:text-sm mr-2 p-2"
+            />
+            <button className="bg-green-700 text-white" onClick={handleSearch}>Search</button>
           </div>
         </div>
       </div>
 
-      <div className="main-container">
-        <div className="content-container">
-          <div className="content-section">
-            <h2>Hot</h2>
-            <div className="photo-group">
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-row gap-8">
+          <div className="flex flex-col items-center gap-4">
+            <h2 className="text-xl font-bold">Hot</h2>
+            <div className="flex gap-4">
               {firstPartPhotos.map((photo) => (
-                <div key={photo.id} className="photo">
-                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                <div key={photo.id} className="flex flex-col items-center gap-2">
+                  <img
+                    src={photo.url}
+                    alt={photo.description}
+                    onClick={() => handlePhotoClick(photo.id)}
+                    className="w-52"
+                  />
                   <p>{photo.description}</p>
-                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                  <button className="bg-green-700 text-white" onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
                 </div>
               ))}
             </div>
           </div>
-          <div className="content-section">
-            <h2>New Arrival</h2>
-            <div className="photo-group">
+          <div className="flex flex-col items-center gap-4">
+            <h2 className="text-xl font-bold">New Arrival</h2>
+            <div className="flex gap-4">
               {secondPartPhotos.map((photo) => (
-                <div key={photo.id} className="photo">
-                  <img src={photo.url} alt={photo.description} onClick={() => handlePhotoClick(photo.id)} />
+                <div key={photo.id} className="flex flex-col items-center gap-2">
+                  <img
+                    src={photo.url}
+                    alt={photo.description}
+                    onClick={() => handlePhotoClick(photo.id)}
+                    className="w-52"
+                  />
                   <p>{photo.description}</p>
-                  <button onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
+                  <button className="bg-green-700 text-white" onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

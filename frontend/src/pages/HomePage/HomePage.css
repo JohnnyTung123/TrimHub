@@ -1,72 +1,11 @@
-.content {
-  text-align: center;
-  size-adjust: 0.8rem;
+button {
+  padding: 10px 10px;
+  margin-right: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.text {
-  font-size: 3rem;
-  font-weight: bold;
-  color: rgb(0, 0, 0);
-}
-
-.search-bar {
-  margin-top: 1rem;
-  size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-bar input {
-  margin-right: 0.5rem;
-  padding: 0.5rem;
-  font-size: 1.5rem;
-}::placeholder {
-  font-size: 0.9rem; /* Adjust the size of the placeholder text */
-}
-
-.search-bar button {
-  padding: 0.7rem 1.5rem;
-  font-size: 1.2rem;
-}
-
-.search-bar button:hover {
-  background-color: #2b00d9;
-}
-
-
-.main-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.content-container {
-  display: flex;
-  flex-direction: row; /* Updated to row */
-  gap: 2rem;
-}
-
-.content-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.photo-group {
-  display: flex;
-  gap: 1rem;
-}
-
-.photo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.photo img {
-  width: 200px;
+button:hover {
+  opacity: 0.8;
 }
