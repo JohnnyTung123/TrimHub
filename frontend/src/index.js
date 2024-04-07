@@ -11,6 +11,8 @@ import SavedSalonPage from "./pages/SavedSalonPage";
 import SavedHaircutPage from "./pages/SavedHaircutPage";
 import SearchSalonPage from "./pages/SearchSalonPage/SearchSalonPage";
 import SalonDetailsPage from "./pages/SalonDetailsPage";
+import HaircutDetailsPage from "./pages/HaircutDetailsPage";
+import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import BookingPage from "./pages/BookingPage";
 import AdminPage from "./pages/AdminPage";
 import NoPage from "./pages/NoPage";
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/savedhaircut" element={<SavedHaircutPage />} />
         <Route path="/search" element={<SearchSalonPage />} />
         <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+        <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
+        <Route path="/bookingconfirmation" element={<BookingConfirmationPage />} />
         <Route path="/bookings" element={<BookingPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<NoPage />} />
