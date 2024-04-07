@@ -16,6 +16,8 @@ import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import BookingPage from "./pages/BookingPage";
 import AdminPage from "./pages/AdminPage";
 import Booking2Page from "./pages/Booking2Page";
+import HaircutSearchPage from "./pages/HaircutSearchPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 import NoPage from "./pages/NoPage";
 
 export default function App() {
@@ -36,6 +38,8 @@ export default function App() {
         <Route path="/bookings" element={<BookingPage />} />
         <Route path="/booking" element={<Booking2Page />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/HaircutSearchPage" element={<HaircutSearchPage />} />
+        <Route path="/ChangePasswordPage" element={<ChangePasswordPage />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
