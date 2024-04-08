@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const cookies = new Cookies();
+  const cookies = useMemo(() => new Cookies(), []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,6 +41,7 @@ const LoginPage = () => {
           cookies.set("auth", data.accessToken, { path: "/" });
           // redirect to the home page
           navigate("/");
+          navigate(0);
         }
       });
   };

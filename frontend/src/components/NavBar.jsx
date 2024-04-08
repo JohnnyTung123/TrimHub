@@ -1,43 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../context/UserContext";
 
 const NavBar = () => {
+  const { user, setUser } = useUser();
   const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
-  const [usertype, setUsertype] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // authenticate user
-  useEffect(() => {
-    console.log("Authenticate user");
-    fetch("http://localhost:8080/auth/endpoint", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${cookies.get("auth")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUser(data.user);
-        setUsertype(data.user.usertype);
-      })
-      .catch((err) => {
-        console.error(err)
-        setUser(null);
-        setUsertype(null);
-      });
-  }, [cookies]);
 
   const handleLogout = () => {
     cookies.remove("auth");
     setUser(null);
     navigate("/");
-    navigate(0);
   };
 
   return (
@@ -56,7 +33,7 @@ const NavBar = () => {
               <div className="absolute right-0 w-max shadow-md bg-gray-100">
                 <div className="bg-gray-300 rounded-full w-20 h-20 mx-auto my-4">{/* User Avatar Image */}</div>
                 <div className="font-bold text-xl text-center mb-6">{user.username}</div>
-                {usertype === "admin" ? (
+                {user.usertype === "admin" ? (
                   <div>
                     <a className="block p-3 hover:opacity-80" href="/profile">User information</a>
                     <a className="block p-3 hover:opacity-80" href="/admin">User management</a>

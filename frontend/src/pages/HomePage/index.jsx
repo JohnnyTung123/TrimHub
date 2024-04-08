@@ -1,31 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Cookies from "universal-cookie";
+import React, { useState } from "react";
 import "./HomePage.css";
 
 const HomePage = () => {
-  const cookies = useMemo(() => new Cookies(), []);
-  const [user, setUser] = useState({});
   const backgroundImage = './img/background.png';
-
-  // authenticate user
-  useEffect(() => {
-    console.log("Authenticate user");
-    fetch("http://localhost:8080/auth/endpoint", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${cookies.get("auth")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUser(data.user);
-      })
-      .catch((err) => {
-        console.error(err)
-        setUser(null);
-      });
-  }, [cookies]);
 
   const [searchQuery, setSearchQuery] = useState('');
 

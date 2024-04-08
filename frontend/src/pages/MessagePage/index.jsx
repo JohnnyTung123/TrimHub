@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
 
 const API_URL = "http://localhost:8080";
 
 const ChatList = ({ currentChat, setCurrentChat }) => {
-  const [user, setUser] = useState({_id: "660d3c2d5101acc17841f7e8"});
+  const { user } = useUser();
   const [chats, setChats] = useState([]);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
 };
 
 const Chat = ({ currentChat }) => {
-  const [user, setUser] = useState({_id: "660d3c2d5101acc17841f7e8"});
+  const { user } = useUser();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 

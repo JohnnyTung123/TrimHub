@@ -21,28 +21,32 @@ import NoPage from "./pages/NoPage";
 
 import HomeLayout from "./layouts/HomeLayout";
 
+import { UserProvider } from "./context/UserContext";
+
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<HomeLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/salon" element={<SalonPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/savedsalon" element={<SavedSalonPage />} />
-          <Route path="/savedhaircut" element={<SavedHaircutPage />} />
-          <Route path="/search" element={<SearchSalonPage />} />
-          <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
-          <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
-          <Route path="/bookingconfirmation" element={<BookingConfirmationPage />} />
-          <Route path="/bookings" element={<BookingPage />} />
-          <Route path="/messages" element={<MessagePage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<NoPage />} />
-        </Route>
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route element={<HomeLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/salon" element={<SalonPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/savedsalon" element={<SavedSalonPage />} />
+            <Route path="/savedhaircut" element={<SavedHaircutPage />} />
+            <Route path="/search" element={<SearchSalonPage />} />
+            <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
+            <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
+            <Route path="/bookingconfirmation" element={<BookingConfirmationPage />} />
+            <Route path="/bookings" element={<BookingPage />} />
+            <Route path="/messages" element={<MessagePage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<NoPage />} />
+          </Route>
+        </Routes>
+      </UserProvider>
     </BrowserRouter>
   );
 }
