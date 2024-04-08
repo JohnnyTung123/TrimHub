@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import NavigationBar from '../NavigationBar';
-
 
 function HaircutSearchPage() {
 
@@ -35,16 +33,10 @@ function HaircutSearchPage() {
     // Example: setSearchResults([{ name: 'John Doe', photo: 'john.jpg' }, { name: 'Jane Smith', photo: 'jane.jpg' }]);
   };
 
-  
   return (
-  <div>
-  <NavigationBar/>
     <div className="flex flex-col items-center pb-20 bg-gray-200 text-black text-opacity-70">
-       
-      
-      <main>
-        <section className="flex gap-3 mt-28 w-full text-3xl max-w-[1002px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
-          <div className="flex flex-auto gap-1.5 whitespace-nowrap max-md:flex-wrap">
+      <section className="flex gap-3 mt-28 w-full text-3xl max-w-[1002px] max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
+        <div className="flex flex-auto gap-1.5 whitespace-nowrap max-md:flex-wrap">
           <select
             name="dropdown1"
             value={selectedValues.dropdown2}
@@ -54,19 +46,19 @@ function HaircutSearchPage() {
             <option value="option2">Option 2</option>
             {/* Add more options for dropdown2 */}
           </select>
-              </div>
-              <select
-            name="dropdown2"
-            value={selectedValues.dropdown2}
-            onChange={handleDropdownChange}
-          >
-            <option value="">Select Option 2</option>
-            <option value="option2">Option 2</option>
-            {/* Add more options for dropdown2 */}
-          </select>
-        </section>
-        <section className="flex gap-3 mt-4 w-full text-3xl max-w-[1002px] max-md:flex-wrap max-md:max-w-full">
-          <div className="flex flex-auto gap-1 max-md:flex-wrap">
+        </div>
+        <select
+          name="dropdown2"
+          value={selectedValues.dropdown2}
+          onChange={handleDropdownChange}
+        >
+          <option value="">Select Option 2</option>
+          <option value="option2">Option 2</option>
+          {/* Add more options for dropdown2 */}
+        </select>
+      </section>
+      <section className="flex gap-3 mt-4 w-full text-3xl max-w-[1002px] max-md:flex-wrap max-md:max-w-full">
+        <div className="flex flex-auto gap-1 max-md:flex-wrap">
           <select
             name="dropdown2"
             value={selectedValues.dropdown2}
@@ -76,31 +68,27 @@ function HaircutSearchPage() {
             <option value="option2">Option 2</option>
             {/* Add more options for dropdown2 */}
           </select>
-            
-          </div>
-          <input
-            type="date"
-            value={dateValue}
-            onChange={handleDateChange}
-            className="mr-2"
-          />
-          <input
-            type="text"
-            value={textValue}
-            onChange={handleTextChange}
-            placeholder="Enter text"
-          />
-        </section>
-        <button
+
+        </div>
+        <input
+          type="date"
+          value={dateValue}
+          onChange={handleDateChange}
+          className="mr-2"
+        />
+        <input
+          type="text"
+          value={textValue}
+          onChange={handleTextChange}
+          placeholder="Enter text"
+        />
+      </section>
+      <button
         onClick={handleSearch}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Search
       </button>
-        
-          </main>
-          
-    </div>
     </div>
   );
 }
