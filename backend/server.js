@@ -2,9 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const { Server } = require("socket.io");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -30,7 +31,34 @@ mongoose.connect(process.env.DB_CONNECTION_KEY);
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
-  app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+  const server = app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+  });
+
+  const io = new Server(server, {
+    cors: {
+      origin: "http://localhost:3000",
+    },
+  });
+
+  io.on("connection", (socket) => {
+    console.log("Connected to socket.io");
+
+    socket.on("join chat", (chatId) => {
+      console.log("User join chat:", chatId);
+      socket.join(chatId);
+    });
+
+    socket.on("message", (message) => {
+      console.log("Received message:", message);
+      const chat = message.chat;
+      io.to(chat._id).emit("message", message);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected from socket.io");
+    });
+  });
 });
 
 mongoose.connection.on("error", (err) => {

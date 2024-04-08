@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { useUser } from "../../context/UserContext";
 
 const API_URL = "http://localhost:8080";
+const socket = io(API_URL);
 
 const ChatList = ({ currentChat, setCurrentChat }) => {
   const { user } = useUser();
@@ -50,6 +52,16 @@ const Chat = ({ currentChat }) => {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(`${API_URL}/message/${currentChat._id}`);
@@ -59,6 +71,8 @@ const Chat = ({ currentChat }) => {
         const messages = await response.json();
         console.log(messages);
         setMessages(messages);
+
+        socket.emit("join chat", currentChat._id);
       } catch (error) {
         console.error(error);
       }
@@ -89,8 +103,9 @@ const Chat = ({ currentChat }) => {
         throw new Error("Error creating messages");
       }
       const message = await response.json();
-      setMessages([...messages, message]);
       setNewMessage("");
+
+      socket.emit("message", message);
     } catch (error) {
       console.error(error);
     }
@@ -117,6 +132,7 @@ const Chat = ({ currentChat }) => {
           <form onSubmit={createNewMessage}>
             <input
               type="text"
+              value={newMessage}
               placeholder="Enter your messages here"
               onChange={handleMessageUpdate}
               className="text-xl border border-gray-300 rounded mr-2 p-2"
