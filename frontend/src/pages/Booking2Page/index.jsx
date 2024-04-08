@@ -1,6 +1,4 @@
-import * as React from "react";
-import Header from "../NavigationBar";
-
+import React from "react";
 
 function HairstyleCard({ imageSrc, title }) {
   return (
@@ -42,8 +40,6 @@ function HairstyleDescription({ description, price }) {
 }
 
 function TimeSlots() {
-
-
   return (
     <div className="flex flex-col text-3xl whitespace-nowrap text-black text-opacity-70 max-md:mt-10 max-md:max-w-full">
       
@@ -61,8 +57,7 @@ function TimeSlots() {
 function Booking2Page() {
   return (
     <div className="flex flex-col pb-20 bg-gray-200">
-      <Header />
-      <main className="flex flex-col px-14 mt-28 w-full max-md:px-5 max-md:mt-10 max-md:max-w-full">
+      <div className="flex flex-col px-14 mt-28 w-full max-md:px-5 max-md:mt-10 max-md:max-w-full">
         <div className="max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
 
@@ -97,7 +92,7 @@ function Booking2Page() {
         <button className="self-end px-16 pt-2.5 pb-6 mt-24 text-4xl text-white rounded-xl border border-white border-solid bg-green-700 bg-opacity-80 shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-md:pr-7 max-md:pl-8 max-md:mt-10">
           Book Now
         </button>
-      </main>
+      </div>
     </div>
   );
 }

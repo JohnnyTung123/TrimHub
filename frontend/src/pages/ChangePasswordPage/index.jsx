@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import NavigationBar from "../NavigationBar";
 
 const ChangePasswordPage = () => {
     const [oldPassword, setOldPassword] = useState("");
@@ -48,7 +47,6 @@ const ChangePasswordPage = () => {
     };
   
     return (
-        <div><NavigationBar/>
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Change User Information</h1>
         {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
@@ -129,7 +127,6 @@ const ChangePasswordPage = () => {
             </button>
           </div>
         </form>
-      </div>
       </div>
     );
   };
