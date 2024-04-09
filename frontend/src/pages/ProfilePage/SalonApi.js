@@ -1,8 +1,8 @@
 const API_URL = "http://localhost:8080";
 
-export const fetchSalonInfo = async (username) => {
+export const fetchSalonInfo = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/salon-info?username=${username}`);
+    const response = await fetch(`${API_URL}/salon-info?userId=${userId}`);
     if (!response.ok) {
       throw new Error("Error fetching salon info");
     }
@@ -13,10 +13,10 @@ export const fetchSalonInfo = async (username) => {
   }
 };
 
-export const fetchSalonImages = async (username) => {
+export const fetchSalonImages = async (salonId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/image?username=${username}`
+      `${API_URL}/salon-info/image?salonId=${salonId}`
     );
     if (response.status === 404) {
       return null;
@@ -32,10 +32,10 @@ export const fetchSalonImages = async (username) => {
   }
 };
 
-export const fetchHairstyles = async (username) => {
+export const fetchHairstyles = async (salonId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/hairstyles?username=${username}`
+      `${API_URL}/salon-info/hairstyles?salonId=${salonId}`
     );
     if (!response.ok) {
       throw new Error("Error fetching hairstyles");

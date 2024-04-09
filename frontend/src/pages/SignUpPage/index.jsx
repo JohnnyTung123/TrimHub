@@ -13,16 +13,20 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
-  const createSalonInfo = async () => {
-    const response = await fetch("http://localhost:8080/salon-info", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: username, salonname: username }),
-    }).then((res) => res.json());
+  const createSalonInfo = async (userId) => {
+    try {
+      const response = await fetch("http://localhost:8080/salon-info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userId, salonname: username }),
+      });
 
-    if (!response.success) {
-      setError(response.error);
-      return;
+      if (response.error) {
+        setError(response.error);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -63,21 +67,27 @@ const SignUpPage = () => {
   };
 
   const handleSignUp = async () => {
-    const signupResponse = await fetch("http://localhost:8080/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, username, password, usertype, otp }),
-    }).then((res) => res.json());
+    try {
+      const response = await fetch("http://localhost:8080/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, username, password, usertype, otp }),
+      });
 
-    if (!signupResponse.success) {
-      setError(signupResponse.error);
-      return;
+      if (response.error) {
+        setError(response.error);
+        return;
+      }
+
+      const user = await response.json();
+      if (user.usertype === "salon") {
+        createSalonInfo(user._id);
+      }
+      alert("Sign up successful");
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
     }
-    if (usertype === "salon") {
-      createSalonInfo();
-    }
-    alert("Sign up successful");
-    navigate("/login");
   };
 
   return (

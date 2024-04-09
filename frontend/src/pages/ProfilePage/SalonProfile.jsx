@@ -38,22 +38,22 @@ const SalonProfile = ({ user }) => {
   // 1. fetch information from backend
   useEffect(() => {
     const fetchSalonData = async () => {
-      const salonInfo = await fetchSalonInfo(user.username);
+      const salonInfo = await fetchSalonInfo(user._id);
       setSalonId(salonInfo._id);
       setSalonName(salonInfo.salonname);
       setAddress(salonInfo.address || "");
 
-      const salonImageData = await fetchSalonImages(user.username);
+      const salonImageData = await fetchSalonImages(salonInfo._id);
       setSalonImage(salonImageData);
 
-      const hairstylesData = await fetchHairstyles(user.username);
+      const hairstylesData = await fetchHairstyles(salonInfo._id);
       setHairstyles(hairstylesData);
 
       const plans = await fetchPlans(salonInfo._id);
       setPlans(plans);
     };
     fetchSalonData();
-  }, [user.username]);
+  }, [user]);
 
   // 2. change salon information, including salon name and address
   const changeSalonInfo = async (e) => {

@@ -6,10 +6,12 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchPlans } from "../ProfilePage/SalonApi";
+import { useUser } from "../../context/UserContext";
 
 const API_URL = "http://localhost:8080";
 
 export default function SalonDetailsPage() {
+  const { user } = useUser();
   const { salonId } = useParams();
   const [salon, setSalon] = useState({});
   const [plans, setPlans] = useState([]);
@@ -43,7 +45,26 @@ export default function SalonDetailsPage() {
   }, [salonId]);
 
   const handleContactClick = async () => {
-    navigate("/messages");
+    try {
+      const response = await fetch(`${API_URL}/chat/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          senderId: user._id,
+          receiverId: salon.user._id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating booking");
+      }
+      const chat = await response.json();
+      console.log(chat);
+      navigate("/messages");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleBookNowClick = () => {

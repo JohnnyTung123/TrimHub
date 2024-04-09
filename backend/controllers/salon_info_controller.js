@@ -2,15 +2,15 @@ const SalonInfo = require("../models/salon_info");
 const path = require("path");
 
 const createSalonInfo = async (req, res) => {
-  const { username, salonname } = req.body;
+  const { userId, salonname } = req.body;
 
   try {
-    // const duplicate = await SalonInfo.findOne({ username });
+    // const duplicate = await SalonInfo.findOne({ user: userId });
     // if (duplicate) {
-    //   return res.status(409).json({ error: "Salon name already in use" });
+    //   return res.status(409).json({ error: "UserId already in use" });
     // }
 
-    const salonInfo = await SalonInfo.create({ username, salonname });
+    const salonInfo = await SalonInfo.create({ user: userId, salonname });
     console.log("Create Salon Info:", salonInfo);
     res.status(201).json({ success: "Salon Info created successfully" });
   } catch (error) {
@@ -20,27 +20,21 @@ const createSalonInfo = async (req, res) => {
 };
 
 const getSalonInfo = async (req, res) => {
-  const { username, salonId } = req.query;
+  const { salonId, userId } = req.query;
 
-  if (salonId) {
-    try {
-      const salonInfo = await SalonInfo.findById(salonId);
+  try {
+    if (salonId) {
+      const salonInfo = await SalonInfo.findById(salonId).populate("user");
       console.log("Got Salon Info:", salonInfo);
       res.status(200).json(salonInfo);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Server side error: ${error.message}` });
-    }
-  } else if (username) {
-    try {
-      const salonInfo = await SalonInfo.findOne({ username });
+    } else if (userId) {
+      const salonInfo = await SalonInfo.findOne({ user: userId });
       console.log("Got Salon Info:", salonInfo);
       res.status(200).json(salonInfo);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
   }
 };
 
@@ -67,36 +61,19 @@ const updateSalonInfo = async (req, res) => {
 };
 
 const getSalonImage = async (req, res) => {
-  const { username, salonId } = req.query;
+  const { salonId } = req.query;
 
-  if (salonId) {
-    try {
-      const salonInfo = await SalonInfo.findById(salonId);
-      // If no image found, send a message
-      if (!salonInfo.imageFilename) {
-        console.log("No salon image found");
-        return res.status(404).json({ error: "No salon image found" });
-      }
-      console.log("Going to send Salon Image:", salonInfo.imageFilename);
-      res.status(200).sendFile(salonInfo.imagePath);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Server side error: ${error.message}` });
+  try {
+    const salonInfo = await SalonInfo.findById(salonId);
+    if (!salonInfo.imageFilename) {
+      console.log("No salon image found");
+      return res.status(404).json({ error: "No salon image found" });
     }
-  } else if (username) {
-    try {
-      const salonInfo = await SalonInfo.findOne({ username });
-      // If no image found, send a message
-      if (!salonInfo.imageFilename) {
-        console.log("No salon image found");
-        return res.status(404).json({ error: "No salon image found" });
-      }
-      console.log("Going to send Salon Image:", salonInfo.imageFilename);
-      res.status(200).sendFile(salonInfo.imagePath);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: `Server side error: ${error.message}` });
-    }
+    console.log("Going to send Salon Image:", salonInfo.imageFilename);
+    res.status(200).sendFile(salonInfo.imagePath);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
   }
 };
 
@@ -165,10 +142,10 @@ const deleteHairstyle = async (req, res) => {
 };
 
 const getHairstyles = async (req, res) => {
-  const { username } = req.query;
+  const { salonId } = req.query;
 
   try {
-    const salonInfo = await SalonInfo.findOne({ username });
+    const salonInfo = await SalonInfo.findById(salonId);
     console.log("Got Salon Info:", salonInfo);
     res.status(200).json(salonInfo.hairstyles);
   } catch (error) {
