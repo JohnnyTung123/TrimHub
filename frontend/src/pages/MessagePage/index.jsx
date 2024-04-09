@@ -34,12 +34,12 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
     <div className="flex min-h-screen w-64 bg-neutral-100">
       {chats.map((chat) => (
         <div key={chat._id} className="flex flex-col flex-1">
-          <span
-            className={`${ JSON.stringify(currentChat) === JSON.stringify(chat) ? "bg-green-300" : "" } p-4 mb-2 text-center text-xl border rounded-xl cursor-pointer`}
+          <button
+            className={`${ JSON.stringify(currentChat) === JSON.stringify(chat) ? "bg-green-600 text-white" : "bg-gray-200" } mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
             onClick={() => setCurrentChat(chat)}
           >
             {determineChatName(chat)}
-          </span>
+          </button>
         </div>
       ))}
     </div>
@@ -117,14 +117,36 @@ const Chat = ({ currentChat }) => {
 
   return (
     <div className="flex flex-col min-h-screen w-screen bg-gray-200">
-      <div class="flex-grow ml-2">
-        {messages.map((message) => (
-          <div key={message._id}>
-            <div className={`${ user._id === message.sender._id ? "float-right clear-right" : "float-left clear-left" } p-2 mt-2 text-xl rounded-xl border border-green-700 bg-opacity-80`}>
-              {message.content}
-            </div>
-          </div>
-        ))}
+      <div class="flex-grow mx-2">
+        {messages.map((message, index) => {
+          const isSender = user._id === message.sender._id;
+          const date = new Date(message.createdAt);
+          const dateLast = index !== 0 ? new Date(messages[index - 1].createdAt) : null;
+          const dateChanged = dateLast ? date.getDate() !== dateLast.getDate() : true;
+
+          return (
+            <>
+              {dateChanged && (
+                <div className="text-center">
+                  {date.toLocaleDateString()}
+                </div>
+              )}
+              <div key={message._id} className={`flex ${ isSender ? "flex-row-reverse" : "flex-row" } my-2`}>
+                <div className="rounded-xl border border-green-700 bg-opacity-80">
+                  <div className="px-2 font-bold">
+                    {message.sender.username}
+                  </div>
+                  <div className="px-2">
+                    {message.content}
+                  </div>
+                  <div className={`${ isSender ? "text-right" : "text-left" } mt-1 px-2 text-xs`}>
+                    {date.toLocaleTimeString()}
+                  </div>
+                </div>
+              </div>
+            </>
+          );
+        })}
       </div>
 
       {currentChat && (
@@ -135,14 +157,14 @@ const Chat = ({ currentChat }) => {
               value={newMessage}
               placeholder="Enter your messages here"
               onChange={handleMessageUpdate}
-              className="text-xl border border-gray-300 rounded mr-2 p-2"
+              className="text-lg border border-gray-300 rounded mr-2 p-2"
             />
             <button type="submit" class="bg-green-700 text-white">Send</button>
           </form>
         </div>
       )}
     </div>
-  )
+  );
 };
 
 const MessagePage = () => {

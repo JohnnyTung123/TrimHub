@@ -45,12 +45,13 @@ const getSalonInfo = async (req, res) => {
 };
 
 const updateSalonInfo = async (req, res) => {
+  const { salonId } = req.params;
   const { name, address } = req.body;
   console.log("Update Salon Info:", name, address);
 
   try {
     const salonInfo = await SalonInfo.findByIdAndUpdate(
-      req.params.salonId,
+      salonId,
       {
         name,
         address,
@@ -100,22 +101,20 @@ const getSalonImage = async (req, res) => {
 };
 
 const updateSalonImage = async (req, res) => {
-  const { salonId } = req.params.salonId;
+  const { salonId } = req.params;
+  console.log("Going to update Salon Image:", salonId);
 
   try {
     const salonInfo = await SalonInfo.findByIdAndUpdate(
       salonId,
       {
-        hairstyles: {
-          imageFilename: req.file.filename,
-          imagePath: path.resolve(req.file.path),
-          description: req.body.description,
-        },
+        imageFilename: req.file.filename,
+        imagePath: path.resolve(req.file.path),
       },
       { new: true },
     );
     console.log("Updated Salon Info:", salonInfo);
-    res.status(200).json({ success: "Salon image updateed successfully" });
+    res.status(200).json({ success: "Salon image updated successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: `Server side error: ${error.message}` });
