@@ -75,7 +75,7 @@ const signup = async (req, res) => {
       usertype: usertype,
     });
     console.log("Create User:", user);
-    res.status(201).json({ success: "User created successfully" });
+    res.status(201).json(user);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });
@@ -104,9 +104,7 @@ const login = async (req, res) => {
     );
 
     console.log("User login successfully");
-    res.status(200).json({
-      accessToken: accessToken,
-    });
+    res.status(200).json({ accessToken: accessToken });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });

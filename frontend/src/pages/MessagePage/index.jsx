@@ -31,16 +31,15 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
   };
 
   return (
-    <div className="flex min-h-screen w-64 bg-neutral-100">
+    <div className="min-h-screen w-64 bg-neutral-100">
       {chats.map((chat) => (
-        <div key={chat._id} className="flex flex-col flex-1">
-          <button
-            className={`${ JSON.stringify(currentChat) === JSON.stringify(chat) ? "bg-green-600 text-white" : "bg-gray-200" } mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
-            onClick={() => setCurrentChat(chat)}
-          >
-            {determineChatName(chat)}
-          </button>
-        </div>
+        <button
+          key={chat._id}
+          className={`${ JSON.stringify(currentChat) === JSON.stringify(chat) ? "bg-green-600 text-white" : "bg-gray-200" } w-full mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
+          onClick={() => setCurrentChat(chat)}
+        >
+          {determineChatName(chat)}
+        </button>
       ))}
     </div>
   );

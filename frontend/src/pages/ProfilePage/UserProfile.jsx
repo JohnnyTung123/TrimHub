@@ -1,4 +1,3 @@
-// UserProfile.jsx
 import React, { useState } from "react";
 
 const UserProfile = ({ user }) => {

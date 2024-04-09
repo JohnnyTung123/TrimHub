@@ -4,36 +4,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import { fetchPlans } from "../ProfilePage/SalonApi";
+import { useUser } from "../../context/UserContext";
+
+const API_URL = "http://localhost:8080";
 
 export default function SalonDetailsPage() {
+  const { user } = useUser();
   const { salonId } = useParams();
-  const API_URL = "http://localhost:8080";
-  const [salon, setSalon] = useState({
-    salonname: "ABC Salons",
-    address: "Rm123, Shatin",
-    priceRange: "$100~$200",
-    comments: 450,
-    rating: 4.5,
-    imageUrl: "/img/salon.png",
-    hairstyles: [
-      { _id: "1", name: "Hairstyle 1", imageUrl: "/img/haircut.png" },
-      { _id: "2", name: "Hairstyle 2", imageUrl: "/img/haircut.png" },
-      { _id: "3", name: "Hairstyle 3", imageUrl: "/img/haircut.png" },
-    ],
-    plans: [
-      { _id: "1", name: "Cut", description: "Description", price: "$100" },
-      { _id: "2", name: "Cut + Color", description: "Description", price: "$200" },
-      { _id: "3", name: "Treatment", description: "Description", price: "$200" },
-    ],
-  });
+  const [salon, setSalon] = useState({});
+  const [plans, setPlans] = useState([]);
+  const [chosenPlanId, setChosenPlanId] = useState("");
 
   const [comments, setComments] = useState([
     { id: 1, username: "User A", rating: 5, text: "It's good" },
     { id: 2, username: "User B", rating: 1, text: "It's bad" },
   ]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSalonInfo = async (salonId) => {
+    const fetchSalon = async (salonId) => {
       try {
         const response = await fetch(
           `${API_URL}/salon-info?salonId=${salonId}`
@@ -43,24 +34,52 @@ export default function SalonDetailsPage() {
         }
         const salon = await response.json();
         setSalon(salon);
+
+        const plans = await fetchPlans(salonId);
+        setPlans(plans);
       } catch (error) {
         console.error(error);
       }
     };
-
-    fetchSalonInfo(salonId);
+    fetchSalon(salonId);
   }, [salonId]);
 
-  if (!salon) {
-    return <h1>Loading...</h1>;
-  }
+  const handleContactClick = async () => {
+    try {
+      const response = await fetch(`${API_URL}/chat/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          senderId: user._id,
+          receiverId: salon.user._id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating booking");
+      }
+      const chat = await response.json();
+      console.log(chat);
+      navigate("/messages");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleBookNowClick = () => {
+    if (chosenPlanId === "") {
+      return;
+    }
+    navigate(`/bookingconfirmation/${chosenPlanId}`);
+  };
 
   return (
-    <div className="p-8 bg-gray-200 h-screen">
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
       {/* First Row */}
       <div className="flex flex-col md:flex-row mb-8">
         <div className="md:w-1/2 md:pr-4 mb-4 md:mb-0">
-          <img src={`${API_URL}/salon-info/image?salonId=${salonId}`} alt="Salon" className="w-full h-auto" />
+          <img src={`${API_URL}/salon-info/image?salonId=${salonId}`} alt="Salon" className="h-full w-auto"/>
         </div>
         <div className="md:w-1/2">
           <h1 className="text-3xl font-bold mb-2">{salon.salonname}</h1>
@@ -74,7 +93,7 @@ export default function SalonDetailsPage() {
             <FontAwesomeIcon icon={faStar} className="text-yellow-500 mr-2" />
             <span>{salon.rating}</span>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center mt-6">
             <h2 className="text-2xl font-bold mb-4 flex items-center">
               <span className="w-2 h-6 bg-green-700 mr-2"></span>
               Hairstyle
@@ -82,7 +101,7 @@ export default function SalonDetailsPage() {
           </div>
           <div className="flex items-center">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {salon.hairstyles.map((hairstyle) => (
+              {salon.hairstyles && salon.hairstyles.map((hairstyle) => (
                 <div key={hairstyle._id} className="text-center">
                   <img src={`${API_URL}/salon-info/hairstyles?hairstyleId=${hairstyle._id}`} alt={hairstyle.name} className="w-full h-auto mb-2" />
                 </div>
@@ -100,18 +119,34 @@ export default function SalonDetailsPage() {
           Plans
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          {salon.plans.map((plan) => (
-            <div key={plan._id} className="bg-white p-4 rounded-lg shadow-md">
+          {plans.map((plan) => (
+            <button
+              key={plan._id}
+              className={`${ plan._id === chosenPlanId ? "bg-gray-200" : "bg-white" } text-left rounded-lg shadow-md`}
+              onClick={() => setChosenPlanId(plan._id)}
+            >
               <p className="font-bold">{plan.name}</p>
               <p className="text-gray-600">{plan.description}</p>
               <p className="text-green-600 font-bold">{plan.price}</p>
-            </div>
+            </button>
           ))}
         </div>
         <button className="text-green-600 mb-4">Show more</button>
         <div>
-          <button className="px-6 py-2 bg-gray-200 text-gray-800 rounded mr-4">Contact</button>
-          <button className="px-6 py-2 bg-green-600 text-white rounded">Book Now</button>
+          <button
+            type="button"
+            className="px-4 py-2 bg-green-400 text-white rounded mr-4"
+            onClick={handleContactClick}
+          >
+            Contact
+          </button>
+          <button
+            type="button"
+            className="px-4 py-2 bg-green-700 text-white rounded"
+            onClick={handleBookNowClick}
+          >
+            Book Now
+          </button>
         </div>
       </div>
 
@@ -135,7 +170,7 @@ export default function SalonDetailsPage() {
         ))}
         <div className="mt-4">
           <textarea
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-4 border border-gray-300 rounded"
             placeholder="Type something..."
           ></textarea>
         </div>

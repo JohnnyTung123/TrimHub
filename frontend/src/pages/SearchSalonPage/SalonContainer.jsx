@@ -12,7 +12,7 @@ export default function SalonContainer({ salon }) {
     >
       {salon.imagePath ? (
         <img
-          src={`http://localhost:8080/salon-info/image?username=${salon.username}`}
+          src={`http://localhost:8080/salon-info/image?salonId=${salon._id}`}
           alt="Salon"
           className="w-32 h-32 object-cover rounded-md"
         />
