@@ -5,6 +5,7 @@ import {
   fetchSalonInfo,
   fetchSalonImages,
   fetchHairstyles,
+  fetchPlans,
   changeSalonInfoAPI,
   createHairstyleAPI,
   deleteHairstyleAPI,
@@ -37,17 +38,19 @@ const SalonProfile = ({ user }) => {
   // 1. fetch information from backend
   useEffect(() => {
     const fetchSalonData = async () => {
-      const salonInfoData = await fetchSalonInfo(user.username);
-      setSalonId(salonInfoData._id);
-      setSalonName(salonInfoData.salonname);
-      setAddress(salonInfoData.address || "");
-      setPlans(salonInfoData.plans || []);
+      const salonInfo = await fetchSalonInfo(user.username);
+      setSalonId(salonInfo._id);
+      setSalonName(salonInfo.salonname);
+      setAddress(salonInfo.address || "");
 
       const salonImageData = await fetchSalonImages(user.username);
       setSalonImage(salonImageData);
 
       const hairstylesData = await fetchHairstyles(user.username);
       setHairstyles(hairstylesData);
+
+      const plans = await fetchPlans(salonInfo._id);
+      setPlans(plans);
     };
     fetchSalonData();
   }, [user.username]);
@@ -134,19 +137,8 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await createPlanAPI(salonId, {
-        name: planName,
-        price: planPrice,
-        description: planDescription,
-      });
-      setPlans([
-        ...plans,
-        {
-          name: planName,
-          price: planPrice,
-          description: planDescription,
-        },
-      ]);
+      const plan = await createPlanAPI(salonId, planName, planPrice, planDescription);
+      setPlans([...plans, plan]);
       setPlanName("");
       setPlanPrice("");
       setPlanDescription("");
@@ -157,27 +149,20 @@ const SalonProfile = ({ user }) => {
   };
 
   // 6. delete plan
-  const deletePlan = async (index) => {
+  const deletePlan = async (planId) => {
     try {
-      await deletePlanAPI(salonId, index);
-      const updatedPlans = [...plans];
-      updatedPlans.splice(index, 1);
-      setPlans(updatedPlans);
+      await deletePlanAPI(planId);
+      setPlans((plans) => plans.filter((plan) => plan._id !== planId));
     } catch (error) {
       console.error(error);
     }
   };
 
   // 7. update plan
-  const updatePlan = async (index, plan) => {
+  const updatePlan = async (plan) => {
     try {
-      console.log("Updating plan:", index, plan);
-      await updatePlanAPI(salonId, {
-        index,
-        name: plan.name,
-        price: plan.price,
-        description: plan.description,
-      });
+      console.log("Going to update plan:", plan);
+      await updatePlanAPI(plan);
       alert("Plan updated successfully.");
     } catch (error) {
       console.error(error);
@@ -456,13 +441,13 @@ const SalonProfile = ({ user }) => {
                 </tbody>
               </table>
               <button
-                onClick={() => updatePlan(index, plan)}
+                onClick={() => updatePlan(plan)}
                 className="px-3 py-1 bg-blue-500 text-white rounded-md m-2"
               >
                 Confirm Changes
               </button>
               <button
-                onClick={() => deletePlan(index)}
+                onClick={() => deletePlan(plan._id)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md m-2"
               >
                 Delete Plan

@@ -37,19 +37,6 @@ const SalonInfoSchema = mongoose.Schema({
       },
     },
   ],
-  plans: [
-    {
-      name: {
-        type: String,
-      },
-      price: {
-        type: Number,
-      },
-      description: {
-        type: String,
-      },
-    },
-  ],
 });
 
 module.exports = mongoose.model("SalonInfo", SalonInfoSchema);

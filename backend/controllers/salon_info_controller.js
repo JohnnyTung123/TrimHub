@@ -177,78 +177,6 @@ const getHairstyles = async (req, res) => {
   }
 };
 
-const createPlan = async (req, res) => {
-  const { salonId } = req.params;
-  const { name, price, description } = req.body;
-
-  try {
-    const salonInfo = await SalonInfo.findByIdAndUpdate(
-      salonId,
-      {
-        $push: {
-          plans: {
-            name,
-            price,
-            description,
-          },
-        },
-      },
-      { new: true },
-    );
-    console.log("Updated Salon Info:", salonInfo);
-    res.status(200).json({ success: "Plan added successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
-  }
-};
-
-const deletePlan = async (req, res) => {
-  const { salonId } = req.params;
-  const { index } = req.body;
-  console.log("Delete Plan:", salonId, index);
-
-  try {
-    const salonInfo = await SalonInfo.findById(salonId);
-    salonInfo.plans.splice(index, 1);
-    await salonInfo.save();
-    console.log("Updated Salon Info:", salonInfo);
-    res.status(200).json({ success: "Plan deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
-  }
-};
-
-const updatePlan = async (req, res) => {
-  const { salonId } = req.params;
-  const { index, name, price, description } = req.body;
-
-  try {
-    const updatedSalonInfo = await SalonInfo.findByIdAndUpdate(
-      salonId,
-      {
-        $set: {
-          [`plans.${index}.name`]: name,
-          [`plans.${index}.price`]: price,
-          [`plans.${index}.description`]: description,
-        },
-      },
-      { new: true },
-    );
-
-    if (!updatedSalonInfo) {
-      return res.status(404).json({ error: "Salon not found" });
-    }
-
-    console.log("Updated Salon Info:", updatedSalonInfo);
-    res.status(200).json({ success: "Plan updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
-  }
-};
-
 // get all salons
 const getAllSalons = async (req, res) => {
   try {
@@ -270,8 +198,5 @@ module.exports = {
   createHairstyle,
   deleteHairstyle,
   getHairstyles,
-  createPlan,
-  deletePlan,
-  updatePlan,
   getAllSalons,
 };
