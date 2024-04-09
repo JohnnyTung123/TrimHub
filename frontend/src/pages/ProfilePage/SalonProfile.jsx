@@ -192,53 +192,49 @@ const SalonProfile = ({ user }) => {
         Salon Management
       </h2>
       <div className="flex items-center mb-5">
-        <div className="w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
-          {newSalonImage ? (
-            <img
-              src={URL.createObjectURL(newSalonImage)}
-              className="w-48 h-48 object-cover border rounded-md"
-              alt="Salon"
-            />
-          ) : salonImage ? (
-            <img
-              src={URL.createObjectURL(salonImage)}
-              className="w-48 h-48 object-cover border rounded-md"
-              alt="Salon"
-            />
-          ) : (
-            <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
-          )}
-        </div>
-        <div className="ml-5">
-          <table className="table-fixed border border-black w-full">
-            <tbody>
-              <tr>
-                <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
-                <td className="border border-black px-4 py-2">
-                  <input
-                    type="text"
-                    id="salonName"
-                    value={salonName}
-                    onChange={(e) => setSalonName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-black w-32 px-4 py-2 font-bold">Address</td>
-                <td className="border border-black px-4 py-2">
-                  <input
-                    type="text"
-                    id="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {newSalonImage ? (
+          <img
+            src={URL.createObjectURL(newSalonImage)}
+            className="w-48 h-48 object-cover border rounded-md"
+            alt="Salon"
+          />
+        ) : salonImage ? (
+          <img
+            src={URL.createObjectURL(salonImage)}
+            className="w-48 h-48 object-cover border rounded-md"
+            alt="Salon"
+          />
+        ) : (
+          <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
+        )}
+        <table className="table-fixed border border-black w-full mx-5">
+          <tbody>
+            <tr>
+              <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
+              <td className="border border-black px-4 py-2">
+                <input
+                  type="text"
+                  id="salonName"
+                  value={salonName}
+                  onChange={(e) => setSalonName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-black w-32 px-4 py-2 font-bold">Address</td>
+              <td className="border border-black px-4 py-2">
+                <input
+                  type="text"
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div>
         <input
