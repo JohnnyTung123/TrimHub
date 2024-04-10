@@ -57,7 +57,7 @@ export default function SalonDetailsPage() {
         }),
       });
       if (!response.ok) {
-        throw new Error("Error creating booking");
+        throw new Error("Error creating chat");
       }
       const chat = await response.json();
       console.log(chat);
@@ -71,7 +71,7 @@ export default function SalonDetailsPage() {
     if (chosenPlanId === "") {
       return;
     }
-    navigate(`/bookingconfirmation/${chosenPlanId}`);
+    navigate(`bookingconfirmation/${chosenPlanId}`);
   };
 
   return (

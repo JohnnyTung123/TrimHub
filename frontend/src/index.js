@@ -44,7 +44,7 @@ export default function App() {
             <Route path="/search" element={<SearchSalonPage />} />
             <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
             <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
-            <Route path="/bookingconfirmation/:planId" element={<BookingConfirmationPage />} />
+            <Route path="/salon/:salonId/bookingconfirmation/:planId" element={<BookingConfirmationPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NoPage />} />
           </Route>
