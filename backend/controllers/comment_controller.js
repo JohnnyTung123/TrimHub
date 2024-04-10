@@ -8,7 +8,7 @@ const createComment = async (req, res) => {
   try {
     const comment = await Comment.create({ username, content, salonId });
     console.log("Create Comment:", comment);
-    res.status(201).json({ success: "Comment created successfully" });
+    res.status(201).json({ success: "Comment created successfully", comment });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: `Server side error: ${error.message}` });

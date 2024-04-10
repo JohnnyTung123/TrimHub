@@ -26,11 +26,6 @@ router.post(
 router.get("/hairstyles", salonInfoController.getHairstyles);
 router.delete("/hairstyles/:salonId", salonInfoController.deleteHairstyle);
 
-// Salon Plans
-router.post("/plans/:salonId", salonInfoController.createPlan);
-router.delete("/plans/:salonId", salonInfoController.deletePlan);
-router.put("/plans/:salonId", salonInfoController.updatePlan);
-
 // Get all salons
 router.get("/all", salonInfoController.getAllSalons);
 

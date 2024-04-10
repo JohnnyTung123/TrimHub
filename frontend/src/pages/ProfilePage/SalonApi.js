@@ -1,8 +1,8 @@
 const API_URL = "http://localhost:8080";
 
-export const fetchSalonInfo = async (username) => {
+export const fetchSalonInfo = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/salon-info?username=${username}`);
+    const response = await fetch(`${API_URL}/salon-info?userId=${userId}`);
     if (!response.ok) {
       throw new Error("Error fetching salon info");
     }
@@ -13,10 +13,10 @@ export const fetchSalonInfo = async (username) => {
   }
 };
 
-export const fetchSalonImages = async (username) => {
+export const fetchSalonImages = async (salonId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/image?username=${username}`
+      `${API_URL}/salon-info/image?salonId=${salonId}`
     );
     if (response.status === 404) {
       return null;
@@ -32,16 +32,29 @@ export const fetchSalonImages = async (username) => {
   }
 };
 
-export const fetchHairstyles = async (username) => {
+export const fetchHairstyles = async (salonId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/hairstyles?username=${username}`
+      `${API_URL}/salon-info/hairstyles?salonId=${salonId}`
     );
     if (!response.ok) {
       throw new Error("Error fetching hairstyles");
     }
     const hairstyles = await response.json();
     return hairstyles;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchPlans = async (salonId) => {
+  try {
+    const response = await fetch(`${API_URL}/plan?salonId=${salonId}`);
+    if (!response.ok) {
+      throw new Error("Error fetching plan");
+    }
+    const plans = await response.json();
+    return plans;
   } catch (error) {
     console.error(error);
   }
@@ -69,7 +82,7 @@ export const changeSalonInfoAPI = async (
   salonId,
   salonName,
   address,
-  newSalonImage
+  newSalonImage,
 ) => {
   try {
     // Upload salon image first if there is a new image
@@ -136,31 +149,39 @@ export const deleteHairstyleAPI = async (salonId, hairstyleId) => {
   }
 };
 
-export const createPlanAPI = async (salonId, data) => {
+export const createPlanAPI = async (
+  salonId,
+  planName,
+  planPrice,
+  planDescription,
+) => {
   try {
-    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
+    const response = await fetch(`${API_URL}/plan/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        salonId: salonId,
+        name: planName,
+        price: planPrice,
+        description: planDescription,
+      }),
     });
     if (!response.ok) {
       throw new Error("Error creating plan");
     }
+    const plan = await response.json();
+    return plan;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const deletePlanAPI = async (salonId, index) => {
+export const deletePlanAPI = async (planId) => {
   try {
-    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
+    const response = await fetch(`${API_URL}/plan/${planId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ index }),
     });
     if (!response.ok) {
       throw new Error("Error deleting plan");
@@ -170,14 +191,18 @@ export const deletePlanAPI = async (salonId, index) => {
   }
 };
 
-export const updatePlanAPI = async (salonId, data) => {
+export const updatePlanAPI = async (plan) => {
   try {
-    const response = await fetch(`${API_URL}/salon-info/plans/${salonId}`, {
+    const response = await fetch(`${API_URL}/plan/${plan._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        name: plan.name,
+        price: plan.price,
+        description: plan.description,
+      }),
     });
     if (!response.ok) {
       throw new Error("Error updating plan");

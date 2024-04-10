@@ -35,13 +35,15 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/salon" element={<SalonPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/bookings" element={<BookingPage />} />
+            <Route path="/messages" element={<MessagePage />} />
             <Route path="/savedsalon" element={<SavedSalonPage />} />
             <Route path="/savedhaircut" element={<SavedHaircutPage />} />
             <Route path="/search" element={<SearchSalonPage />} />
             <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
             <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
             <Route
-              path="/bookingconfirmation"
+              path="/bookingconfirmation/:planId"
               element={<BookingConfirmationPage />}
             />
             <Route path="/bookings" element={<BookingPage />} />

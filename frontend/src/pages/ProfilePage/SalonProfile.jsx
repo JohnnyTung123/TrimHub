@@ -5,6 +5,7 @@ import {
   fetchSalonInfo,
   fetchSalonImages,
   fetchHairstyles,
+  fetchPlans,
   changeSalonInfoAPI,
   createHairstyleAPI,
   deleteHairstyleAPI,
@@ -37,20 +38,22 @@ const SalonProfile = ({ user }) => {
   // 1. fetch information from backend
   useEffect(() => {
     const fetchSalonData = async () => {
-      const salonInfoData = await fetchSalonInfo(user.username);
-      setSalonId(salonInfoData._id);
-      setSalonName(salonInfoData.salonname);
-      setAddress(salonInfoData.address || "");
-      setPlans(salonInfoData.plans || []);
+      const salonInfo = await fetchSalonInfo(user._id);
+      setSalonId(salonInfo._id);
+      setSalonName(salonInfo.salonname);
+      setAddress(salonInfo.address || "");
 
-      const salonImageData = await fetchSalonImages(user.username);
+      const salonImageData = await fetchSalonImages(salonInfo._id);
       setSalonImage(salonImageData);
 
-      const hairstylesData = await fetchHairstyles(user.username);
+      const hairstylesData = await fetchHairstyles(salonInfo._id);
       setHairstyles(hairstylesData);
+
+      const plans = await fetchPlans(salonInfo._id);
+      setPlans(plans);
     };
     fetchSalonData();
-  }, [user.username]);
+  }, [user]);
 
   // 2. change salon information, including salon name and address
   const changeSalonInfo = async (e) => {
@@ -134,19 +137,8 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await createPlanAPI(salonId, {
-        name: planName,
-        price: planPrice,
-        description: planDescription,
-      });
-      setPlans([
-        ...plans,
-        {
-          name: planName,
-          price: planPrice,
-          description: planDescription,
-        },
-      ]);
+      const plan = await createPlanAPI(salonId, planName, planPrice, planDescription);
+      setPlans([...plans, plan]);
       setPlanName("");
       setPlanPrice("");
       setPlanDescription("");
@@ -157,27 +149,20 @@ const SalonProfile = ({ user }) => {
   };
 
   // 6. delete plan
-  const deletePlan = async (index) => {
+  const deletePlan = async (planId) => {
     try {
-      await deletePlanAPI(salonId, index);
-      const updatedPlans = [...plans];
-      updatedPlans.splice(index, 1);
-      setPlans(updatedPlans);
+      await deletePlanAPI(planId);
+      setPlans((plans) => plans.filter((plan) => plan._id !== planId));
     } catch (error) {
       console.error(error);
     }
   };
 
   // 7. update plan
-  const updatePlan = async (index, plan) => {
+  const updatePlan = async (plan) => {
     try {
-      console.log("Updating plan:", index, plan);
-      await updatePlanAPI(salonId, {
-        index,
-        name: plan.name,
-        price: plan.price,
-        description: plan.description,
-      });
+      console.log("Going to update plan:", plan);
+      await updatePlanAPI(plan);
       alert("Plan updated successfully.");
     } catch (error) {
       console.error(error);
@@ -192,57 +177,49 @@ const SalonProfile = ({ user }) => {
         Salon Management
       </h2>
       <div className="flex items-center mb-5">
-        <div className="w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
-          {newSalonImage ? (
-            <img
-              src={URL.createObjectURL(newSalonImage)}
-              className="w-48 h-48 object-cover border rounded-md"
-              alt="Salon"
-            />
-          ) : salonImage ? (
-            <img
-              src={URL.createObjectURL(salonImage)}
-              className="w-48 h-48 object-cover border rounded-md"
-              alt="Salon"
-            />
-          ) : (
-            <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
-          )}
-        </div>
-        <div className="ml-5">
-          <table className="table-fixed border border-black w-full">
-            <tbody>
-              <tr>
-                <td className="border border-black w-32 px-4 py-2 font-bold">
-                  Salon Name
-                </td>
-                <td className="border border-black px-4 py-2">
-                  <input
-                    type="text"
-                    id="salonName"
-                    value={salonName}
-                    onChange={(e) => setSalonName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border border-black w-32 px-4 py-2 font-bold">
-                  Address
-                </td>
-                <td className="border border-black px-4 py-2">
-                  <input
-                    type="text"
-                    id="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {newSalonImage ? (
+          <img
+            src={URL.createObjectURL(newSalonImage)}
+            className="w-48 h-48 object-cover border rounded-md"
+            alt="Salon"
+          />
+        ) : salonImage ? (
+          <img
+            src={URL.createObjectURL(salonImage)}
+            className="w-48 h-48 object-cover border rounded-md"
+            alt="Salon"
+          />
+        ) : (
+          <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
+        )}
+        <table className="table-fixed border border-black w-full mx-5">
+          <tbody>
+            <tr>
+              <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
+              <td className="border border-black px-4 py-2">
+                <input
+                  type="text"
+                  id="salonName"
+                  value={salonName}
+                  onChange={(e) => setSalonName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-black w-32 px-4 py-2 font-bold">Address</td>
+              <td className="border border-black px-4 py-2">
+                <input
+                  type="text"
+                  id="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div>
         <input
@@ -418,9 +395,7 @@ const SalonProfile = ({ user }) => {
               <table className="table-fixed border border-black w-full">
                 <tbody>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">
-                      Plan Name
-                    </td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Plan Name</td>
                     <td className="border border-black px-4 py-2">
                       <input
                         type="text"
@@ -435,9 +410,7 @@ const SalonProfile = ({ user }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">
-                      Price
-                    </td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Price</td>
                     <td className="border border-black px-4 py-2">
                       <input
                         type="number"
@@ -452,9 +425,7 @@ const SalonProfile = ({ user }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">
-                      Description
-                    </td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">Description</td>
                     <td className="border border-black px-4 py-2">
                       <textarea
                         value={plan.description}
@@ -470,13 +441,13 @@ const SalonProfile = ({ user }) => {
                 </tbody>
               </table>
               <button
-                onClick={() => updatePlan(index, plan)}
+                onClick={() => updatePlan(plan)}
                 className="px-3 py-1 bg-blue-500 text-white rounded-md m-2"
               >
                 Confirm Changes
               </button>
               <button
-                onClick={() => deletePlan(index)}
+                onClick={() => deletePlan(plan._id)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md m-2"
               >
                 Delete Plan

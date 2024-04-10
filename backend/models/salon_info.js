@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 
 const SalonInfoSchema = mongoose.Schema({
-  username: {
-    type: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
     unique: true,
-    lowercase: true,
-    trim: true,
   },
   salonname: {
     type: String,
@@ -31,19 +30,6 @@ const SalonInfoSchema = mongoose.Schema({
       },
       imagePath: {
         type: String,
-      },
-      description: {
-        type: String,
-      },
-    },
-  ],
-  plans: [
-    {
-      name: {
-        type: String,
-      },
-      price: {
-        type: Number,
       },
       description: {
         type: String,
