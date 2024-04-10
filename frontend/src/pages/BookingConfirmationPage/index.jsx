@@ -12,6 +12,7 @@ export default function BookingConfirmationPage() {
   const { salonId, planId } = useParams();
 
   const [plan, setPlan] = useState({});
+  const [bookings, setBookings] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showBookingConfirmation, setBookingConfirmation] = useState(false);
   const navigate = useNavigate();
@@ -29,15 +30,32 @@ export default function BookingConfirmationPage() {
       } catch (error) {
         console.error(error);
       }
-    }
+    };
+
+    const fetchBookings = async () => {
+      try {
+        const response = await fetch(`${API_URL}/booking?planId=${planId}`);
+        if (!response.ok) {
+          throw new Error("Error fetching bookings");
+        }
+        const bookings = await response.json();
+        console.log(bookings);
+        setBookings(bookings);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchPlan();
+    fetchBookings();
   }, [planId]);
 
-  const filterPassedTime = (time) => {
+  const filterTime = (time) => {
     const currentDate = new Date();
     const selectedDate = new Date(time);
-
-    return currentDate.getTime() < selectedDate.getTime();
+    const timeIsFuture = currentDate.getTime() < selectedDate.getTime();
+    const timeIsNotBook = !bookings.find((booking) => new Date(booking.date).getTime() === selectedDate.getTime());
+    return timeIsFuture && timeIsNotBook;
   };
 
   const handleBookNowClick = async () => {
@@ -100,7 +118,7 @@ export default function BookingConfirmationPage() {
                   showTimeSelect
                   minTime={new Date(0, 0, 0, 10, 0)}
                   maxTime={new Date(0, 0, 0, 20, 0)}
-                  filterTime={filterPassedTime}
+                  filterTime={filterTime}
                   dateFormat="MMMM d, yyyy h:mm aa"
                   className="border rounded focus:outline-none focus:border-blue-500"
                 />

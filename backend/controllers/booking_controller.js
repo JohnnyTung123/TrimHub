@@ -35,10 +35,11 @@ const createBooking = async (req, res) => {
 };
 
 const getBookings = async (req, res) => {
-  const { userId } = req.query;
+  const { userId, planId } = req.query;
+  const query = userId ? { user: userId } : planId ? { plan: planId } : null;
 
   try {
-    const bookings = await Booking.find({ user: userId })
+    const bookings = await Booking.find(query)
       .populate("user")
       .populate({
         path: "plan",
