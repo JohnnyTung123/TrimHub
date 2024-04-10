@@ -43,11 +43,11 @@ const SalonProfile = ({ user }) => {
       setSalonName(salonInfo.salonname);
       setAddress(salonInfo.address || "");
 
-      const salonImageData = await fetchSalonImages(salonInfo._id);
-      setSalonImage(salonImageData);
+      const salonImage = await fetchSalonImages(salonInfo._id);
+      setSalonImage(salonImage);
 
-      const hairstylesData = await fetchHairstyles(salonInfo._id);
-      setHairstyles(hairstylesData);
+      const hairstyles = await fetchHairstyles(salonInfo._id);
+      setHairstyles(hairstyles);
 
       const plans = await fetchPlans(salonInfo._id);
       setPlans(plans);
@@ -87,19 +87,9 @@ const SalonProfile = ({ user }) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("hairstyle-image", hairstyleImage);
-    formData.append("description", hairstyleDescription);
-
     try {
-      await createHairstyleAPI(salonId, formData);
-      setHairstyles([
-        ...hairstyles,
-        {
-          image: URL.createObjectURL(hairstyleImage),
-          description: hairstyleDescription,
-        },
-      ]);
+      const hairstyle = await createHairstyleAPI(salonId, hairstyleImage, hairstyleDescription);
+      setHairstyles([...hairstyles, hairstyle]);
       setHairstyleImage(null);
       setHairstyleDescription("");
       setShowUploadForm(false);
@@ -109,12 +99,10 @@ const SalonProfile = ({ user }) => {
   };
 
   // 4. delete haircut
-  const deleteHairstyle = async (index) => {
+  const deleteHairstyle = async (hairstyleId) => {
     try {
-      await deleteHairstyleAPI(salonId, index);
-      const updatedHairstyles = [...hairstyles];
-      updatedHairstyles.splice(index, 1);
-      setHairstyles(updatedHairstyles);
+      await deleteHairstyleAPI(hairstyleId);
+      setHairstyles((hairstyles) => hairstyles.filter((hairstyle) => hairstyle._id !== hairstyleId));
     } catch (error) {
       console.error(error);
     }
@@ -192,7 +180,7 @@ const SalonProfile = ({ user }) => {
         ) : (
           <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
         )}
-        <table className="table-fixed border border-black w-full mx-5">
+        <table className="table-fixed border border-black w-full min-w-0 mx-5">
           <tbody>
             <tr>
               <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
@@ -297,20 +285,18 @@ const SalonProfile = ({ user }) => {
             Upload new hairstyle
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          {hairstyles.map((hairstyle, index) => (
-            <div key={index} className="flex flex-col">
-              <p>{hairstyle.imagePath}</p>
+        <div className="grid grid-cols-6 gap-4">
+          {hairstyles.map((hairstyle) => (
+            <div key={hairstyle._id} className="mb-4">
               <img
-                src={hairstyle.imagePath}
-                alt={`Hairstyle ${index}`}
-                className="w-full h-48 object-cover rounded-md"
+                src={`http://localhost:8080/hairstyle/${hairstyle._id}`}
+                alt={`Hairstyle ${hairstyle._id}`}
+                className="h-64 object-cover"
               />
-              <p className="mt-2">{hairstyle.description}</p>
-              {/* delete hairstyle */}
+              <p className="my-2">{hairstyle.description}</p>
               <button
-                onClick={() => deleteHairstyle(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
+                onClick={() => deleteHairstyle(hairstyle._id)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md"
               >
                 Delete Hairstyle
               </button>
@@ -391,7 +377,7 @@ const SalonProfile = ({ user }) => {
         </div>
         <div className="grid grid-cols-3 gap-4">
           {plans.map((plan, index) => (
-            <div key={index} className="mb-4">
+            <div key={plan._id} className="mb-4">
               <table className="table-fixed border border-black w-full">
                 <tbody>
                   <tr>
@@ -442,13 +428,13 @@ const SalonProfile = ({ user }) => {
               </table>
               <button
                 onClick={() => updatePlan(plan)}
-                className="px-3 py-1 bg-blue-500 text-white rounded-md m-2"
+                className="px-3 py-1 bg-blue-500 text-white rounded-md mr-2 mt-2"
               >
                 Confirm Changes
               </button>
               <button
                 onClick={() => deletePlan(plan._id)}
-                className="px-3 py-1 bg-red-500 text-white rounded-md m-2"
+                className="px-3 py-1 bg-red-500 text-white rounded-md"
               >
                 Delete Plan
               </button>

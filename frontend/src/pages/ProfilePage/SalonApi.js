@@ -35,7 +35,7 @@ export const fetchSalonImages = async (salonId) => {
 export const fetchHairstyles = async (salonId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/hairstyles?salonId=${salonId}`
+      `${API_URL}/hairstyle?salonId=${salonId}`
     );
     if (!response.ok) {
       throw new Error("Error fetching hairstyles");
@@ -110,35 +110,42 @@ export const changeSalonInfoAPI = async (
   }
 };
 
-export const createHairstyleAPI = async (salonId, formData) => {
+export const createHairstyleAPI = async (
+  salonId,
+  hairstyleImage,
+  hairstyleDescription
+) => {
+  const formData = new FormData();
+  formData.append("salonId", salonId);
+  formData.append("hairstyle-image", hairstyleImage);
+  formData.append("description", hairstyleDescription);
+
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/hairstyles/${salonId}`,
+      `${API_URL}/hairstyle`,
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
     if (!response.ok) {
       throw new Error("Failed to add hairstyle.");
     }
+    const hairstyle = await response.json();
+    return hairstyle;
   } catch (error) {
     console.error("Error adding hairstyle:", error);
     throw error;
   }
 };
 
-export const deleteHairstyleAPI = async (salonId, hairstyleId) => {
+export const deleteHairstyleAPI = async (hairstyleId) => {
   try {
     const response = await fetch(
-      `${API_URL}/salon-info/hairstyles/${salonId}`,
+      `${API_URL}/hairstyle/${hairstyleId}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: hairstyleId }),
-      }
+      },
     );
     if (!response.ok) {
       throw new Error("Failed to delete hairstyle.");

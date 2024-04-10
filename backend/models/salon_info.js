@@ -23,19 +23,6 @@ const SalonInfoSchema = mongoose.Schema({
   imagePath: {
     type: String,
   },
-  hairstyles: [
-    {
-      imageFilename: {
-        type: String,
-      },
-      imagePath: {
-        type: String,
-      },
-      description: {
-        type: String,
-      },
-    },
-  ],
   reaction: [
     {
       username: {
