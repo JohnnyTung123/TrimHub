@@ -31,7 +31,6 @@ const getSalonInfo = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    return;
   } else if (username) {
     try {
       const salonInfo = await SalonInfo.findOne({ username });
@@ -56,7 +55,7 @@ const updateSalonInfo = async (req, res) => {
         name,
         address,
       },
-      { new: true }
+      { new: true },
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon info updated successfully" });
@@ -83,7 +82,6 @@ const getSalonImage = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: `Server side error: ${error.message}` });
     }
-    return;
   } else if (username) {
     try {
       const salonInfo = await SalonInfo.findOne({ username });
@@ -102,9 +100,11 @@ const getSalonImage = async (req, res) => {
 };
 
 const updateSalonImage = async (req, res) => {
+  const { salonId } = req.params.salonId;
+
   try {
     const salonInfo = await SalonInfo.findByIdAndUpdate(
-      req.params.salonId,
+      salonId,
       {
         hairstyles: {
           imageFilename: req.file.filename,
@@ -112,7 +112,7 @@ const updateSalonImage = async (req, res) => {
           description: req.body.description,
         },
       },
-      { new: true }
+      { new: true },
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon image updateed successfully" });
@@ -138,7 +138,7 @@ const createHairstyle = async (req, res) => {
           },
         },
       },
-      { new: true }
+      { new: true },
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Hairstyle added successfully" });
@@ -151,7 +151,6 @@ const createHairstyle = async (req, res) => {
 const deleteHairstyle = async (req, res) => {
   const { salonId } = req.params;
   const { index } = req.body;
-
   console.log("Delete Hairstyle:", salonId, index);
 
   try {
@@ -195,7 +194,7 @@ const createPlan = async (req, res) => {
           },
         },
       },
-      { new: true }
+      { new: true },
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Plan added successfully" });
@@ -208,7 +207,6 @@ const createPlan = async (req, res) => {
 const deletePlan = async (req, res) => {
   const { salonId } = req.params;
   const { index } = req.body;
-
   console.log("Delete Plan:", salonId, index);
 
   try {
@@ -237,7 +235,7 @@ const updatePlan = async (req, res) => {
           [`plans.${index}.description`]: description,
         },
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedSalonInfo) {

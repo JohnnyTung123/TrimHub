@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import './SavedSalonPage.css'; // Make sure to import the CSS file you are going to create
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as faBookmarkSolid, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as faBookmarkRegular, faComment } from '@fortawesome/free-regular-svg-icons';
 
 const SavedSalonPage = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const username = 'username';
+  const [bookmarks, setBookmarks] = useState({});
 
   const salons = [
     {
+      id: 1,
       name: "ABC Salons",
       location: "Rm123, Shatin",
       priceRange: "$100-$200",
@@ -15,58 +16,69 @@ const SavedSalonPage = () => {
       imageUrl: "./img/salon.png" 
     }, 
     {
-        name: "ABC Salons",
-        location: "Rm123, Shatin",
-        priceRange: "$100-$200",
-        rating: 4.5,
-        imageUrl: "./img/salon.png" 
+      id: 2,
+      name: "ABC Salons",
+      location: "Rm123, Shatin",
+      priceRange: "$100-$200",
+      comments: 450,
+      rating: 4.5,
+      imageUrl: "./img/salon.png" 
      }
   ];
 
+  const toggleBookmark = (id) => {
+    setBookmarks((prevBookmarks) => ({
+      ...prevBookmarks,
+      [id]: !prevBookmarks[id],
+    }));
+  };
+
   return (
-    <div className="savedsalon-page">
-      <header className="savedsalon-header">
-        <h1>Trim Hub</h1>
-        <nav className="navigation">
-          <a href="/men">Men</a>
-          <a href="/women">Woman</a>
-          <div className="dropdown">
-            <button className="dropbtn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <span className="username">{username}</span>
-              <span className="icons"> ▽</span>
-            </button>
-            {dropdownOpen && (
-              <div className="dropdown-content">
-                <div className="user-info">
-                  <div className="avatar">{/* User Avatar Image */}</div>
-                  <div className="username">{username}</div>
-                </div>
-                <a href="/profile">User information</a>
-                <a href="/bookings">Bookings</a>
-                <a href="/messages">Messages</a>
-                <a href="/savedsalon">Saved salons</a>
-                <a href="/savedhaircut">Saved haircut</a>
+    <div className="bg-gray-200 p-5 min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 flex items-center">
+        <span className="w-2 h-6 bg-green-700 mr-2"></span>
+        Saved Salons
+      </h2>
+      <div>
+        {salons.map((haircut) => (
+          <div className="flex items-center mb-5 bg-white rounded-lg shadow-md" key={haircut.id}>
+            <img src={haircut.imageUrl} alt="Haircut" className="w-64 h-64 rounded-l-lg object-cover" />
+            <div className="flex-grow px-4">
+              <h2 className="text-xl font-bold mb-1 flex items-center">
+                {haircut.name}
+                <button
+                  className="ml-2 focus:outline-none"
+                  onClick={() => toggleBookmark(haircut.id)}
+                >
+                  <FontAwesomeIcon
+                    icon={bookmarks[haircut.id] ? faBookmarkSolid : faBookmarkRegular}
+                  />
+                </button>
+              </h2>
+              <p className="text-gray-500 mb-1">{haircut.location}</p>
+              <p className="text-green-600 font-bold mb-1">{haircut.priceRange}</p>
+              <div className="flex items-center">
+                <span className="mr-1">
+                  <FontAwesomeIcon icon={faComment} />
+                </span>
+                <span className="text-gray-700 mr-1">{haircut.comments}</span>
               </div>
-            )}
-          </div>
-        </nav>
-      </header>
-      <main className="savedsalon-main">
-        <div className="salon-list">
-          {salons.map((salon, index) => (
-            <div className="salon-item" key={index}>
-              <img src={salon.imageUrl} alt="Salon" className="salon-image" />
-              <div className="salon-info">
-                <h2 className="salon-name">{salon.name}</h2>
-                <p className="salon-location">{salon.location}</p>
-                <p className="salon-price">{salon.priceRange}</p>
-                <div className="salon-rating">⭐ {salon.rating}</div>
+              <div className="flex items-center">
+                <span className="text-yellow-500 mr-1">
+                  <FontAwesomeIcon icon={faStar} />
+                </span>
+                <span className="text-gray-700 mr-1">{haircut.rating}</span>
               </div>
-              <button className="book-button">Book Now</button>
+              <button className="bg-green-500 text-white rounded mb-2">
+                Contact
+              </button>
+              <button className="bg-green-700 text-white rounded mb-2">
+                Book now
+              </button>
             </div>
-          ))}
-        </div>
-      </main>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -5,30 +5,36 @@ import {
   fetchSalonInfo,
   fetchSalonImages,
   fetchHairstyles,
-  changeSalonInfo,
-  createHairstyle,
-  deleteHairstyle,
-  createNewPlan,
-  deletePlan,
-  updatePlanInfo,
+  changeSalonInfoAPI,
+  createHairstyleAPI,
+  deleteHairstyleAPI,
+  createPlanAPI,
+  deletePlanAPI,
+  updatePlanAPI,
 } from "./SalonApi";
 
 const SalonProfile = ({ user }) => {
+  // salon information
   const [salonId, setSalonId] = useState("");
   const [salonName, setSalonName] = useState("");
   const [address, setAddress] = useState("");
   const [salonImage, setSalonImage] = useState(null);
   const [newSalonImage, setNewSalonImage] = useState(null);
+
+  // hairstyle image
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [hairstyles, setHairstyles] = useState([]);
   const [hairstyleImage, setHairstyleImage] = useState(null);
   const [hairstyleDescription, setHairstyleDescription] = useState("");
-  const [hairstyles, setHairstyles] = useState([]);
+
+  // salon plan
   const [showPlanForm, setShowPlanForm] = useState(false);
   const [plans, setPlans] = useState([]);
   const [planName, setPlanName] = useState("");
   const [planPrice, setPlanPrice] = useState("");
   const [planDescription, setPlanDescription] = useState("");
 
+  // 1. fetch information from backend
   useEffect(() => {
     const fetchSalonData = async () => {
       const salonInfoData = await fetchSalonInfo(user.username);
@@ -41,14 +47,13 @@ const SalonProfile = ({ user }) => {
       setSalonImage(salonImageData);
 
       const hairstylesData = await fetchHairstyles(user.username);
-      console.log("Hairstyles:", hairstylesData);
       setHairstyles(hairstylesData);
     };
     fetchSalonData();
   }, [user.username]);
 
-  // 1. change salon information, including salon name and address
-  const changeSalonInformation = async (e) => {
+  // 2. change salon information, including salon name and address
+  const changeSalonInfo = async (e) => {
     e.preventDefault();
     if (!salonName) {
       alert("Please enter a salon name.");
@@ -60,7 +65,7 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await changeSalonInfo(salonId, salonName, address, newSalonImage);
+      await changeSalonInfoAPI(salonId, salonName, address, newSalonImage);
       alert("Salon information updated successfully.");
     } catch (error) {
       console.error(error);
@@ -68,7 +73,7 @@ const SalonProfile = ({ user }) => {
   };
 
   // 3. create new haircut
-  const createHaircut = async (e) => {
+  const createHairstyle = async (e) => {
     e.preventDefault();
     if (!hairstyleImage) {
       alert("Please upload a hairstyle image.");
@@ -84,7 +89,7 @@ const SalonProfile = ({ user }) => {
     formData.append("description", hairstyleDescription);
 
     try {
-      await createHairstyle(salonId, formData);
+      await createHairstyleAPI(salonId, formData);
       setHairstyles([
         ...hairstyles,
         {
@@ -101,9 +106,9 @@ const SalonProfile = ({ user }) => {
   };
 
   // 4. delete haircut
-  const removeHairstyle = async (index) => {
+  const deleteHairstyle = async (index) => {
     try {
-      await deleteHairstyle(salonId, index);
+      await deleteHairstyleAPI(salonId, index);
       const updatedHairstyles = [...hairstyles];
       updatedHairstyles.splice(index, 1);
       setHairstyles(updatedHairstyles);
@@ -129,7 +134,7 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      await createNewPlan(salonId, {
+      await createPlanAPI(salonId, {
         name: planName,
         price: planPrice,
         description: planDescription,
@@ -152,9 +157,9 @@ const SalonProfile = ({ user }) => {
   };
 
   // 6. delete plan
-  const removePlan = async (index) => {
+  const deletePlan = async (index) => {
     try {
-      await deletePlan(salonId, index);
+      await deletePlanAPI(salonId, index);
       const updatedPlans = [...plans];
       updatedPlans.splice(index, 1);
       setPlans(updatedPlans);
@@ -167,7 +172,7 @@ const SalonProfile = ({ user }) => {
   const updatePlan = async (index, plan) => {
     try {
       console.log("Updating plan:", index, plan);
-      await updatePlanInfo(salonId, {
+      await updatePlanAPI(salonId, {
         index,
         name: plan.name,
         price: plan.price,
@@ -180,77 +185,94 @@ const SalonProfile = ({ user }) => {
   };
 
   return (
-    <div className="p-5 font-sans">
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
       {/* Salon Profile */}
-      <h1 className="text-3xl font-bold mb-5">Salon Profile</h1>
-      <div className="flex flex-col mb-5">
-        <div className="w-48 h-48 w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
+      <h2 className="text-2xl font-bold mb-4 flex items-center">
+        <span className="w-2 h-6 bg-green-700 mr-2"></span>
+        Salon Management
+      </h2>
+      <div className="flex items-center mb-5">
+        <div className="w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
           {newSalonImage ? (
             <img
               src={URL.createObjectURL(newSalonImage)}
-              className="w-48 h-48 mr-5 object-cover border rounded-md"
+              className="w-48 h-48 object-cover border rounded-md"
               alt="Salon"
             />
           ) : salonImage ? (
             <img
-              src={salonImage}
-              className="w-48 h-48 mr-5 object-cover border rounded-md"
+              src={URL.createObjectURL(salonImage)}
+              className="w-48 h-48 object-cover border rounded-md"
               alt="Salon"
             />
           ) : (
             <FontAwesomeIcon icon={faImage} size="3x" className="mr-5" />
           )}
         </div>
-        <div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setNewSalonImage(e.target.files[0]);
-            }}
-            className="mb-3"
-          />
+        <div className="ml-5">
+          <table className="table-fixed border border-black w-full">
+            <tbody>
+              <tr>
+                <td className="border border-black w-32 px-4 py-2 font-bold">
+                  Salon Name
+                </td>
+                <td className="border border-black px-4 py-2">
+                  <input
+                    type="text"
+                    id="salonName"
+                    value={salonName}
+                    onChange={(e) => setSalonName(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-black w-32 px-4 py-2 font-bold">
+                  Address
+                </td>
+                <td className="border border-black px-4 py-2">
+                  <input
+                    type="text"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <form onSubmit={changeSalonInformation} className="mb-5">
-        <div className="mb-5">
-          <label className="text-lg mr-2">Salon Name:</label>
-          <input
-            type="text"
-            value={salonName}
-            onChange={(e) => setSalonName(e.target.value)}
-            className="px-3 py-2 border rounded-md"
-          />
-        </div>
-        <div className="mb-5">
-          <label className="text-lg mr-2">Address:</label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="px-3 py-2 border rounded-md"
-          />
-        </div>
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setNewSalonImage(e.target.files[0])}
+          className="mb-3"
+        />
         <button
-          type="submit"
-          className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
+          onClick={changeSalonInfo}
+          className="px-4 py-2 bg-green-700 text-white rounded-md text-lg"
         >
-          Change Salon Information
+          Change salon information
         </button>
-      </form>
+      </div>
+
       {/* hairstyle */}
       {showUploadForm && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <form
-            onSubmit={createHaircut}
-            className="bg-white p-10 rounded-md shadow-lg "
+            onSubmit={createHairstyle}
+            className="bg-white p-10 rounded-md shadow-lg"
           >
             <FontAwesomeIcon
               icon={faTimes}
               onClick={() => setShowUploadForm(false)}
               className="text-2xl absolute top-3 right-3 cursor-pointer"
             />
-            <h2 className="text-2xl font-bold mb-4 text-center">
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="w-2 h-6 bg-green-700 mr-2"></span>
               Upload New Hairstyle
             </h2>
             <div className="w-48 h-48 w-48 h-48 mr-5 object-cover border rounded-md flex items-center justify-center">
@@ -267,9 +289,7 @@ const SalonProfile = ({ user }) => {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                setHairstyleImage(e.target.files[0]);
-              }}
+              onChange={(e) => setHairstyleImage(e.target.files[0])}
               className="w-full"
             />
             <div className="mb-4">
@@ -278,12 +298,12 @@ const SalonProfile = ({ user }) => {
                 placeholder="Description"
                 value={hairstyleDescription}
                 onChange={(e) => setHairstyleDescription(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md mt-3"
               />
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-green-500 text-white rounded-md text-lg hover:bg-green-600 transition duration-300"
+              className="w-full px-4 py-2 bg-green-700 text-white hover:opacity-80 cursor-pointer"
             >
               Upload
             </button>
@@ -291,7 +311,15 @@ const SalonProfile = ({ user }) => {
         </div>
       )}
       <div className="mt-5">
-        <h2 className="text-xl font-bold mb-3">Hairstyles</h2>
+        <div className="flex items-center">
+          <h2 className="text-xl font-bold mr-2">Hairstyles</h2>
+          <button
+            onClick={() => setShowUploadForm(!showUploadForm)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
+          >
+            Upload new hairstyle
+          </button>
+        </div>
         <div className="grid grid-cols-3 gap-4">
           {hairstyles.map((hairstyle, index) => (
             <div key={index} className="flex flex-col">
@@ -304,7 +332,7 @@ const SalonProfile = ({ user }) => {
               <p className="mt-2">{hairstyle.description}</p>
               {/* delete hairstyle */}
               <button
-                onClick={() => removeHairstyle(index)}
+                onClick={() => deleteHairstyle(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
               >
                 Delete Hairstyle
@@ -312,114 +340,150 @@ const SalonProfile = ({ user }) => {
             </div>
           ))}
         </div>
-        <button
-          onClick={() => setShowUploadForm(!showUploadForm)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
-        >
-          Upload new hairstyle
-        </button>
       </div>
+
       {/* Plans */}
-      <div className="mt-5">
-        <h2 className="text-xl font-bold mb-3">Plans</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {plans.map((plan, index) => (
-            <div key={index} className="flex flex-col">
-              <input
-                type="text"
-                value={plan.name}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].name = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <input
-                type="number"
-                value={plan.price}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].price = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <textarea
-                value={plan.description}
-                className="border rounded-md"
-                onChange={(e) => {
-                  const updatedPlans = [...plans];
-                  updatedPlans[index].description = e.target.value;
-                  setPlans(updatedPlans);
-                }}
-              />
-              <p className="mt-2">{index}</p>
-              <button
-                onClick={() => updatePlan(index, plan)}
-                className="px-3 py-1 bg-blue-500 text-white rounded-md mt-2"
-              >
-                confirm changes
-              </button>
-              <button
-                onClick={() => removePlan(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded-md mt-2"
-              >
-                Delete Plan
-              </button>
-            </div>
-          ))}
-        </div>
-        {showPlanForm && (
+      {showPlanForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <form
             onSubmit={createPlan}
-            className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+            className="bg-white p-10 rounded-md shadow-lg w-1/4"
           >
             <FontAwesomeIcon
               icon={faTimes}
               onClick={() => setShowPlanForm(false)}
               className="text-2xl absolute top-3 right-3 cursor-pointer"
             />
-            <div className="mb-3">
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="w-2 h-6 bg-green-700 mr-2"></span>
+              Create Plan
+            </h2>
+            <div className="mb-4">
+              <label htmlFor="planName" className="block mb-1 font-bold">
+                Name
+              </label>
               <input
                 type="text"
                 placeholder="Plan Name"
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
-                className="px-3 py-2 border rounded-md"
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
-            <div className="mb-3">
+            <div className="mb-4">
+              <label htmlFor="planPrice" className="block mb-1 font-bold">
+                Price
+              </label>
               <input
                 type="number"
                 placeholder="Plan Price"
                 value={planPrice}
                 onChange={(e) => setPlanPrice(e.target.value)}
-                className="px-3 py-2 border rounded-md"
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
-            <div className="mb-3">
+            <div className="mb-4">
+              <label htmlFor="planDescription" className="block mb-1 font-bold">
+                Description
+              </label>
               <textarea
                 placeholder="Plan Description"
                 value={planDescription}
                 onChange={(e) => setPlanDescription(e.target.value)}
-                className="px-3 py-2 border rounded-md"
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md text-lg"
+              className="w-full px-4 py-2 bg-green-700 text-white hover:opacity-80 cursor-pointer"
             >
-              confirm
+              Confirm
             </button>
           </form>
-        )}
-        <button
-          onClick={() => setShowPlanForm(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg mt-3"
-        >
-          Create new plan
-        </button>
+        </div>
+      )}
+      <div className="mt-5">
+        <div className="flex items-center">
+          <h2 className="text-xl font-bold mr-2">Plans</h2>
+          <button
+            onClick={() => setShowPlanForm(true)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md text-lg m-2"
+          >
+            Create new plan
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          {plans.map((plan, index) => (
+            <div key={index} className="mb-4">
+              <table className="table-fixed border border-black w-full">
+                <tbody>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Plan Name
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <input
+                        type="text"
+                        value={plan.name}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].name = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Price
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <input
+                        type="number"
+                        value={plan.price}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].price = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Description
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <textarea
+                        value={plan.description}
+                        className="border rounded-md w-full"
+                        onChange={(e) => {
+                          const updatedPlans = [...plans];
+                          updatedPlans[index].description = e.target.value;
+                          setPlans(updatedPlans);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button
+                onClick={() => updatePlan(index, plan)}
+                className="px-3 py-1 bg-blue-500 text-white rounded-md m-2"
+              >
+                Confirm Changes
+              </button>
+              <button
+                onClick={() => deletePlan(index)}
+                className="px-3 py-1 bg-red-500 text-white rounded-md m-2"
+              >
+                Delete Plan
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
