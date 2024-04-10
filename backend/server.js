@@ -25,6 +25,7 @@ app.use("/user", require("./routes/user_route"));
 app.use("/salon-info", require("./routes/salon_info_route"));
 app.use("/comment", require("./routes/comment_route"));
 app.use("/plan", require("./routes/plan_route"));
+app.use("/booking", require("./routes/booking_route"));
 app.use("/chat", require("./routes/chat_route"));
 app.use("/message", require("./routes/message_route"));
 
