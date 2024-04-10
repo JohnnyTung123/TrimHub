@@ -1,156 +1,121 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
-import { faComment } from "@fortawesome/free-regular-svg-icons";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { faBookmark as faBookmarkSolid } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
+import "react-datepicker/dist/react-datepicker.css";
+
+const API_URL = "http://localhost:8080";
 
 export default function BookingConfirmationPage() {
-  const { salonId } = useParams();
-  const API_URL = "http://localhost:8080";
-  const [salon, setSalon] = useState("");
-  const [hairstyle, setHairstyle] = useState({
-    id: 1,
-    haircutname: "Short hair",
-    description: "Some description",
-    salon: [
-      { salonname: "ABC Salons",
-      address: "Rm123, Shatin",
-      priceRange: "$100~$200",
-      comments: 450,
-      rating: 4.5,
-      imageUrl: "/img/salon.png", },
-    ],
-  });
+  const { user } = useUser();
+  const { salonId, planId } = useParams();
+
+  const [plan, setPlan] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showBookingConfirmation, setBookingConfirmation] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSalonInfo = async (salonId) => {
+    const fetchPlan = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/salon-info?salonId=${salonId}`
-        );
+        const response = await fetch(`${API_URL}/plan/${planId}`);
         if (!response.ok) {
-          throw new Error("Error fetching salon info");
+          throw new Error("Error fetching plan");
         }
-        const salon = await response.json();
-        setSalon(salon);
+        const plan = await response.json();
+        console.log(plan);
+        setPlan(plan);
       } catch (error) {
         console.error(error);
       }
-    };
+    }
+    fetchPlan();
+  }, [planId]);
 
-    fetchSalonInfo(salonId);
-  }, [salonId]);
+  const filterPassedTime = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(time);
 
-//   if (!salon) {
-//     return <h1>Loading...</h1>;
-//   }
+    return currentDate.getTime() < selectedDate.getTime();
+  };
 
-    const toggleBookmark = (id) => {
-        setBookmarks((prevBookmarks) => ({
-        ...prevBookmarks,
-        [id]: !prevBookmarks[id],
-        }));
-    };
+  const handleBookNowClick = async () => {
+    try {
+      const response = await fetch(`${API_URL}/booking/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          planId: planId,
+          userId: user._id,
+          date: selectedDate,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating booking");
+      }
+      const booking = await response.json();
+      console.log(booking);
+      setBookingConfirmation(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    const [bookmarks, setBookmarks] = useState({});
-
-    const [selectedDate, setSelectedDate] = useState("");
-    const [selectedTime, setSelectedTime] = useState("");
-    const [showBookingConfirmation, setBookingConfirmation] = useState(false);
-    const navigate = useNavigate();
-
-    const handleDateChange = (e) => {
-        setSelectedDate(e.target.value);
-    };
-
-    const handleTimeChange = (e) => {
-        setSelectedTime(e.target.value);
-    };
-
-    const handleBookNowClick = () => {
-        setBookingConfirmation(true);
-    };
-    
-    const handleBackToBookingClick = () => {
-        setBookingConfirmation(false);
-        navigate("/bookings")
-    };
+  const handleBackToBookingClick = () => {
+    setBookingConfirmation(false);
+    navigate("/bookings")
+  };
 
   return (
-    <div>
+    <>
       <div className="p-8 bg-gray-200 h-screen">
-        {/* First Row */}
         <div className="flex flex-col md:flex-row mb-8">
-            <div className="md:w-1/2 md:pr-4 mb-4 md:mb-0">
-                <img src={"/img/haircut.png"} alt="Salon" className="w-full h-auto" />
-                <p className="text-xl mt-2 text-center">{hairstyle.haircutname}
-                    <button className="ml-2 focus:outline-none">
-                        <FontAwesomeIcon
-                        icon={bookmarks[hairstyle.id] ? faBookmarkSolid : faBookmarkRegular}
-                        onClick={() => toggleBookmark(hairstyle.id)}
-                        />
-                    </button>
-                </p>
+          <div className="md:w-1/2 md:pr-4 mb-4 md:mb-0">
+            <img
+              src={`${API_URL}/salon-info/image?salonId=${salonId}`}
+              alt="Salon"
+              className="h-full w-auto"
+            />
+          </div>
+          <div className="md:w-1/2">
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="w-2 h-6 bg-green-700 mr-2"></span>
+              Booking Details
+            </h2>
+            <div className="h-max w-full p-2 border border-gray-300 rounded bg-white mb-4">
+              <p className="text-green-600 text-lg font-bold mb-1">Plan: {plan.name}</p>
+              <p className="text-gray-700 text-lg mb-1">Price: ${plan.price}</p>
+              <p className="text-gray-700 text-lg">Description: {plan.description}</p>
             </div>
-            <div className="md:w-1/2">
-                <h2 className="text-2xl font-bold mb-4 flex items-center">
-                <span className="w-2 h-6 bg-green-700 mr-2"></span>
-                Booking Details
-                </h2>
-                <p className="h-1/2 w-full p-2 border border-gray-300 rounded bg-white mb-4">{hairstyle.description}</p>
-                <div className="mb-4">
-                    <div className="mb-4">
-                        <label htmlFor="date" className="font-bold">Select Date:</label>
-                        <input
-                            type="date"
-                            id="date"
-                            value={selectedDate}
-                            onChange={handleDateChange}
-                            className="border border-gray-300 rounded px-2 py-1 ml-2"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="time" className="font-bold">Select Time:</label>
-                        <select
-                            id="time"
-                            value={selectedTime}
-                            onChange={handleTimeChange}
-                            className="border border-gray-300 rounded px-2 py-1 ml-2"
-                        >
-                            <option value="">Select Time</option>
-                            <option value="18:00">12:00</option>
-                            <option value="18:00">12:30</option>
-                            <option value="18:00">13:00</option>
-                            <option value="18:00">13:30</option>
-                            <option value="18:00">14:00</option>
-                            <option value="18:00">14:30</option>
-                            <option value="18:00">15:00</option>
-                            <option value="18:00">15:30</option>
-                            <option value="18:00">16:00</option>
-                            <option value="18:00">16:30</option>
-                            <option value="18:00">17:00</option>
-                            <option value="18:00">17:30</option>
-                            <option value="18:00">18:00</option>
-                            <option value="18:30">18:30</option>
-                    
-                        </select>
-                    </div>
-                    <button
-                    className="px-6 py-2 bg-green-600 text-white rounded"
-                    onClick={handleBookNowClick}
-                    >
-                        Book Now
-                    </button>
-                </div>
+            <div className="mb-4">
+              <div className="mb-4">
+                <label htmlFor="date" className="font-bold mr-2">Select Date:</label>
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  showIcon
+                  showTimeSelect
+                  minTime={new Date(0, 0, 0, 10, 0)}
+                  maxTime={new Date(0, 0, 0, 20, 0)}
+                  filterTime={filterPassedTime}
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  className="border rounded focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <button
+                className="bg-green-700 text-white rounded"
+                onClick={handleBookNowClick}
+              >
+                Book Now
+              </button>
             </div>
+          </div>
         </div>
-
-        {/* Second Row */}
       </div>
+
       {showBookingConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded shadow-lg">
@@ -165,8 +130,6 @@ export default function BookingConfirmationPage() {
           </div>
         </div>
       )}
-    </div>
-
-    
+    </>
   );
 }
