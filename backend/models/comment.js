@@ -19,8 +19,21 @@ const CommentSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  likes: { type: Number, default: 0 },
-  dislikes: { type: Number, default: 0 },
+  // an object that contains the user and his response, i.e. like or dislike
+  reaction: [
+    {
+      username: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+      },
+      response: {
+        type: String,
+        enum: ["like", "dislike"],
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);

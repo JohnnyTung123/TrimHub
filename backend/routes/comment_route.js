@@ -7,8 +7,7 @@ const router = express.Router();
 router.post("/", commentController.createComment);
 // fetch the comments history
 router.get("/", commentController.getComments);
-// handle likes, dislikes
-router.put("/like", commentController.likeComment);
-router.put("/dislike", commentController.dislikeComment);
+// handle reaction to a comment
+router.put("/reaction", commentController.reactComment);
 
 module.exports = router;

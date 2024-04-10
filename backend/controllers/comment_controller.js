@@ -28,30 +28,26 @@ const getComments = async (req, res) => {
   }
 };
 
-const likeComment = async (req, res) => {
-  const { commentId } = req.body;
+const reactComment = async (req, res) => {
+  const { commentId, username, response } = req.body;
+  console.log("React Comment:", commentId, username, response);
 
-  try {
-    const comment = await Comment.findById(commentId);
-    comment.likes++;
-    await comment.save();
-    console.log("Liked Comment:", comment);
-    res.status(200).json({ success: "Comment liked successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: `Server side error: ${error.message}` });
+  // check if the user has already reacted to the comment
+  const comment = await Comment.findById(commentId);
+  const reaction = comment.reaction.find(
+    (reaction) => reaction.username === username
+  );
+  if (reaction) {
+    // if the user has already reacted, update the response
+    reaction.response = response;
+  } else {
+    // if the user has not reacted, add a new reaction
+    comment.reaction.push({ username, response });
   }
-};
-
-const dislikeComment = async (req, res) => {
-  const { commentId } = req.body;
-
   try {
-    const comment = await Comment.findById(commentId);
-    comment.dislikes++;
-    await comment.save();
-    console.log("Disliked Comment:", comment);
-    res.status(200).json({ success: "Comment disliked successfully" });
+    const updatedComment = await comment.save();
+    console.log("React Comment:", updatedComment);
+    res.status(200).json(updatedComment);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: `Server side error: ${error.message}` });
@@ -61,6 +57,5 @@ const dislikeComment = async (req, res) => {
 module.exports = {
   createComment,
   getComments,
-  likeComment,
-  dislikeComment,
+  reactComment,
 };

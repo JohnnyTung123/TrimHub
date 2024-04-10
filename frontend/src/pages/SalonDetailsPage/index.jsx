@@ -18,10 +18,7 @@ export default function SalonDetailsPage() {
   const [chosenPlanId, setChosenPlanId] = useState("");
   const [commentText, setCommentText] = useState("");
 
-  const [comments, setComments] = useState([
-    // { id: 1, username: "User A", rating: 5, text: "It's good" },
-    // { id: 2, username: "User B", rating: 1, text: "It's bad" },
-  ]);
+  const [comments, setComments] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +51,18 @@ export default function SalonDetailsPage() {
         }
         const comments = await response.json();
         setComments(comments);
+
+        // get the number of likes and dislikes for each comment
+        const commentsWithReactions = comments.map((comment) => {
+          const likes = comment.reaction.filter(
+            (reaction) => reaction.response === "like"
+          ).length;
+          const dislikes = comment.reaction.filter(
+            (reaction) => reaction.response === "dislike"
+          ).length;
+          return { ...comment, likes, dislikes };
+        });
+        setComments(commentsWithReactions);
       } catch (error) {
         console.error(error);
       }
@@ -91,7 +100,52 @@ export default function SalonDetailsPage() {
     navigate(`/bookingconfirmation/${chosenPlanId}`);
   };
 
+  const handleReaction = async (commentId, reactionType) => {
+    if (!user) {
+      alert("Please login first");
+    }
+    try {
+      const response = await fetch(`${API_URL}/comment/reaction`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          commentId,
+          username: user.username,
+          response: reactionType,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error reacting to comment");
+      }
+      const updatedComment = await response.json();
+      console.log(updatedComment);
+      const updatedComments = comments.map((comment) => {
+        if (comment._id === updatedComment._id) {
+          // Update the likes and dislikes count based on the updated comment
+          return {
+            ...updatedComment,
+            likes: updatedComment.reaction.filter(
+              (reaction) => reaction.response === "like"
+            ).length,
+            dislikes: updatedComment.reaction.filter(
+              (reaction) => reaction.response === "dislike"
+            ).length,
+          };
+        }
+        return comment;
+      });
+      setComments(updatedComments);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCreateComment = async () => {
+    if (!user) {
+      alert("Please login first");
+    }
     try {
       const response = await fetch(`${API_URL}/comment/`, {
         method: "POST",
@@ -108,7 +162,16 @@ export default function SalonDetailsPage() {
         throw new Error("Error creating comment");
       }
       const newComment = await response.json();
-      setComments([newComment.comment, ...comments]);
+      // like and dislike count is 0 for a new comment
+      const updatedComments = [
+        {
+          ...newComment.comment,
+          likes: 0,
+          dislikes: 0,
+        },
+        ...comments,
+      ];
+      setComments(updatedComments);
       setCommentText("");
     } catch (error) {
       console.error(error);
@@ -210,25 +273,51 @@ export default function SalonDetailsPage() {
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
           Comment
         </h2>
-        {comments.map((comment) => (
-          <div
-            key={comment._id}
-            className="mb-4 border border-gray-300 bg-white rounded p-4"
-          >
-            <div className="flex items-center mb-2">
-              <span className="mr-2">{comment.username}</span>
-              <div className="flex items-center">
-                {/* <FontAwesomeIcon
-                  icon={faStar}
-                  className="text-yellow-500 mr-1"
-                /> */}
-                {/* <span>{comment.rating}</span> */}
+        <div className="h-96 overflow-y-scroll">
+          {comments.map((comment) => (
+            <div
+              key={comment._id}
+              className="mb-4 border border-gray-300 bg-white rounded p-4"
+            >
+              <div className="flex items-center mb-2">
+                <span className="mr-2">{comment.username}</span>
+                <div className="flex items-center">
+                  <FontAwesomeIcon
+                    icon={faThumbsUp}
+                    className={`ml-4 mr-1 cursor-pointer ${
+                      comment.reaction &&
+                      comment.reaction.find(
+                        (reaction) =>
+                          reaction.username === user.username &&
+                          reaction.response === "like"
+                      ) &&
+                      "text-green-500"
+                    }`}
+                    onClick={() => handleReaction(comment._id, "like")}
+                  />
+                  <span className="mr-1">{comment.likes}</span>
+                  <FontAwesomeIcon
+                    icon={faThumbsDown}
+                    className={`ml-4 mr-1 cursor-pointer ${
+                      comment.reaction &&
+                      comment.reaction.find(
+                        (reaction) =>
+                          reaction.username === user.username &&
+                          reaction.response === "dislike"
+                      ) &&
+                      "text-red-500"
+                    }`}
+                    onClick={() => handleReaction(comment._id, "dislike")}
+                  />
+                  <span>{comment.dislikes}</span>
+                </div>
               </div>
+              <p>{comment.content}</p>
             </div>
-            <p>{comment.content}</p>
-          </div>
-        ))}
+          ))}
+        </div>
         <div className="mt-4">
+          <h3 className="text-xl font-bold mb-2">Add Comment</h3>
           <textarea
             className="w-full p-4 border border-gray-300 rounded"
             placeholder="Type something..."
