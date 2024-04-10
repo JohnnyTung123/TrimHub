@@ -105,17 +105,16 @@ const followSalon = async (req, res) => {
   }
 };
 
-const isFollowedSalon = async (req, res) => {
-  const { userId, salonId } = req.query;
+const getFollowedSalons = async (req, res) => {
+  const userId = req.params.userId;
 
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: `Cannot find User Id ${userId}` });
     }
-    const isFollowed = user.following.includes(salonId);
-    console.log("isFollowedSalon:", isFollowed);
-    res.status(200).json(isFollowed);
+    console.log("Got followed salons:", user.following);
+    res.status(200).json(user.following);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: `Server side error: ${err.message}` });
@@ -128,5 +127,5 @@ module.exports = {
   updateUser,
   deleteUser,
   followSalon,
-  isFollowedSalon,
+  getFollowedSalons,
 };

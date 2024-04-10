@@ -73,26 +73,24 @@ export default function SalonDetailsPage() {
   // check if user is following the salon
   useEffect(() => {
     const checkFollowing = async () => {
-      console.log(user._id);
       if (!user) {
         return;
       }
       try {
         const response = await fetch(
-          `${API_URL}/user/isfollowed-salon?userId=${user._id}&salonId=${salonId}`
+          `${API_URL}/user/followed-salons/${user._id}`
         );
         if (!response.ok) {
-          throw new Error("Error checking if user is following salon");
+          throw new Error("Error fetching followed salons");
         }
-        const data = await response.json();
-        console.log(data);
-        setIsFollowing(data);
+        const followedSalons = await response.json();
+        setIsFollowing(followedSalons.includes(salonId));
       } catch (error) {
         console.error(error);
       }
     };
     checkFollowing();
-  }, []);
+  }, [user, salonId]);
 
   const handleContactClick = async () => {
     try {
