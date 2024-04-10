@@ -154,7 +154,6 @@ const getHairstyles = async (req, res) => {
   }
 };
 
-// get all salons
 const getAllSalons = async (req, res) => {
   try {
     const salons = await SalonInfo.find();

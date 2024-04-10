@@ -41,9 +41,10 @@ const getHairstyle = async (req, res) => {
 
 const getHairstyles = async (req, res) => {
   const { salonId } = req.query;
+  const query = salonId ? { salon: salonId } : null;
 
   try {
-    const hairstyles = await Hairstyle.find({ salon: salonId }).populate("salon");
+    const hairstyles = await Hairstyle.find(query).populate("salon");
     console.log("Got Hairstyles:", hairstyles);
     res.status(200).json(hairstyles);
   } catch (error) {
