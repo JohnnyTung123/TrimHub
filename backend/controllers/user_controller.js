@@ -56,7 +56,7 @@ const updateUser = async (req, res) => {
         username: username,
         password: hashPassword,
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated User:", user);
     res.status(200).json({ success: "User updated successfully" });
@@ -82,4 +82,50 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, getUsers, updateUser, deleteUser };
+const followSalon = async (req, res) => {
+  const { userId, salonId, follow } = req.body;
+  // follow = true to follow, follow = false to unfollow
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: `Cannot find User Id ${userId}` });
+    }
+    if (follow) {
+      user.following.push(salonId);
+      console.log("followed salon");
+    } else {
+      user.following.pull(salonId);
+      console.log("unfollowed salon");
+    }
+    await user.save();
+    res.status(200).json({ success: "User updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: `Server side error: ${err.message}` });
+  }
+};
+
+const getFollowedSalons = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: `Cannot find User Id ${userId}` });
+    }
+    console.log("Got followed salons:", user.following);
+    res.status(200).json(user.following);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: `Server side error: ${err.message}` });
+  }
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  updateUser,
+  deleteUser,
+  followSalon,
+  getFollowedSalons,
+};

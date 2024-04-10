@@ -17,9 +17,7 @@ import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import BookingPage from "./pages/BookingPage";
 import MessagePage from "./pages/MessagePage";
 import AdminPage from "./pages/AdminPage";
-import Booking2Page from "./pages/Booking2Page";
-import HaircutSearchPage from "./pages/HaircutSearchPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
+
 import NoPage from "./pages/NoPage";
 
 import HomeLayout from "./layouts/HomeLayout";
@@ -44,6 +42,11 @@ export default function App() {
             <Route path="/search" element={<SearchSalonPage />} />
             <Route path="/salon/:salonId" element={<SalonDetailsPage />} />
             <Route path="/haircut/:salonId" element={<HaircutDetailsPage />} />
+
+          
+            <Route path="/bookings" element={<BookingPage />} />
+            <Route path="/messages" element={<MessagePage />} />
+
             <Route path="/salon/:salonId/bookingconfirmation/:planId" element={<BookingConfirmationPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NoPage />} />

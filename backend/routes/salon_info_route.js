@@ -14,17 +14,20 @@ router.get("/image", salonInfoController.getSalonImage);
 router.put(
   "/image/:salonId",
   upload.single("salon-image"),
-  salonInfoController.updateSalonImage,
+  salonInfoController.updateSalonImage
 );
 
 // Salon Hairstyles
 router.post(
   "/hairstyles/:salonId",
   upload.single("hairstyle-image"),
-  salonInfoController.createHairstyle,
+  salonInfoController.createHairstyle
 );
 router.get("/hairstyles", salonInfoController.getHairstyles);
 router.delete("/hairstyles/:salonId", salonInfoController.deleteHairstyle);
+
+// Salon Reaction
+router.put("/reaction/:salonId", salonInfoController.reactSalon);
 
 // Get all salons
 router.get("/all", salonInfoController.getAllSalons);
