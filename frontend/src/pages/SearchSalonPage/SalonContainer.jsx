@@ -18,7 +18,7 @@ export default function SalonContainer({ salon }) {
 
   return (
     <li
-      className="border border-gray-300 rounded-md p-2 my-2"
+      className="bg-white border border-gray-300 rounded-md p-2 my-2 cursor-pointer"
       onClick={() => navigate(`/salon/${salon._id}`)}
     >
       {salon.imagePath ? (
@@ -33,8 +33,9 @@ export default function SalonContainer({ salon }) {
           className="w-32 h-32 object-cover rounded-md"
         />
       )}
-      <h2>{salon.salonname}</h2>
-      <p>{salon.address}</p>
+      <h3 className="text-xl font-bold mt-2">{salon.salonname}</h3>
+      <p className="mb-2">{salon.address}</p>
+
       <div className="flex justify-between w-20">
         <div>
           <FontAwesomeIcon icon={faThumbsUp} /> {numLikes}
