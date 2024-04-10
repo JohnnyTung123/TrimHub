@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
-import { faComment } from "@fortawesome/free-regular-svg-icons";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { fetchPlans } from "../ProfilePage/SalonApi";
 import { useUser } from "../../context/UserContext";
@@ -19,6 +17,7 @@ export default function SalonDetailsPage() {
   const [commentText, setCommentText] = useState("");
   const [numLikes, setNumLikes] = useState(0);
   const [numDislikes, setNumDislikes] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
@@ -71,6 +70,30 @@ export default function SalonDetailsPage() {
     fetchComments(salonId);
   }, [salonId]);
 
+  // check if user is following the salon
+  useEffect(() => {
+    const checkFollowing = async () => {
+      console.log(user._id);
+      if (!user) {
+        return;
+      }
+      try {
+        const response = await fetch(
+          `${API_URL}/user/isfollowed-salon?userId=${user._id}&salonId=${salonId}`
+        );
+        if (!response.ok) {
+          throw new Error("Error checking if user is following salon");
+        }
+        const data = await response.json();
+        console.log(data);
+        setIsFollowing(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    checkFollowing();
+  }, []);
+
   const handleContactClick = async () => {
     try {
       const response = await fetch(`${API_URL}/chat/`, {
@@ -100,48 +123,6 @@ export default function SalonDetailsPage() {
     }
     navigate(`/bookingconfirmation/${chosenPlanId}`);
   };
-
-  // const handleReaction = async (commentId, reactionType) => {
-  //   if (!user) {
-  //     alert("Please login first");
-  //   }
-  //   try {
-  //     const response = await fetch(`${API_URL}/comment/reaction`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         commentId,
-  //         username: user.username,
-  //         response: reactionType,
-  //       }),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Error reacting to comment");
-  //     }
-  //     const updatedComment = await response.json();
-  //     console.log(updatedComment);
-  //     const updatedComments = comments.map((comment) => {
-  //       if (comment._id === updatedComment._id) {
-  //         // Update the likes and dislikes count based on the updated comment
-  //         return {
-  //           ...updatedComment,
-  //           likes: updatedComment.reaction.filter(
-  //             (reaction) => reaction.response === "like"
-  //           ).length,
-  //           dislikes: updatedComment.reaction.filter(
-  //             (reaction) => reaction.response === "dislike"
-  //           ).length,
-  //         };
-  //       }
-  //       return comment;
-  //     });
-  //     setComments(updatedComments);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const handleReaction = async (salonId, reactionType) => {
     if (!user) {
@@ -208,6 +189,32 @@ export default function SalonDetailsPage() {
     }
   };
 
+  const handleFollowClick = async () => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/user/follow-salon`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          salonId,
+          follow: !isFollowing,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error following/unfollowing salon");
+      }
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="p-8 bg-gray-200 min-h-screen h-full">
       {/* First Row */}
@@ -260,6 +267,17 @@ export default function SalonDetailsPage() {
             />
             <span>{numDislikes}</span>
           </div>
+          {/* follow/unfollow button */}
+          {user && (
+            <button
+              className={`px-4 py-2 bg-green-400 text-white rounded mr-4 ${
+                isFollowing ? "bg-gray-400" : ""
+              }`}
+              onClick={handleFollowClick}
+            >
+              {isFollowing ? "Unfollow" : "Follow"}
+            </button>
+          )}
           <div className="flex items-center mt-6">
             <h2 className="text-2xl font-bold mb-4 flex items-center">
               <span className="w-2 h-6 bg-green-700 mr-2"></span>

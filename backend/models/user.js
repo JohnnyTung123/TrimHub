@@ -23,6 +23,13 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  // following contains an array of salon IDs
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SalonInfo",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", UserSchema);
