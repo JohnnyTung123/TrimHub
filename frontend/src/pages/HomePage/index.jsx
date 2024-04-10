@@ -1,42 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
+
+const API_URL = "http://localhost:8080";
 
 const HomePage = () => {
   const backgroundImage = './img/background.png';
+  const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
+  const [hotSalons, setHotSalons] = useState([]);
+  const [newHairstyles, setNewHairstyles] = useState([]);
 
-  const handleSearch = () => {
-    // Perform search logic with the searchQuery
-    console.log(`Searching for: ${searchQuery}`);
-  };
+  useEffect(() => {
+    const fetchSalons = async () => {
+      try {
+        const response = await fetch(`${API_URL}/salon-info/all`);
+        if (!response.ok) {
+          throw new Error("Error fetching hairstyles");
+        }
+        const salons = await response.json();
+        console.log(salons);
 
-  const handleChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+        salons.sort((a, b) => {
+          const likeA = a.reaction.filter((r) => r.response === "like").length;
+          const disLikeA = a.reaction.filter((r) => r.response === "dislike").length;
+          const likeB = b.reaction.filter((r) => r.response === "like").length;
+          const disLikeB = b.reaction.filter((r) => r.response === "dislike").length;
+          return (likeB - disLikeB) - (likeA - disLikeA);
+        });
+        setHotSalons(salons.slice(0, 6));
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  const [photos, setPhotos] = useState([
-    { id: 1, url: './img/haircut.png', description: 'Photo 1' },
-    { id: 2, url: './img/haircut.png', description: 'Photo 2' },
-    { id: 3, url: './img/haircut.png', description: 'Photo 3' },
-    { id: 4, url: './img/haircut.png', description: 'Photo 4' },
-    { id: 5, url: './img/haircut.png', description: 'Photo 5' },
-    { id: 6, url: './img/haircut.png', description: 'Photo 6' },
-  ]);
+    const fetchHairstyles = async () => {
+      try {
+        const response = await fetch(`${API_URL}/hairstyle`);
+        if (!response.ok) {
+          throw new Error("Error fetching hairstyles");
+        }
+        const hairstyles = await response.json();
+        console.log(hairstyles);
 
+        hairstyles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setNewHairstyles(hairstyles.slice(0, 6));
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  const handleAddToFavorites = (id) => {
-    // Implement your logic to add the photo with the given id to favorites
-    console.log(`Added photo with id ${id} to favorites`);
-  };
+    fetchSalons();
+    fetchHairstyles();
+  }, []);
 
-  const handlePhotoClick = (id) => {
-    // Implement your logic to redirect to the page corresponding to the photo with the given id
-    console.log(`Clicked on photo with id ${id}`);
-  };
+  // const handleSearch = () => {
+  //   // Perform search logic with the searchQuery
+  //   console.log(`Searching for: ${searchQuery}`);
+  // };
 
-  const firstPartPhotos = photos.slice(0, 3);
-  const secondPartPhotos = photos.slice(3);
+  // const handleChange = (event) => {
+  //   setSearchQuery(event.target.value);
+  // };
 
   return (
     <>
@@ -44,53 +70,60 @@ const HomePage = () => {
         <div>
           <h1 className="text-5xl font-bold">Open a new character of your life</h1>
           <div className="flex items-center justify-center m-2">
-            <input
+            {/*<input
               type="text"
               value={searchQuery}
               onChange={handleChange}
               placeholder="What haircut or salon you want today?"
               className="text-xl placeholder:text-sm mr-2 p-2"
             />
-            <button className="bg-green-700 text-white" onClick={handleSearch}>Search</button>
+            <button
+              onClick={handleSearch}
+              className="bg-green-700 text-white"
+            >
+              Search
+            </button>*/}
+            <button
+              onClick={() => navigate("/search")}
+              className="bg-green-700 text-white"
+            >
+              Search
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-center h-screen">
-        <div className="flex flex-row gap-8">
-          <div className="flex flex-col items-center gap-4">
-            <h2 className="text-xl font-bold">Hot</h2>
-            <div className="flex gap-4">
-              {firstPartPhotos.map((photo) => (
-                <div key={photo.id} className="flex flex-col items-center gap-2">
-                  <img
-                    src={photo.url}
-                    alt={photo.description}
-                    onClick={() => handlePhotoClick(photo.id)}
-                    className="w-52"
-                  />
-                  <p>{photo.description}</p>
-                  <button className="bg-green-700 text-white" onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-                </div>
-              ))}
-            </div>
+      <div className="p-4 flex h-screen bg-gray-200">
+        <div className="w-1/2 flex flex-col items-center gap-4 mr-2">
+          <h2 className="text-xl font-bold">Hot Salons</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {hotSalons.map((salon) => (
+              <div key={salon._id} className="flex flex-col items-center gap-2">
+                <img
+                  src={`${API_URL}/salon-info/image?salonId=${salon._id}`}
+                  alt={`salon ${salon._id}`}
+                  onClick={() => navigate(`salon/${salon._id}`)}
+                  className="h-64 object-cover cursor-pointer"
+                />
+                <p>{salon.salonname}</p>
+              </div>
+            ))}
           </div>
-          <div className="flex flex-col items-center gap-4">
-            <h2 className="text-xl font-bold">New Arrival</h2>
-            <div className="flex gap-4">
-              {secondPartPhotos.map((photo) => (
-                <div key={photo.id} className="flex flex-col items-center gap-2">
-                  <img
-                    src={photo.url}
-                    alt={photo.description}
-                    onClick={() => handlePhotoClick(photo.id)}
-                    className="w-52"
-                  />
-                  <p>{photo.description}</p>
-                  <button className="bg-green-700 text-white" onClick={() => handleAddToFavorites(photo.id)}>Add to Favorites</button>
-                </div>
-              ))}
-            </div>
+        </div>
+        <div className="w-1/2 flex flex-col items-center gap-4 ml-2">
+          <h2 className="text-xl font-bold">New Hairstyles</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {newHairstyles.map((hairstyle) => (
+              <div key={hairstyle._id} className="flex flex-col items-center gap-2">
+                <img
+                  src={`${API_URL}/hairstyle/${hairstyle._id}`}
+                  alt={`Hairstyle ${hairstyle._id}`}
+                  onClick={() => navigate(`salon/${hairstyle.salon._id}`)}
+                  className="h-64 object-cover cursor-pointer"
+                />
+                <p>{hairstyle.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

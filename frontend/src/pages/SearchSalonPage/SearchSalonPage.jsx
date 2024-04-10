@@ -26,16 +26,24 @@ export default function SearchSalonPage() {
   };
 
   return (
-    <div>
-      <h1>Search Salons</h1>
+    <div className="p-8 bg-gray-200 min-h-screen h-full">
+      <h2 className="text-2xl font-bold mb-4 flex items-center">
+        <span className="w-2 h-6 bg-green-700 mr-2"></span>
+        Search Salons
+      </h2>
       <input
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border border-gray-300 rounded-md"
+        className="text-lg mr-4 p-2 rounded-md"
         placeholder="Search for salons..."
       />
-      <button onClick={handleSearch}>Search</button>
+      <button
+        onClick={handleSearch}
+        className="bg-green-700 text-white"
+      >
+        Search
+      </button>
       <ul>
         {searchResults.map((salon) => (
           <SalonContainer key={salon._id} salon={salon} />
