@@ -8,6 +8,6 @@ router.post("/", commentController.createComment);
 // fetch the comments history
 router.get("/", commentController.getComments);
 // handle reaction to a comment
-router.put("/reaction", commentController.reactComment);
+// router.put("/reaction", commentController.reactComment);
 
 module.exports = router;

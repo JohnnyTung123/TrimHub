@@ -36,6 +36,20 @@ const SalonInfoSchema = mongoose.Schema({
       },
     },
   ],
+  reaction: [
+    {
+      username: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+      },
+      response: {
+        type: String,
+        enum: ["like", "dislike"],
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("SalonInfo", SalonInfoSchema);

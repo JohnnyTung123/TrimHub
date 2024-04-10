@@ -17,6 +17,8 @@ export default function SalonDetailsPage() {
   const [plans, setPlans] = useState([]);
   const [chosenPlanId, setChosenPlanId] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [numLikes, setNumLikes] = useState(0);
+  const [numDislikes, setNumDislikes] = useState(0);
 
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
@@ -33,6 +35,15 @@ export default function SalonDetailsPage() {
         const salon = await response.json();
         setSalon(salon);
 
+        // Get the number of likes and dislikes
+        const likes = salon.reaction.filter(
+          (reaction) => reaction.response === "like"
+        ).length;
+        const dislikes = salon.reaction.filter(
+          (reaction) => reaction.response === "dislike"
+        ).length;
+        setNumLikes(likes);
+        setNumDislikes(dislikes);
         const plans = await fetchPlans(salonId);
         setPlans(plans);
       } catch (error) {
@@ -52,17 +63,7 @@ export default function SalonDetailsPage() {
         const comments = await response.json();
         setComments(comments);
 
-        // get the number of likes and dislikes for each comment
-        const commentsWithReactions = comments.map((comment) => {
-          const likes = comment.reaction.filter(
-            (reaction) => reaction.response === "like"
-          ).length;
-          const dislikes = comment.reaction.filter(
-            (reaction) => reaction.response === "dislike"
-          ).length;
-          return { ...comment, likes, dislikes };
-        });
-        setComments(commentsWithReactions);
+        console.log(comments);
       } catch (error) {
         console.error(error);
       }
@@ -100,43 +101,80 @@ export default function SalonDetailsPage() {
     navigate(`/bookingconfirmation/${chosenPlanId}`);
   };
 
-  const handleReaction = async (commentId, reactionType) => {
+  // const handleReaction = async (commentId, reactionType) => {
+  //   if (!user) {
+  //     alert("Please login first");
+  //   }
+  //   try {
+  //     const response = await fetch(`${API_URL}/comment/reaction`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         commentId,
+  //         username: user.username,
+  //         response: reactionType,
+  //       }),
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error("Error reacting to comment");
+  //     }
+  //     const updatedComment = await response.json();
+  //     console.log(updatedComment);
+  //     const updatedComments = comments.map((comment) => {
+  //       if (comment._id === updatedComment._id) {
+  //         // Update the likes and dislikes count based on the updated comment
+  //         return {
+  //           ...updatedComment,
+  //           likes: updatedComment.reaction.filter(
+  //             (reaction) => reaction.response === "like"
+  //           ).length,
+  //           dislikes: updatedComment.reaction.filter(
+  //             (reaction) => reaction.response === "dislike"
+  //           ).length,
+  //         };
+  //       }
+  //       return comment;
+  //     });
+  //     setComments(updatedComments);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  const handleReaction = async (salonId, reactionType) => {
     if (!user) {
       alert("Please login first");
     }
     try {
-      const response = await fetch(`${API_URL}/comment/reaction`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          commentId,
-          username: user.username,
-          response: reactionType,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Error reacting to comment");
-      }
-      const updatedComment = await response.json();
-      console.log(updatedComment);
-      const updatedComments = comments.map((comment) => {
-        if (comment._id === updatedComment._id) {
-          // Update the likes and dislikes count based on the updated comment
-          return {
-            ...updatedComment,
-            likes: updatedComment.reaction.filter(
-              (reaction) => reaction.response === "like"
-            ).length,
-            dislikes: updatedComment.reaction.filter(
-              (reaction) => reaction.response === "dislike"
-            ).length,
-          };
+      const response = await fetch(
+        `${API_URL}/salon-info/reaction/${salonId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: user.username,
+            response: reactionType,
+          }),
         }
-        return comment;
-      });
-      setComments(updatedComments);
+      );
+      if (!response.ok) {
+        throw new Error("Error reacting to salon");
+      }
+      const updatedSalon = await response.json();
+      console.log(updatedSalon);
+      const likes = updatedSalon.reaction.filter(
+        (reaction) => reaction.response === "like"
+      ).length;
+      const dislikes = updatedSalon.reaction.filter(
+        (reaction) => reaction.response === "dislike"
+      ).length;
+      setNumLikes(likes);
+      setNumDislikes(dislikes);
+      setSalon(updatedSalon);
     } catch (error) {
       console.error(error);
     }
@@ -162,16 +200,8 @@ export default function SalonDetailsPage() {
         throw new Error("Error creating comment");
       }
       const newComment = await response.json();
-      // like and dislike count is 0 for a new comment
-      const updatedComments = [
-        {
-          ...newComment.comment,
-          likes: 0,
-          dislikes: 0,
-        },
-        ...comments,
-      ];
-      setComments(updatedComments);
+      console.log(newComment);
+      setComments([newComment.comment, ...comments]);
       setCommentText("");
     } catch (error) {
       console.error(error);
@@ -196,12 +226,39 @@ export default function SalonDetailsPage() {
             {salon.priceRange}
           </p>
           <div className="flex items-center mb-2">
-            <FontAwesomeIcon icon={faComment} className="mr-2" />
-            <span>{salon.comments}</span>
-          </div>
-          <div className="flex items-center mb-2">
-            <FontAwesomeIcon icon={faStar} className="text-yellow-500 mr-2" />
-            <span>{salon.rating}</span>
+            {/* handle like or dislike */}
+            <FontAwesomeIcon
+              icon={faThumbsUp}
+              className={`mr-2 cursor-pointer 
+              ${
+                user &&
+                salon.reaction &&
+                salon.reaction.find(
+                  (reaction) =>
+                    reaction.username === user.username &&
+                    reaction.response === "like"
+                ) &&
+                "text-green-500"
+              }`}
+              onClick={() => handleReaction(salon._id, "like")}
+            />
+            <span>{numLikes}</span>
+            <FontAwesomeIcon
+              icon={faThumbsDown}
+              className={`ml-4 mr-2 cursor-pointer
+              ${
+                user &&
+                salon.reaction &&
+                salon.reaction.find(
+                  (reaction) =>
+                    reaction.username === user.username &&
+                    reaction.response === "dislike"
+                ) &&
+                "text-red-500"
+              }`}
+              onClick={() => handleReaction(salon._id, "dislike")}
+            />
+            <span>{numDislikes}</span>
           </div>
           <div className="flex items-center mt-6">
             <h2 className="text-2xl font-bold mb-4 flex items-center">
@@ -273,16 +330,20 @@ export default function SalonDetailsPage() {
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
           Comment
         </h2>
-        <div className="h-96 overflow-y-scroll">
-          {comments.map((comment) => (
-            <div
-              key={comment._id}
-              className="mb-4 border border-gray-300 bg-white rounded p-4"
-            >
-              <div className="flex items-center mb-2">
-                <span className="mr-2">{comment.username}</span>
-                <div className="flex items-center">
-                  <FontAwesomeIcon
+        {/* if no comment */}
+        {comments.length === 0 ? (
+          <p>No comments yet</p>
+        ) : (
+          <div className="h-96 overflow-y-scroll">
+            {comments.map((comment) => (
+              <div
+                key={comment._id}
+                className="mb-4 border border-gray-300 bg-white rounded p-4"
+              >
+                <div className="flex items-center mb-2">
+                  <span className="mr-2">{comment.username}</span>
+                  <div className="flex items-center">
+                    {/* <FontAwesomeIcon
                     icon={faThumbsUp}
                     className={`ml-4 mr-1 cursor-pointer ${
                       comment.reaction &&
@@ -309,13 +370,14 @@ export default function SalonDetailsPage() {
                     }`}
                     onClick={() => handleReaction(comment._id, "dislike")}
                   />
-                  <span>{comment.dislikes}</span>
+                  <span>{comment.dislikes}</span> */}
+                  </div>
                 </div>
+                <p>{comment.content}</p>
               </div>
-              <p>{comment.content}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
         <div className="mt-4">
           <h3 className="text-xl font-bold mb-2">Add Comment</h3>
           <textarea

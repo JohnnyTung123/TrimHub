@@ -50,7 +50,7 @@ const updateSalonInfo = async (req, res) => {
         name,
         address,
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon info updated successfully" });
@@ -88,7 +88,7 @@ const updateSalonImage = async (req, res) => {
         imageFilename: req.file.filename,
         imagePath: path.resolve(req.file.path),
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Salon image updated successfully" });
@@ -114,7 +114,7 @@ const createHairstyle = async (req, res) => {
           },
         },
       },
-      { new: true },
+      { new: true }
     );
     console.log("Updated Salon Info:", salonInfo);
     res.status(200).json({ success: "Hairstyle added successfully" });
@@ -166,6 +166,33 @@ const getAllSalons = async (req, res) => {
   }
 };
 
+const reactSalon = async (req, res) => {
+  const { salonId } = req.params;
+  const { username, response } = req.body;
+  console.log("React Salon:", salonId, username, response);
+
+  // check if the user has already reacted to the comment
+  const salonInfo = await SalonInfo.findById(salonId);
+  const existingReaction = salonInfo.reaction.find(
+    (reaction) => reaction.username === username
+  );
+  if (existingReaction) {
+    // if the user has already reacted, update the response
+    existingReaction.response = response;
+  } else {
+    //  if the user has not reacted, add a new reaction
+    salonInfo.reaction.push({ username, response });
+  }
+  try {
+    const updatedSalonInfo = await salonInfo.save();
+    console.log("React Salon:", updatedSalonInfo);
+    res.status(200).json(updatedSalonInfo);
+  } catch (error) {
+    console.error("Error reacting to salon:", error);
+    res.status(500).json({ error: `Server side error: ${error.message}` });
+  }
+};
+
 module.exports = {
   createSalonInfo,
   getSalonInfo,
@@ -176,4 +203,5 @@ module.exports = {
   deleteHairstyle,
   getHairstyles,
   getAllSalons,
+  reactSalon,
 };
