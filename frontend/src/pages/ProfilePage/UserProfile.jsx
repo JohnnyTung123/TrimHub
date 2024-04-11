@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+const API_URL = "http://localhost:8080";
+
 const UserProfile = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -67,13 +69,35 @@ const ChangeUserInfoModal = ({ user, onClose }) => {
     onClose();
   };
 
-  const handleConfirmClick = () => {
-    // Perform the update logic here
-    console.log("New username:", newUsername);
-    console.log("New email:", newEmail);
-    console.log("New password:", newPassword);
-    console.log("Old password:", oldPassword);
-    onClose();
+  const handleConfirmClick = async () => {
+    try {
+      const response = await fetch(`${API_URL}/user/${user._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          email: newEmail,
+          username: newUsername,
+          password: newPassword,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error updating user information");
+      }
+  
+      // Optionally, you can update the user context with the new information
+      // const updatedUser = await response.json();
+      // updateUser(updatedUser);
+  
+      alert("User information updated successfully");
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Error updating user information");
+    }
   };
 
   return (

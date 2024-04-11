@@ -88,7 +88,9 @@ export default function SalonDetailsPage() {
           throw new Error("Error fetching followed salons");
         }
         const followedSalons = await response.json();
-        setIsFollowing(followedSalons.includes(salonId));
+        console.log(followedSalons);
+        console.log(salonId);
+        setIsFollowing(followedSalons.some(salon => salon._id === salonId));
       } catch (error) {
         console.error(error);
       }

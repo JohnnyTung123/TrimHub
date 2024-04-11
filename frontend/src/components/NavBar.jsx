@@ -43,8 +43,8 @@ const NavBar = () => {
                     <a className="block p-3 hover:opacity-80" href="/profile">User information</a>
                     <a className="block p-3 hover:opacity-80" href="/bookings">Bookings</a>
                     <a className="block p-3 hover:opacity-80" href="/messages">Messages</a>
-                    <a className="block p-3 hover:opacity-80" href="/savedsalon">Saved salons</a>
-                    <a className="block p-3 hover:opacity-80" href="/savedhaircut">Saved haircut</a>
+                    <a className="block p-3 hover:opacity-80" href="/savedsalon">Followed salons</a>
+                    <a className="block p-3 hover:opacity-80" href="/savedhaircut">Followed haircuts</a>
                   </div>
                 )}
                 <a className="block p-3 hover:opacity-80 cursor-pointer" onClick={handleLogout}>Logout</a>
