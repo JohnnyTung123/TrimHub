@@ -27,6 +27,7 @@ app.use("/comment", require("./routes/comment_route"));
 app.use("/hairstyle", require("./routes/hairstyle_route"));
 app.use("/plan", require("./routes/plan_route"));
 app.use("/booking", require("./routes/booking_route"));
+app.use("/stripe", require("./routes/stripe_route"));
 app.use("/chat", require("./routes/chat_route"));
 app.use("/message", require("./routes/message_route"));
 
