@@ -113,7 +113,7 @@ export default function SalonDetailsPage() {
       }
       const chat = await response.json();
       console.log(chat);
-      navigate("/messages");
+      navigate(`/messages?chatId=${chat._id}`);
     } catch (error) {
       console.error(error);
     }
