@@ -38,7 +38,7 @@ const SavedHaircutPage = () => {
     <div className="p-8 bg-gray-200 min-h-screen h-full">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
         <span className="w-2 h-6 bg-green-700 mr-2"></span>
-        Saved Haircuts
+        Followed Haircuts
       </h2>
       {haircuts.map((haircut) => (
         <div className="flex items-center mb-5 bg-white rounded-lg shadow-md" key={haircut.id}>

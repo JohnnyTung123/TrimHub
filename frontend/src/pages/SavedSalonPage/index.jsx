@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookmark as faBookmarkSolid,
@@ -8,29 +8,31 @@ import {
   faBookmark as faBookmarkRegular,
   faComment,
 } from "@fortawesome/free-regular-svg-icons";
+import { useUser } from "../../context/UserContext";
+
+const API_URL = "http://localhost:8080";
 
 const SavedSalonPage = () => {
+  const { user } = useUser();
+  const [savedSalons, setSavedSalons] = useState([]);
   const [bookmarks, setBookmarks] = useState({});
 
-  const salons = [
-    {
-      id: 1,
-      name: "ABC Salons",
-      location: "Rm123, Shatin",
-      priceRange: "$100-$200",
-      rating: 4.5,
-      imageUrl: "./img/salon.png",
-    },
-    {
-      id: 2,
-      name: "ABC Salons",
-      location: "Rm123, Shatin",
-      priceRange: "$100-$200",
-      comments: 450,
-      rating: 4.5,
-      imageUrl: "./img/salon.png",
-    },
-  ];
+  useEffect(() => {
+    const fetchSavedSalons = async () => {
+      try {
+        const response = await fetch(`${API_URL}/user/followed-salons/${user._id}`);
+        if (!response.ok) {
+          throw new Error("Error fetching savedsalons");
+        }
+        const savedsalons = await response.json();
+        console.log(savedsalons);
+        setSavedSalons(savedsalons);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchSavedSalons();
+  }, [user]);
 
   const toggleBookmark = (id) => {
     setBookmarks((prevBookmarks) => ({
@@ -43,48 +45,46 @@ const SavedSalonPage = () => {
     <div className="p-8 bg-gray-200 min-h-screen h-full">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
         <span className="w-2 h-6 bg-green-700 mr-2"></span>
-        Saved Salons
+        Followed Salons
       </h2>
-      {salons.map((haircut) => (
+      {savedSalons.map((salon) => (
         <div
           className="flex items-center mb-5 bg-white rounded-lg shadow-md"
-          key={haircut.id}
+          key={salon._id}
         >
           <img
-            src={haircut.imageUrl}
+            src={salon.imagePath}
             alt="Haircut"
             className="w-64 h-64 rounded-l-lg object-cover"
           />
           <div className="flex-grow px-4">
             <h2 className="text-xl font-bold mb-1 flex items-center">
-              {haircut.name}
+              {salon.salonname}
               <button
                 className="ml-2 focus:outline-none"
-                onClick={() => toggleBookmark(haircut.id)}
+                onClick={() => toggleBookmark(salon._id)}
               >
                 <FontAwesomeIcon
-                  icon={
-                    bookmarks[haircut.id] ? faBookmarkSolid : faBookmarkRegular
-                  }
+                  icon={bookmarks[salon._id] ? faBookmarkSolid : faBookmarkRegular}
                 />
               </button>
             </h2>
-            <p className="text-gray-500 mb-1">{haircut.location}</p>
-            <p className="text-green-600 font-bold mb-1">
-              {haircut.priceRange}
-            </p>
-            <div className="flex items-center">
+            <p className="text-gray-500 mb-1">{salon.address}</p>
+            {<p className="text-green-600 font-bold mb-1">
+              {salon.priceRange}
+            </p> }
+            {<div className="flex items-center">
               <span className="mr-1">
                 <FontAwesomeIcon icon={faComment} />
               </span>
-              <span className="text-gray-700 mr-1">{haircut.comments}</span>
-            </div>
-            <div className="flex items-center">
+              <span className="text-gray-700 mr-1">{salon.comments}</span>
+            </div>}
+            {<div className="flex items-center">
               <span className="text-yellow-500 mr-1">
                 <FontAwesomeIcon icon={faStar} />
               </span>
-              <span className="text-gray-700 mr-1">{haircut.rating}</span>
-            </div>
+              <span className="text-gray-700 mr-1">{salon.rating}</span>
+            </div> }
             <button className="bg-green-500 text-white rounded mt-2 mb-2">
               Contact
             </button>

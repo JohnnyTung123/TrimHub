@@ -109,7 +109,7 @@ const getFollowedSalons = async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('following');
     if (!user) {
       return res.status(404).json({ error: `Cannot find User Id ${userId}` });
     }
