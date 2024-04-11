@@ -8,12 +8,14 @@ import {
   faBookmark as faBookmarkRegular,
   faComment,
 } from "@fortawesome/free-regular-svg-icons";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
 const API_URL = "http://localhost:8080";
 
 const SavedSalonPage = () => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [savedSalons, setSavedSalons] = useState([]);
   const [bookmarks, setBookmarks] = useState({});
 
@@ -41,6 +43,33 @@ const SavedSalonPage = () => {
     }));
   };
 
+  const handleContactClick = async (salonUserId) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          senderId: user._id,
+          receiverId: salonUserId,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Error creating chat");
+      }
+      const chat = await response.json();
+      console.log(chat);
+      navigate(`/messages?chatId=${chat._id}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleBookNowClick = (salonId) => {
+    navigate(`/salon/${salonId}`);
+  };
+
   return (
     <div className="p-8 bg-gray-200 min-h-screen h-full">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
@@ -53,7 +82,7 @@ const SavedSalonPage = () => {
           key={salon._id}
         >
           <img
-            src={salon.imagePath}
+            src={`${API_URL}/salon-info/image?salonId=${salon._id}`}
             alt="Haircut"
             className="w-64 h-64 rounded-l-lg object-cover"
           />
@@ -85,12 +114,20 @@ const SavedSalonPage = () => {
               </span>
               <span className="text-gray-700 mr-1">{salon.rating}</span>
             </div> }
-            <button className="bg-green-500 text-white rounded mt-2 mb-2">
-              Contact
-            </button>
-            <button className="bg-green-700 text-white rounded mt-2 mb-2">
-              Book now
-            </button>
+              <button
+                type="button"
+                onClick={() => handleContactClick(salon.user._id)}
+                className="bg-green-500 text-white rounded mt-2 mb-2"
+              >
+                Contact
+              </button>
+              <button
+                type="button"
+                onClick={() => handleBookNowClick(salon._id)}
+                className="bg-green-700 text-white rounded mt-2 mb-2"
+              >
+                Book Now
+              </button>
           </div>
         </div>
       ))}
