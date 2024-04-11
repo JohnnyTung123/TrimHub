@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -10,12 +10,12 @@ const API_URL = "http://localhost:8080";
 export default function BookingConfirmationPage() {
   const { user } = useUser();
   const { salonId, planId } = useParams();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [plan, setPlan] = useState({});
   const [bookings, setBookings] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [showBookingConfirmation, setBookingConfirmation] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -60,7 +60,7 @@ export default function BookingConfirmationPage() {
 
   const handleBookNowClick = async () => {
     try {
-      const response = await fetch(`${API_URL}/booking/`, {
+      const bookingResponse = await fetch(`${API_URL}/booking/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,20 +71,37 @@ export default function BookingConfirmationPage() {
           date: selectedDate,
         }),
       });
-      if (!response.ok) {
+      if (!bookingResponse.ok) {
         throw new Error("Error creating booking");
       }
-      const booking = await response.json();
+      const booking = await bookingResponse.json();
       console.log(booking);
-      setBookingConfirmation(true);
+
+      const checkoutSessionResponse = await fetch(`${API_URL}/stripe/create-checkout-session`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item: {
+            name: plan.salon.salonname + " " + plan.name,
+            unit_amount: Number(plan.price) * 100,
+            quantity: 1,
+          },
+          checkoutURL: `http://localhost:3000/salon/${salonId}/bookingconfirmation/${planId}`,
+        }),
+      });
+      const sessionURL = await checkoutSessionResponse.json();
+      console.log(sessionURL);
+      window.location = sessionURL;
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleBackToBookingClick = () => {
-    setBookingConfirmation(false);
-    navigate("/bookings")
+    navigate("/bookings");
   };
 
   return (
@@ -134,7 +151,7 @@ export default function BookingConfirmationPage() {
         </div>
       </div>
 
-      {showBookingConfirmation && (
+      {searchParams.get("success") && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Booking successful</h2>

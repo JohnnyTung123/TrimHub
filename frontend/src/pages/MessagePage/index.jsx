@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useUser } from "../../context/UserContext";
 
 const API_URL = "http://localhost:8080";
 const socket = io(API_URL);
 
-const ChatList = ({ currentChat, setCurrentChat }) => {
+const ChatList = () => {
   const { user } = useUser();
   const [chats, setChats] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -35,8 +37,8 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
       {chats.map((chat) => (
         <button
           key={chat._id}
-          className={`${ JSON.stringify(currentChat) === JSON.stringify(chat) ? "bg-green-600 text-white" : "bg-gray-200" } w-full mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
-          onClick={() => setCurrentChat(chat)}
+          className={`${ searchParams.get("chatId") === chat._id ? "bg-green-600 text-white" : "bg-gray-200" } w-full mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
+          onClick={() => setSearchParams({ chatId: chat._id })}
         >
           {determineChatName(chat)}
         </button>
@@ -45,10 +47,11 @@ const ChatList = ({ currentChat, setCurrentChat }) => {
   );
 };
 
-const Chat = ({ currentChat }) => {
+const Chat = () => {
   const { user } = useUser();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     socket.on("message", (message) => {
@@ -63,7 +66,7 @@ const Chat = ({ currentChat }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`${API_URL}/message/${currentChat._id}`);
+        const response = await fetch(`${API_URL}/message/${searchParams.get("chatId")}`);
         if (!response.ok) {
           throw new Error("Error fetching salon info");
         }
@@ -71,13 +74,13 @@ const Chat = ({ currentChat }) => {
         console.log(messages);
         setMessages(messages);
 
-        socket.emit("join chat", currentChat._id);
+        socket.emit("join chat", searchParams.get("chatId"));
       } catch (error) {
         console.error(error);
       }
     };
     fetchMessages();
-  }, [currentChat]);
+  }, [searchParams]);
 
   const createNewMessage = async (e) => {
     e.preventDefault();
@@ -93,7 +96,7 @@ const Chat = ({ currentChat }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          chatId: currentChat._id,
+          chatId: searchParams.get("chatId"),
           senderId: user._id,
           content: newMessage,
         }),
@@ -148,7 +151,7 @@ const Chat = ({ currentChat }) => {
         })}
       </div>
 
-      {currentChat && (
+      {searchParams.get("chatId") && (
         <div className="flex flex-col items-center justify-between mb-4">
           <form onSubmit={createNewMessage}>
             <input
@@ -167,12 +170,10 @@ const Chat = ({ currentChat }) => {
 };
 
 const MessagePage = () => {
-  const [currentChat, setCurrentChat] = useState(null);
-
   return (
     <div className="flex justify-between">
-      <ChatList currentChat={currentChat} setCurrentChat={setCurrentChat} />
-      <Chat currentChat={currentChat} />
+      <ChatList />
+      <Chat />
     </div>
   );
 };
