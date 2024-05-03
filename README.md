@@ -42,3 +42,58 @@ TrimHub is a web-based application that allows customers to search for their fav
 - Enable private chat between a customer and a salon for further inquiries.
 - Display real-time fashion trends or news on the home page.
 - Implement email verification during sign-up.
+
+## Prerequisites
+
+Before running this application, ensure you have the following installed on your system:
+
+- [Node.js](https://nodejs.org/) (version X.X.X or higher)
+- [npm](https://www.npmjs.com/) (typically comes with Node.js installation)
+
+## Installation
+
+To run this application, follow these steps:
+
+1. Clone this repository to your local machine:
+
+    ```bash
+    git clone https://github.com/yourusername/your-repo.git
+    ```
+
+2. Navigate to the `backend` directory:
+
+    ```bash
+    cd backend
+    ```
+
+3. Install backend dependencies:
+
+    ```bash
+    npm install
+    ```
+
+4. Start the backend server:
+
+    ```bash
+    npm run devStart
+    ```
+
+5. In a new terminal window, navigate to the `frontend` directory:
+
+    ```bash
+    cd ../frontend
+    ```
+
+6. Install frontend dependencies:
+
+    ```bash
+    npm install
+    ```
+
+7. Start the frontend server:
+
+    ```bash
+    npm run start
+    ```
+
+8. Open your web browser and visit `http://localhost:3000` to view the application.
