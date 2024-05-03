@@ -12,25 +12,27 @@ TrimHub is a web-based application that allows customers to search for their fav
 
 #### Customer
 
-- Search for salons and haircuts by different criteria such as price, location, and rating.
-- Comment, like or dislike, and bookmark or follow a salon or hairstyle.
-- Choose a service and make a booking online.
+- Search for salons and haircuts by name.
+- Comment, like or dislike, and follow or unfollow a salon.
+- Book a service online and make a payment.
 
 #### Salon
 
-- Build their profile and showcase their price, location, and past experience by uploading descriptions, photos, and videos.
+- Build their profile and showcase their name, location, plans and past experience by uploading descriptions, photos, and videos.
 
 #### Common Features
 
-- Login and sign up for an account using email and password.
+- Login and sign up for an account using email, name and password.
+- Private chat between a customer and a salon for further inquiries.
+- Email verification during sign-up.
 
 ### Advanced Features (Later Releases)
 
 #### Customer
 
 - Utilize an AI chatbot as virtual assistants to find favorite salons and services.
-- Make payments online.
 - Participate in a style competition where customers can upload their best style for a chance to win rewards.
+- Search for salons and haircuts by different criteria such as price, location, and rating.
 
 #### Salon
 
@@ -39,9 +41,7 @@ TrimHub is a web-based application that allows customers to search for their fav
 #### Others
 
 - Enhance UI and UX design.
-- Enable private chat between a customer and a salon for further inquiries.
 - Display real-time fashion trends or news on the home page.
-- Implement email verification during sign-up.
 
 ## Prerequisites
 
