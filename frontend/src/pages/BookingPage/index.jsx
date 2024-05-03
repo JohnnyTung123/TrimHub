@@ -13,6 +13,7 @@ const BookingPage = () => {
   const [bookmarks, setBookmarks] = useState({});
   const navigate = useNavigate();
 
+  // function to show the bookings that the user made
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -37,6 +38,7 @@ const BookingPage = () => {
     }));
   };
 
+  // function to show chat room after clicking contact button
   const handleContactClick = async (salonUserId) => {
     try {
       const response = await fetch(`${API_URL}/chat/`, {
@@ -60,6 +62,7 @@ const BookingPage = () => {
     }
   };
 
+  // function to show the booking confirmation page after clicking book again button
   const handleBookAgainClick = (salonId, planId) => {
     navigate(`/salon/${salonId}/bookingconfirmation/${planId}`);
   };
@@ -70,6 +73,7 @@ const BookingPage = () => {
         <span className="w-2 h-6 bg-green-700 mr-2" />
         Bookings
       </h2>
+      {/* show all the booking the user made */}
       {bookings.map((booking, index) => (
         <div className="flex items-center mb-5 bg-white rounded-lg shadow-md" key={booking._id}>
           <img
@@ -108,6 +112,7 @@ const BookingPage = () => {
                   {booking.plan.salon.rating}
                 </span>
               </div>
+              {/* Contact button */}
               <button
                 type="button"
                 onClick={() => handleContactClick(booking.plan.salon.user._id)}
@@ -115,6 +120,7 @@ const BookingPage = () => {
               >
                 Contact
               </button>
+              {/* Book again button */}
               <button
                 type="button"
                 onClick={() => handleBookAgainClick(booking.plan.salon._id, booking.plan._id)}

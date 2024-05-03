@@ -13,6 +13,7 @@ const SignUpPage = () => {
 
   const navigate = useNavigate();
 
+  // function of creating salon info
   const createSalonInfo = async (userId) => {
     try {
       const response = await fetch("http://localhost:8080/salon-info", {
@@ -30,6 +31,7 @@ const SignUpPage = () => {
     }
   };
 
+  // function of handling sign up submit action
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate input
@@ -66,6 +68,7 @@ const SignUpPage = () => {
     setOtpSent(true);
   };
 
+  // function of handling sign up action
   const handleSignUp = async () => {
     try {
       const response = await fetch("http://localhost:8080/auth/signup", {

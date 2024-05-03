@@ -19,6 +19,7 @@ const SavedSalonPage = () => {
   const [savedSalons, setSavedSalons] = useState([]);
   const [bookmarks, setBookmarks] = useState({});
 
+  // function to show the salons that the user following
   useEffect(() => {
     const fetchSavedSalons = async () => {
       try {
@@ -43,6 +44,7 @@ const SavedSalonPage = () => {
     }));
   };
 
+  // function to show chat room after clicking contact button
   const handleContactClick = async (salonUserId) => {
     try {
       const response = await fetch(`${API_URL}/chat/`, {
@@ -66,6 +68,7 @@ const SavedSalonPage = () => {
     }
   };
 
+  // function to correspond salon page after clicking book now button
   const handleBookNowClick = (salonId) => {
     navigate(`/salon/${salonId}`);
   };

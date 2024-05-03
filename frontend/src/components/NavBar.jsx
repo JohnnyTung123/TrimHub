@@ -11,6 +11,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // functuin to logout
   const handleLogout = () => {
     cookies.remove("auth");
     setUser(null);
@@ -20,6 +21,7 @@ const NavBar = () => {
   return (
     <div className="flex justify-between items-center bg-white my-2 mx-4">
       <h1 className="text-4xl cursor-pointer" onClick={() => navigate("/")}>Trim Hub</h1>
+      {/* showing the nav bar with correspond user type and user information */}
       {user ? (
         <nav>
           <a className="mx-4 hover:opacity-80" href="/men">Men</a>

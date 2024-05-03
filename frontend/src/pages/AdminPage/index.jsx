@@ -45,6 +45,7 @@ const AdminPage = () => {
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
           User Management
         </h2>
+        {/* showing every user based on the user exist in database */}
         {users.map((user) => (
           <div key={user._id}>
             <label htmlFor="username" className="block mb-1 font-bold">

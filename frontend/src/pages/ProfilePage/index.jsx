@@ -9,6 +9,7 @@ import { useUser } from "../../context/UserContext";
 const ProfilePage = () => {
   const { user } = useUser();
 
+  // show user profile based on usertype
   return (
     <>
       {user?.usertype === "customer" || user?.usertype === "admin" ? (

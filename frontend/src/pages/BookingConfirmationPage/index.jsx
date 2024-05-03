@@ -50,6 +50,7 @@ export default function BookingConfirmationPage() {
     fetchBookings();
   }, [planId]);
 
+  // function to show the available time for booking
   const filterTime = (time) => {
     const currentDate = new Date();
     const selectedDate = new Date(time);
@@ -58,6 +59,7 @@ export default function BookingConfirmationPage() {
     return timeIsFuture && timeIsNotBook;
   };
 
+  // function to handle after clicking book now button
   const handleBookNowClick = async () => {
     try {
       const bookingResponse = await fetch(`${API_URL}/booking/`, {
@@ -100,6 +102,7 @@ export default function BookingConfirmationPage() {
     }
   };
 
+  // function to show user booking after successfully booked
   const handleBackToBookingClick = () => {
     navigate("/bookings");
   };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const API_URL = "http://localhost:8080";
 
+// function to show pop-up window for user to change user information
 const UserProfile = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -20,6 +21,7 @@ const UserProfile = ({ user }) => {
           <span className="w-2 h-6 bg-green-700 mr-2"></span>
           User Information
         </h2>
+        {/* showing user name */}
         <div className="mb-4">
           <label htmlFor="username" className="block mb-1 font-bold">
             User Name
@@ -32,6 +34,7 @@ const UserProfile = ({ user }) => {
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
+        {/* showing user email */}
         <div>
           <label htmlFor="email" className="block mb-1 font-bold">
             Email
@@ -59,6 +62,7 @@ const UserProfile = ({ user }) => {
   );
 };
 
+// function of a pop-up window for user to change user information
 const ChangeUserInfoModal = ({ user, onClose }) => {
   const [newUsername, setNewUsername] = useState(user.username);
   const [newEmail, setNewEmail] = useState(user.email);
