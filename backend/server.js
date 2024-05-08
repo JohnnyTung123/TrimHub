@@ -42,7 +42,7 @@ mongoose.connection.once("open", () => {
 
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: ["https://trim-hub-1030.vercel.app", "http://localhost:3000"],
     },
   });
 
