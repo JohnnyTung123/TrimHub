@@ -13,7 +13,7 @@ app.use(express.json());
 // CORS configuration
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["https://trim-hub-1030.vercel.app", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
