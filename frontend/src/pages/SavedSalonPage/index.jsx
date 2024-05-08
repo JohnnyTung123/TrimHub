@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 const SavedSalonPage = () => {
   const { user } = useUser();
@@ -23,7 +23,9 @@ const SavedSalonPage = () => {
   useEffect(() => {
     const fetchSavedSalons = async () => {
       try {
-        const response = await fetch(`${API_URL}/user/followed-salons/${user._id}`);
+        const response = await fetch(
+          `${API_URL}/user/followed-salons/${user._id}`
+        );
         if (!response.ok) {
           throw new Error("Error fetching savedsalons");
         }
@@ -33,7 +35,7 @@ const SavedSalonPage = () => {
       } catch (error) {
         console.error(error);
       }
-    }
+    };
     fetchSavedSalons();
   }, [user]);
 
@@ -97,40 +99,48 @@ const SavedSalonPage = () => {
                 onClick={() => toggleBookmark(salon._id)}
               >
                 <FontAwesomeIcon
-                  icon={bookmarks[salon._id] ? faBookmarkSolid : faBookmarkRegular}
+                  icon={
+                    bookmarks[salon._id] ? faBookmarkSolid : faBookmarkRegular
+                  }
                 />
               </button>
             </h2>
             <p className="text-gray-500 mb-1">{salon.address}</p>
-            {<p className="text-green-600 font-bold mb-1">
-              {salon.priceRange}
-            </p> }
-            {<div className="flex items-center">
-              <span className="mr-1">
-                <FontAwesomeIcon icon={faComment} />
-              </span>
-              <span className="text-gray-700 mr-1">{salon.comments}</span>
-            </div>}
-            {<div className="flex items-center">
-              <span className="text-yellow-500 mr-1">
-                <FontAwesomeIcon icon={faStar} />
-              </span>
-              <span className="text-gray-700 mr-1">{salon.rating}</span>
-            </div> }
-              <button
-                type="button"
-                onClick={() => handleContactClick(salon.user._id)}
-                className="bg-green-500 text-white rounded mt-2 mb-2"
-              >
-                Contact
-              </button>
-              <button
-                type="button"
-                onClick={() => handleBookNowClick(salon._id)}
-                className="bg-green-700 text-white rounded mt-2 mb-2"
-              >
-                Book Now
-              </button>
+            {
+              <p className="text-green-600 font-bold mb-1">
+                {salon.priceRange}
+              </p>
+            }
+            {
+              <div className="flex items-center">
+                <span className="mr-1">
+                  <FontAwesomeIcon icon={faComment} />
+                </span>
+                <span className="text-gray-700 mr-1">{salon.comments}</span>
+              </div>
+            }
+            {
+              <div className="flex items-center">
+                <span className="text-yellow-500 mr-1">
+                  <FontAwesomeIcon icon={faStar} />
+                </span>
+                <span className="text-gray-700 mr-1">{salon.rating}</span>
+              </div>
+            }
+            <button
+              type="button"
+              onClick={() => handleContactClick(salon.user._id)}
+              className="bg-green-500 text-white rounded mt-2 mb-2"
+            >
+              Contact
+            </button>
+            <button
+              type="button"
+              onClick={() => handleBookNowClick(salon._id)}
+              className="bg-green-700 text-white rounded mt-2 mb-2"
+            >
+              Book Now
+            </button>
           </div>
         </div>
       ))}

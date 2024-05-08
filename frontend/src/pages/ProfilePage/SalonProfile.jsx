@@ -15,6 +15,7 @@ import {
 } from "./SalonApi";
 
 const SalonProfile = ({ user }) => {
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
   // salon information
   const [salonId, setSalonId] = useState("");
   const [salonName, setSalonName] = useState("");
@@ -88,7 +89,11 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      const hairstyle = await createHairstyleAPI(salonId, hairstyleImage, hairstyleDescription);
+      const hairstyle = await createHairstyleAPI(
+        salonId,
+        hairstyleImage,
+        hairstyleDescription
+      );
       setHairstyles([...hairstyles, hairstyle]);
       setHairstyleImage(null);
       setHairstyleDescription("");
@@ -102,7 +107,9 @@ const SalonProfile = ({ user }) => {
   const deleteHairstyle = async (hairstyleId) => {
     try {
       await deleteHairstyleAPI(hairstyleId);
-      setHairstyles((hairstyles) => hairstyles.filter((hairstyle) => hairstyle._id !== hairstyleId));
+      setHairstyles((hairstyles) =>
+        hairstyles.filter((hairstyle) => hairstyle._id !== hairstyleId)
+      );
     } catch (error) {
       console.error(error);
     }
@@ -125,7 +132,12 @@ const SalonProfile = ({ user }) => {
     }
 
     try {
-      const plan = await createPlanAPI(salonId, planName, planPrice, planDescription);
+      const plan = await createPlanAPI(
+        salonId,
+        planName,
+        planPrice,
+        planDescription
+      );
       setPlans([...plans, plan]);
       setPlanName("");
       setPlanPrice("");
@@ -183,7 +195,9 @@ const SalonProfile = ({ user }) => {
         <table className="table-fixed border border-black w-full min-w-0 mx-5">
           <tbody>
             <tr>
-              <td className="border border-black w-32 px-4 py-2 font-bold">Salon Name</td>
+              <td className="border border-black w-32 px-4 py-2 font-bold">
+                Salon Name
+              </td>
               <td className="border border-black px-4 py-2">
                 <input
                   type="text"
@@ -195,7 +209,9 @@ const SalonProfile = ({ user }) => {
               </td>
             </tr>
             <tr>
-              <td className="border border-black w-32 px-4 py-2 font-bold">Address</td>
+              <td className="border border-black w-32 px-4 py-2 font-bold">
+                Address
+              </td>
               <td className="border border-black px-4 py-2">
                 <input
                   type="text"
@@ -289,7 +305,8 @@ const SalonProfile = ({ user }) => {
           {hairstyles.map((hairstyle) => (
             <div key={hairstyle._id} className="mb-4">
               <img
-                src={`http://localhost:8080/hairstyle/${hairstyle._id}`}
+                // src={`http://localhost:8080/hairstyle/${hairstyle._id}`}
+                src={`${API_URL}/hairstyle/${hairstyle._id}`}
                 alt={`Hairstyle ${hairstyle._id}`}
                 className="h-64 object-cover"
               />
@@ -381,7 +398,9 @@ const SalonProfile = ({ user }) => {
               <table className="table-fixed border border-black w-full">
                 <tbody>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">Plan Name</td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Plan Name
+                    </td>
                     <td className="border border-black px-4 py-2">
                       <input
                         type="text"
@@ -396,7 +415,9 @@ const SalonProfile = ({ user }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">Price</td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Price
+                    </td>
                     <td className="border border-black px-4 py-2">
                       <input
                         type="number"
@@ -411,7 +432,9 @@ const SalonProfile = ({ user }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border border-black w-32 px-4 py-2 font-bold">Description</td>
+                    <td className="border border-black w-32 px-4 py-2 font-bold">
+                      Description
+                    </td>
                     <td className="border border-black px-4 py-2">
                       <textarea
                         value={plan.description}

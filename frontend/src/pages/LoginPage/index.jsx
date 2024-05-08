@@ -9,6 +9,7 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
   const cookies = useMemo(() => new Cookies(), []);
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +27,8 @@ const LoginPage = () => {
     }
 
     // send the login request
-    fetch("http://localhost:8080/auth/login", {
+    // fetch("http://localhost:8080/auth/login", {
+    fetch(`${apiUrl}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -55,7 +57,9 @@ const LoginPage = () => {
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-2">
-            <label htmlFor="username" className="font-bold">Username</label>
+            <label htmlFor="username" className="font-bold">
+              Username
+            </label>
             <input
               type="text"
               value={username}
@@ -65,7 +69,9 @@ const LoginPage = () => {
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="password" className="font-bold">Password</label>
+            <label htmlFor="password" className="font-bold">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -73,17 +79,35 @@ const LoginPage = () => {
               autoComplete="on"
               className="m-2 p-2 border border-gray-300 rounded"
             />
-            <button type="button" className="bg-gray-200" onClick={() => navigate("/forgot-password")}>
+            <button
+              type="button"
+              className="bg-gray-200"
+              onClick={() => navigate("/forgot-password")}
+            >
               Forgot Password?
             </button>
           </div>
-          <button type="submit" className="bg-green-700 text-white">Login</button>
-          <button type="button" className="bg-gray-200" onClick={() => navigate("/")}>Back</button>
+          <button type="submit" className="bg-green-700 text-white">
+            Login
+          </button>
+          <button
+            type="button"
+            className="bg-gray-200"
+            onClick={() => navigate("/")}
+          >
+            Back
+          </button>
         </form>
         {error && <span className="text-red-600">{error}</span>}
         <div className="mt-2">
           <span className="font-bold mr-2">Don't have an account?</span>
-          <button type="button" className="bg-gray-200" onClick={() => navigate("/signup")}>Sign Up</button>
+          <button
+            type="button"
+            className="bg-gray-200"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up
+          </button>
         </div>
       </div>
     </div>

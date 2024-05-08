@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 // function to show pop-up window for user to change user information
 const UserProfile = ({ user }) => {
@@ -57,7 +57,9 @@ const UserProfile = ({ user }) => {
         </button>
       </div>
 
-      {showModal && <ChangeUserInfoModal user={user} onClose={handleCloseModal} />}
+      {showModal && (
+        <ChangeUserInfoModal user={user} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };
@@ -87,15 +89,15 @@ const ChangeUserInfoModal = ({ user, onClose }) => {
           password: newPassword,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Error updating user information");
       }
-  
+
       // Optionally, you can update the user context with the new information
       // const updatedUser = await response.json();
       // updateUser(updatedUser);
-  
+
       alert("User information updated successfully");
       onClose();
     } catch (error) {

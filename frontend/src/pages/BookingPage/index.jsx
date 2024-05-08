@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark as faBookmarkSolid, faStar } from "@fortawesome/free-solid-svg-icons";
-import { faBookmark as faBookmarkRegular, faComment } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBookmark as faBookmarkSolid,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as faBookmarkRegular,
+  faComment,
+} from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 const BookingPage = () => {
   const { user } = useUser();
@@ -27,7 +33,7 @@ const BookingPage = () => {
       } catch (error) {
         console.error(error);
       }
-    }
+    };
     fetchBooking();
   }, [user]);
 
@@ -75,7 +81,10 @@ const BookingPage = () => {
       </h2>
       {/* show all the booking the user made */}
       {bookings.map((booking, index) => (
-        <div className="flex items-center mb-5 bg-white rounded-lg shadow-md" key={booking._id}>
+        <div
+          className="flex items-center mb-5 bg-white rounded-lg shadow-md"
+          key={booking._id}
+        >
           <img
             src={`${API_URL}/salon-info/image?salonId=${booking.plan.salon._id}`}
             alt="Salon"
@@ -90,12 +99,16 @@ const BookingPage = () => {
                   onClick={() => toggleBookmark(index)}
                 >
                   <FontAwesomeIcon
-                    icon={bookmarks[index] ? faBookmarkSolid : faBookmarkRegular}
+                    icon={
+                      bookmarks[index] ? faBookmarkSolid : faBookmarkRegular
+                    }
                   />
                 </button>
               </h2>
               <p className="text-gray-500 mb-1">{booking.plan.salon.address}</p>
-              <p className="text-green-600 font-bold mb-1">${booking.plan.price}</p>
+              <p className="text-green-600 font-bold mb-1">
+                ${booking.plan.price}
+              </p>
               <div className="flex items-center">
                 <span className="mr-1">
                   <FontAwesomeIcon icon={faComment} />
@@ -123,22 +136,30 @@ const BookingPage = () => {
               {/* Book again button */}
               <button
                 type="button"
-                onClick={() => handleBookAgainClick(booking.plan.salon._id, booking.plan._id)}
+                onClick={() =>
+                  handleBookAgainClick(booking.plan.salon._id, booking.plan._id)
+                }
                 className="bg-green-700 text-white rounded mt-2 mb-2"
               >
                 Book again
               </button>
             </div>
             <div className="bg-gray-100 p-4 rounded-lg flex-col space-y-5">
-              <p className="text-green-600 text-lg font-bold mb-1">Plan: {booking.plan.name}</p>
-              <p className="text-gray-700 text-lg mb-1">Date: {new Date(booking.date).toLocaleDateString()}</p>
-              <p className="text-gray-700 text-lg">Time: {new Date(booking.date).toLocaleTimeString()}</p>
+              <p className="text-green-600 text-lg font-bold mb-1">
+                Plan: {booking.plan.name}
+              </p>
+              <p className="text-gray-700 text-lg mb-1">
+                Date: {new Date(booking.date).toLocaleDateString()}
+              </p>
+              <p className="text-gray-700 text-lg">
+                Time: {new Date(booking.date).toLocaleTimeString()}
+              </p>
             </div>
           </div>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default BookingPage;

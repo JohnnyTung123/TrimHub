@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchHairstyles, fetchPlans } from "../ProfilePage/SalonApi";
 import { useUser } from "../../context/UserContext";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 export default function SalonDetailsPage() {
   const { user } = useUser();
@@ -90,7 +90,7 @@ export default function SalonDetailsPage() {
         const followedSalons = await response.json();
         console.log(followedSalons);
         console.log(salonId);
-        setIsFollowing(followedSalons.some(salon => salon._id === salonId));
+        setIsFollowing(followedSalons.some((salon) => salon._id === salonId));
       } catch (error) {
         console.error(error);
       }
@@ -271,7 +271,9 @@ export default function SalonDetailsPage() {
           {/* follow/unfollow button */}
           {user && (
             <button
-              className={`px-4 py-2 mt-1 text-white rounded ${isFollowing ? "bg-gray-400" : "bg-green-400"}`}
+              className={`px-4 py-2 mt-1 text-white rounded ${
+                isFollowing ? "bg-gray-400" : "bg-green-400"
+              }`}
               onClick={handleFollowClick}
             >
               {isFollowing ? "Unfollow" : "Follow"}
@@ -325,7 +327,7 @@ export default function SalonDetailsPage() {
             </button>
           ))}
         </div>
-          {/*<button className="text-green-600 mb-4">Show more</button>*/}
+        {/*<button className="text-green-600 mb-4">Show more</button>*/}
         <div>
           <button
             type="button"

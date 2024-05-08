@@ -12,11 +12,12 @@ const SignUpPage = () => {
   const [otpSent, setOtpSent] = useState(false);
 
   const navigate = useNavigate();
-
+  const API = process.env.REACT_APP_API_URL || "http://localhost:8080";
   // function of creating salon info
   const createSalonInfo = async (userId) => {
     try {
-      const response = await fetch("http://localhost:8080/salon-info", {
+      // const response = await fetch("http://localhost:8080/salon-info", {
+      const response = await fetch(`${API}/salon-info`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: userId, salonname: username }),
@@ -53,7 +54,8 @@ const SignUpPage = () => {
       return;
     }
     // Send OTP
-    const otpResponse = await fetch("http://localhost:8080/auth/otp", {
+    // const otpResponse = await fetch("http://localhost:8080/auth/otp", {
+    const otpResponse = await fetch(`${API}/auth/otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, username }),
@@ -71,7 +73,8 @@ const SignUpPage = () => {
   // function of handling sign up action
   const handleSignUp = async () => {
     try {
-      const response = await fetch("http://localhost:8080/auth/signup", {
+      // const response = await fetch("http://localhost:8080/auth/signup", {
+      const response = await fetch(`${API}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, username, password, usertype, otp }),
@@ -102,7 +105,9 @@ const SignUpPage = () => {
         </h2>
         {otpSent ? (
           <div className="mb-2">
-            <label htmlFor="otp" className="font-bold">Enter the OTP sent to your email:</label>
+            <label htmlFor="otp" className="font-bold">
+              Enter the OTP sent to your email:
+            </label>
             <input
               type="text"
               value={otp}
@@ -110,13 +115,21 @@ const SignUpPage = () => {
               autoComplete="on"
               className="m-2 p-2 border border-gray-300 rounded"
             />
-            <button type="button" className="bg-green-700 text-white" onClick={handleSignUp}>Verify OTP</button>
+            <button
+              type="button"
+              className="bg-green-700 text-white"
+              onClick={handleSignUp}
+            >
+              Verify OTP
+            </button>
           </div>
         ) : (
           <div>
             <form onSubmit={handleSubmit}>
               <div className="mb-2">
-                <label htmlFor="email" className="font-bold">Email</label>
+                <label htmlFor="email" className="font-bold">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={email}
@@ -126,7 +139,9 @@ const SignUpPage = () => {
                 />
               </div>
               <div className="mb-2">
-                <label htmlFor="username" className="font-bold">Username</label>
+                <label htmlFor="username" className="font-bold">
+                  Username
+                </label>
                 <input
                   type="text"
                   value={username}
@@ -136,7 +151,9 @@ const SignUpPage = () => {
                 />
               </div>
               <div className="mb-2">
-                <label htmlFor="password" className="font-bold">Password</label>
+                <label htmlFor="password" className="font-bold">
+                  Password
+                </label>
                 <input
                   type="password"
                   value={password}
@@ -147,7 +164,9 @@ const SignUpPage = () => {
                 />
               </div>
               <div className="mb-2">
-                <label htmlFor="confirmPassword" className="font-bold">Confirm Password</label>
+                <label htmlFor="confirmPassword" className="font-bold">
+                  Confirm Password
+                </label>
                 <input
                   type="password"
                   value={confirmPassword}
@@ -157,7 +176,9 @@ const SignUpPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="usertype" className="font-bold mr-2">User Type</label>
+                <label htmlFor="usertype" className="font-bold mr-2">
+                  User Type
+                </label>
                 <select
                   value={usertype}
                   onChange={(e) => setUsertype(e.target.value)}
@@ -167,8 +188,14 @@ const SignUpPage = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              <button type="submit" className="bg-green-700 text-white">Sign Up</button>
-              <button type="button" className="bg-gray-200" onClick={() => navigate("/")}>
+              <button type="submit" className="bg-green-700 text-white">
+                Sign Up
+              </button>
+              <button
+                type="button"
+                className="bg-gray-200"
+                onClick={() => navigate("/")}
+              >
                 Back
               </button>
             </form>
@@ -177,7 +204,11 @@ const SignUpPage = () => {
         {error && <span className="text-red-600">{error}</span>}
         <div className="mt-2">
           <span className="font-bold mr-2">Already have an account?</span>
-          <button type="button" className="bg-gray-200" onClick={() => navigate("/login")}>
+          <button
+            type="button"
+            className="bg-gray-200"
+            onClick={() => navigate("/login")}
+          >
             Login
           </button>
         </div>

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import "react-datepicker/dist/react-datepicker.css";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 export default function BookingConfirmationPage() {
   const { user } = useUser();
@@ -55,7 +55,9 @@ export default function BookingConfirmationPage() {
     const currentDate = new Date();
     const selectedDate = new Date(time);
     const timeIsFuture = currentDate.getTime() < selectedDate.getTime();
-    const timeIsNotBook = !bookings.find((booking) => new Date(booking.date).getTime() === selectedDate.getTime());
+    const timeIsNotBook = !bookings.find(
+      (booking) => new Date(booking.date).getTime() === selectedDate.getTime()
+    );
     return timeIsFuture && timeIsNotBook;
   };
 
@@ -79,21 +81,24 @@ export default function BookingConfirmationPage() {
       const booking = await bookingResponse.json();
       console.log(booking);
 
-      const checkoutSessionResponse = await fetch(`${API_URL}/stripe/create-checkout-session`, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          item: {
-            name: plan.salon.salonname + " " + plan.name,
-            unit_amount: Number(plan.price) * 100,
-            quantity: 1,
+      const checkoutSessionResponse = await fetch(
+        `${API_URL}/stripe/create-checkout-session`,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
           },
-          checkoutURL: `http://localhost:3000/salon/${salonId}/bookingconfirmation/${planId}`,
-        }),
-      });
+          body: JSON.stringify({
+            item: {
+              name: plan.salon.salonname + " " + plan.name,
+              unit_amount: Number(plan.price) * 100,
+              quantity: 1,
+            },
+            checkoutURL: `http://localhost:3000/salon/${salonId}/bookingconfirmation/${planId}`,
+          }),
+        }
+      );
       const sessionURL = await checkoutSessionResponse.json();
       console.log(sessionURL);
       window.location = sessionURL;
@@ -124,13 +129,19 @@ export default function BookingConfirmationPage() {
               Booking Details
             </h2>
             <div className="h-max w-full p-2 border border-gray-300 rounded bg-white mb-4">
-              <p className="text-green-600 text-lg font-bold mb-1">Plan: {plan.name}</p>
+              <p className="text-green-600 text-lg font-bold mb-1">
+                Plan: {plan.name}
+              </p>
               <p className="text-gray-700 text-lg mb-1">Price: ${plan.price}</p>
-              <p className="text-gray-700 text-lg">Description: {plan.description}</p>
+              <p className="text-gray-700 text-lg">
+                Description: {plan.description}
+              </p>
             </div>
             <div className="mb-4">
               <div className="mb-4">
-                <label htmlFor="date" className="font-bold mr-2">Select Date:</label>
+                <label htmlFor="date" className="font-bold mr-2">
+                  Select Date:
+                </label>
                 <DatePicker
                   selected={selectedDate}
                   onChange={(date) => setSelectedDate(date)}

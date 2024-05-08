@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import "./HomePage.css";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 const HomePage = () => {
-  const backgroundImage = './img/background.png';
+  const backgroundImage = "./img/background.png";
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -27,10 +27,14 @@ const HomePage = () => {
 
         salons.sort((a, b) => {
           const likeA = a.reaction.filter((r) => r.response === "like").length;
-          const disLikeA = a.reaction.filter((r) => r.response === "dislike").length;
+          const disLikeA = a.reaction.filter(
+            (r) => r.response === "dislike"
+          ).length;
           const likeB = b.reaction.filter((r) => r.response === "like").length;
-          const disLikeB = b.reaction.filter((r) => r.response === "dislike").length;
-          return (likeB - disLikeB) - (likeA - disLikeA);
+          const disLikeB = b.reaction.filter(
+            (r) => r.response === "dislike"
+          ).length;
+          return likeB - disLikeB - (likeA - disLikeA);
         });
         setHotSalons(salons.slice(0, 6));
       } catch (error) {
@@ -47,7 +51,9 @@ const HomePage = () => {
         const hairstyles = await response.json();
         console.log(hairstyles);
 
-        hairstyles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        hairstyles.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
         setNewHairstyles(hairstyles.slice(0, 6));
       } catch (error) {
         console.error(error);
@@ -61,7 +67,9 @@ const HomePage = () => {
     const fetchFollowingHairstyles = async () => {
       console.log("Going to fetch user following salon's hairstyles");
       try {
-        const response = await fetch(`${API_URL}/user/followed-salons/${user._id}`);
+        const response = await fetch(
+          `${API_URL}/user/followed-salons/${user._id}`
+        );
         if (!response.ok) {
           throw new Error("Error fetching user follow salons");
         }
@@ -69,9 +77,11 @@ const HomePage = () => {
         console.log(followSalons);
 
         const fetchHairstylesRequests = followSalons.map(async (salon) => {
-          const response = await fetch(`${API_URL}/hairstyle?salonId=${salon._id}`);
-          return await response.json()
-        })
+          const response = await fetch(
+            `${API_URL}/hairstyle?salonId=${salon._id}`
+          );
+          return await response.json();
+        });
         const hairstyles = await Promise.all(fetchHairstylesRequests);
         console.log("Following Hairstyles:", hairstyles);
         setFollowingHairstyles([].concat(...hairstyles));
@@ -93,9 +103,14 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center h-screen bg-cover bg-center" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div
+        className="flex items-center justify-center h-screen bg-cover bg-center"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
         <div>
-          <h1 className="text-5xl font-bold">Open a new character of your life</h1>
+          <h1 className="text-5xl font-bold">
+            Open a new character of your life
+          </h1>
           <div className="flex items-center justify-center m-2">
             {/*<input
               type="text"
@@ -141,7 +156,10 @@ const HomePage = () => {
           <h2 className="text-xl font-bold">New Hairstyles</h2>
           <div className="grid grid-cols-3 gap-4">
             {newHairstyles.map((hairstyle) => (
-              <div key={hairstyle._id} className="flex flex-col items-center gap-2">
+              <div
+                key={hairstyle._id}
+                className="flex flex-col items-center gap-2"
+              >
                 <img
                   src={`${API_URL}/hairstyle/${hairstyle._id}`}
                   alt={`Hairstyle ${hairstyle._id}`}
@@ -161,7 +179,10 @@ const HomePage = () => {
             <h2 className="text-xl font-bold">Following Salon's Hairstyles</h2>
             <div className="grid grid-cols-6 gap-4">
               {followingHairstyles.map((hairstyle) => (
-                <div key={hairstyle._id} className="flex flex-col items-center gap-2">
+                <div
+                  key={hairstyle._id}
+                  className="flex flex-col items-center gap-2"
+                >
                   <img
                     src={`${API_URL}/hairstyle/${hairstyle._id}`}
                     alt={`Hairstyle ${hairstyle._id}`}

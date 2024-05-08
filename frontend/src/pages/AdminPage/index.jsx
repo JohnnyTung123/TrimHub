@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const AdminPage = () => {
-  const API_URL = "http://localhost:8080";
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -23,12 +23,9 @@ const AdminPage = () => {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch(
-        `${API_URL}/user/${userId}`,
-        {
-          method: "DELETE",
-        },
-      );
+      const response = await fetch(`${API_URL}/user/${userId}`, {
+        method: "DELETE",
+      });
       if (!response.ok) {
         throw Error("Cannot delete user.");
       }

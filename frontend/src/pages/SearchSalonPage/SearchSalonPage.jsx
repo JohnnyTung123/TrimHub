@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SalonContainer from "./SalonContainer";
 
 export default function SearchSalonPage() {
-  const API_URL = "http://localhost:8080";
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const [salons, setSalons] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -38,10 +38,7 @@ export default function SearchSalonPage() {
         className="text-lg mr-4 p-2 rounded-md"
         placeholder="Search for salons..."
       />
-      <button
-        onClick={handleSearch}
-        className="bg-green-700 text-white"
-      >
+      <button onClick={handleSearch} className="bg-green-700 text-white">
         Search
       </button>
       <ul>

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
 export const fetchSalonInfo = async (userId) => {
   try {
@@ -34,9 +34,7 @@ export const fetchSalonImages = async (salonId) => {
 
 export const fetchHairstyles = async (salonId) => {
   try {
-    const response = await fetch(
-      `${API_URL}/hairstyle?salonId=${salonId}`
-    );
+    const response = await fetch(`${API_URL}/hairstyle?salonId=${salonId}`);
     if (!response.ok) {
       throw new Error("Error fetching hairstyles");
     }
@@ -82,7 +80,7 @@ export const changeSalonInfoAPI = async (
   salonId,
   salonName,
   address,
-  newSalonImage,
+  newSalonImage
 ) => {
   try {
     // Upload salon image first if there is a new image
@@ -121,13 +119,10 @@ export const createHairstyleAPI = async (
   formData.append("description", hairstyleDescription);
 
   try {
-    const response = await fetch(
-      `${API_URL}/hairstyle`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    const response = await fetch(`${API_URL}/hairstyle`, {
+      method: "POST",
+      body: formData,
+    });
     if (!response.ok) {
       throw new Error("Failed to add hairstyle.");
     }
@@ -141,12 +136,9 @@ export const createHairstyleAPI = async (
 
 export const deleteHairstyleAPI = async (hairstyleId) => {
   try {
-    const response = await fetch(
-      `${API_URL}/hairstyle/${hairstyleId}`,
-      {
-        method: "DELETE",
-      },
-    );
+    const response = await fetch(`${API_URL}/hairstyle/${hairstyleId}`, {
+      method: "DELETE",
+    });
     if (!response.ok) {
       throw new Error("Failed to delete hairstyle.");
     }
@@ -160,7 +152,7 @@ export const createPlanAPI = async (
   salonId,
   planName,
   planPrice,
-  planDescription,
+  planDescription
 ) => {
   try {
     const response = await fetch(`${API_URL}/plan/`, {

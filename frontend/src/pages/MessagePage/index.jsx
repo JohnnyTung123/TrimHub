@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useUser } from "../../context/UserContext";
 
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 const socket = io(API_URL);
 
 const ChatList = () => {
@@ -29,7 +29,9 @@ const ChatList = () => {
   }, [user]);
 
   const determineChatName = (chat) => {
-    return chat.users[0]?._id === user?._id ? chat.users[1].username : chat.users[0].username;
+    return chat.users[0]?._id === user?._id
+      ? chat.users[1].username
+      : chat.users[0].username;
   };
 
   return (
@@ -37,7 +39,11 @@ const ChatList = () => {
       {chats.map((chat) => (
         <button
           key={chat._id}
-          className={`${ searchParams.get("chatId") === chat._id ? "bg-green-600 text-white" : "bg-gray-200" } w-full mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
+          className={`${
+            searchParams.get("chatId") === chat._id
+              ? "bg-green-600 text-white"
+              : "bg-gray-200"
+          } w-full mx-0 py-4 text-center text-xl border rounded-xl cursor-pointer`}
           onClick={() => setSearchParams({ chatId: chat._id })}
         >
           {determineChatName(chat)}
@@ -66,7 +72,9 @@ const Chat = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`${API_URL}/message/${searchParams.get("chatId")}`);
+        const response = await fetch(
+          `${API_URL}/message/${searchParams.get("chatId")}`
+        );
         if (!response.ok) {
           throw new Error("Error fetching salon info");
         }
@@ -111,7 +119,7 @@ const Chat = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleMessageUpdate = (e) => {
     setNewMessage(e.target.value);
@@ -123,25 +131,33 @@ const Chat = () => {
         {messages.map((message, index) => {
           const isSender = user._id === message.sender._id;
           const date = new Date(message.createdAt);
-          const dateLast = index !== 0 ? new Date(messages[index - 1].createdAt) : null;
-          const dateChanged = dateLast ? date.getDate() !== dateLast.getDate() : true;
+          const dateLast =
+            index !== 0 ? new Date(messages[index - 1].createdAt) : null;
+          const dateChanged = dateLast
+            ? date.getDate() !== dateLast.getDate()
+            : true;
 
           return (
             <>
               {dateChanged && (
-                <div className="text-center">
-                  {date.toLocaleDateString()}
-                </div>
+                <div className="text-center">{date.toLocaleDateString()}</div>
               )}
-              <div key={message._id} className={`flex ${ isSender ? "flex-row-reverse" : "flex-row" } my-2`}>
+              <div
+                key={message._id}
+                className={`flex ${
+                  isSender ? "flex-row-reverse" : "flex-row"
+                } my-2`}
+              >
                 <div className="rounded-xl border border-green-700 bg-opacity-80">
                   <div className="px-2 font-bold">
                     {message.sender.username}
                   </div>
-                  <div className="px-2">
-                    {message.content}
-                  </div>
-                  <div className={`${ isSender ? "text-right" : "text-left" } mt-1 px-2 text-xs`}>
+                  <div className="px-2">{message.content}</div>
+                  <div
+                    className={`${
+                      isSender ? "text-right" : "text-left"
+                    } mt-1 px-2 text-xs`}
+                  >
                     {date.toLocaleTimeString()}
                   </div>
                 </div>
@@ -161,7 +177,9 @@ const Chat = () => {
               onChange={handleMessageUpdate}
               className="text-lg border border-gray-300 rounded mr-2 p-2"
             />
-            <button type="submit" class="bg-green-700 text-white">Send</button>
+            <button type="submit" class="bg-green-700 text-white">
+              Send
+            </button>
           </form>
         </div>
       )}

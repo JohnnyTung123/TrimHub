@@ -9,6 +9,8 @@ export default function SalonContainer({ salon }) {
   const [numLikes, setNumLikes] = useState(0);
   const [numDislikes, setNumDislikes] = useState(0);
 
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
   useEffect(() => {
     setNumLikes(salon.reaction.filter((r) => r.response === "like").length);
     setNumDislikes(
@@ -23,7 +25,8 @@ export default function SalonContainer({ salon }) {
     >
       {salon.imagePath ? (
         <img
-          src={`http://localhost:8080/salon-info/image?salonId=${salon._id}`}
+          // src={`http://localhost:8080/salon-info/image?salonId=${salon._id}`}
+          src={`${API_URL}/salon-info/image?salonId=${salon._id}`}
           alt="Salon"
           className="w-32 h-32 object-cover rounded-md"
         />
